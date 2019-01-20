@@ -13,6 +13,10 @@
 #include <string>
   //libs thirdparty
 
+  #include <SFML/Graphics.hpp>
+  #include <SFML/Window.hpp>
+  #include <SFML/System.hpp>
+  #include <SFML/OpenGL.hpp>
 
   //libs our project
 
@@ -26,6 +30,18 @@
 
   bool quit = false;
 
+
+  void renderingThread(sf::RenderWindow* window)
+  {
+      // the rendering loop
+      while (window->isOpen())
+      {
+          // draw...
+
+          // end the current frame
+          window->display();
+      }
+  }
 
 int main(int argc, char* argv[])
 
@@ -55,6 +71,40 @@ int main(int argc, char* argv[])
       log_file_stream << commissaire_c << " hasLogedON at: " << asctime(localtm) << "\n";
       printf(" To Quit enter q and press enter:\n");
 
+      sf::RenderWindow window_img_dispy (sf::VideoMode(255,255), "Image_display_window");
+      window_img_dispy.setFramerateLimit(60);
+
+//activethread
+//call setActive(false); beforepassingthred
+
+    // deactivate its OpenGL context
+    window.setActive(false);
+
+    // launch the rendering thread
+    sf::Thread rednder_thread(&renderingThread, &window);
+    rednder_thread.launch();
+
+    //event/logic/loop
+
+      while (window_img_dispy.isOpen())
+      {
+         sf::Event Primay_event;
+
+            while (window_img_dispy.pollEvent(Primay_event))
+
+            {
+              {if (Primay_event.type ==sf::Event::Closed)
+                          window.close();
+                  }
+
+              {if (Primay_event.type == sf::Event::Resized)
+                  glViewport(0, 0, Primay_event.size.width, Primay_event.size.height);
+              }
+
+            }
+
+
+      }
 
 
 //connectionz

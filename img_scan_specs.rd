@@ -9,6 +9,13 @@ data on the image and process it. as well as draw onto the image updating itetc
 //imagescaning tools
 
 
+call window.setActive(false);
+in your main(), before you pass it off to the thread.
+
+And remember that you must
+handle events in the GUI thread (the main thread) for maximum portability.
+
+
 //processingtools();
 
     Deftype int Graphic_matrix_array[255][255] GM_array;

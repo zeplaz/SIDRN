@@ -16,7 +16,6 @@
       uint8_t  _intensity_value;
 
     public :
-
       Pixel_1xbyte();
       virtual ~Pixel_1xbyte();
       Pixel_1xbyte(const Pixel_1xbyte& pix_1);
@@ -25,37 +24,24 @@
 
       void set_intensity_value( uint8_t inzt);
       void set_loc (uint8_t x uint8_t y);
-
       void apply_intensity_scaler(const uint8_t& ref_cons_intensity, int scaler);
-
 
       friend std::ostream& operator<<(std::ostream& os, const Pixel& pix);
       friend std::istream& operator>>(std::istream& is, Pixel& pix);
-
     };
-
 #endif
-
-
-
 //
-
 //GRAPHICIMG_1byte.h
 #ifndef GRAPHICIMG_1byte_H
 #define GRAPHICIMG_1byte_H
 
-
   class Graphic_img_shkalla_gri_1byte_d
   {
   protected:
-
-  uint8_t _width, _hight,Max_size;
-
-  Pixel_1xbyte** pix_ptr_array;
-
+    uint8_t _width, _hight,Max_size;
+    Pixel_1xbyte** pix_ptr_array;
 
   public:
-
     Graphic_img_shkalla_gri_1byte_d();
     Graphic_img_shkalla_gri_1byte_d();
     Graphic_img_shkalla_gri_1byte_d(
