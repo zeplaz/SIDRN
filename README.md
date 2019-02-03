@@ -1,5 +1,5 @@
 # SIDRN
- (system-ingrgated-data-responce-network)..
+ (system-ingrgated-data-responce-network)..Orgburoz system for intgreated datafeedz to the agentzprocessinmagecmdprotcalz.
 
 system is built with, comcation between a posgresSQL server, and c++ aplcoiations, both a cmd line interface api, as well as a dashbord dispay mechinsime --selcuded-. sgemating compents to privlage level binary compilation, to provent rever-se mechinecode.-- futehr extations should include tools for regulair repsonce feedback, with recursieve analattics,.. and an expation of, emergent stablity in unstable envrometnal systemesz. 
 
