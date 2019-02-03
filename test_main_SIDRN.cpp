@@ -71,8 +71,8 @@ int main(int argc, char* argv[])
       log_file_stream << commissaire_c << " hasLogedON at: " << asctime(localtm) << "\n";
       printf(" To Quit enter q and press enter:\n");
 
-      sf::RenderWindow window_img_dispy (sf::VideoMode(255,255), "Image_display_window");
-      window_img_dispy.setFramerateLimit(60);
+      sf::RenderWindow window_img_dispy_main (sf::VideoMode(255,255), "Image_display_window");
+      window_img_dispy_main.setFramerateLimit(60);
 
 //activethread
 //call setActive(false); beforepassingthred
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
     //event/logic/loop
 
-      while (window_img_dispy.isOpen())
+      while (window_img_dispy_main.isOpen())
       {
          sf::Event Primay_event;
 

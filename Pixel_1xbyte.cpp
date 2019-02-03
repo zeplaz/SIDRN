@@ -20,7 +20,7 @@
       _intensity_value = inzt;
     }
 
-    void Pixel_1xbyte::set_loc(uint8_t x uint8_t y)
+    void Pixel_1xbyte::set_loc(uint8_t x, uint8_t y)
     {
       _x=x;
       _y=y;
