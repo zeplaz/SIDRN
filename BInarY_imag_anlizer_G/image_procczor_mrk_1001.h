@@ -1,62 +1,69 @@
 
 //Img_processing
 
+
+
+#include <cstdlib>
+#include <cstdio>
+
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include "image_Byte8.h"
+
+
 class image_procczor_mrk_1001
 
 {
 
   private :
-  typedef std::map<int,obje_labeld*> obj_labl_map;
+  typedef std::map<int[2], int> obj_labl_map;
 
   private :
-
+  Objkfactory img_obj_fac;
 
 public :
-StructuringElement;
+          //StructuringElement;
+  //  int num_img_columns, Num_img_rows, max_pixal,totalpix, head_int;
 
-int num_img_columns, Num_img_rows, max_pixal,totalpix, head_int;
+    uint8_t *imga *hista *outimageHistogram;
+  //  void calc_hista(image_Byte8* inimg);
+//    void write_hista(image_Byte8* inimg );
 
-uint8_t *imga *hista *outimageHistogram;
-void calc_hista(image_Byte8* inimg);
-void write_hista(image_Byte8* inimg );
-image_Byte8* thresholdImg(image_Byte8* inimg);
+    std::map<int,int[2]>  Row_first ;
+    std::map<int,int[2]>  Row_second ;
 
-void apply_erode(image_Byte8* inimg);
-void apply_dilate(image_Byte8* inimg);
+    std::vector<int> object_comp;
 
-void open_morph(image_Byte8* inimg);
-void close_morph(image_Byte8* inimg);
-
-void cal_centriod(image_Byte8* inimg);
-
-std::map<int,obj_labl*>  obj_labl_map ;
-
-void conected_comp_labler(image_Byte8* scanab_img);
-
-float obj_centrod();
-
-char object_iditifer();
+    bj_labl_map ojk_labl_mapinst;
 
 
+    image_Byte8* thresholdImg(image_Byte8* inimg);
 
- obj_labl_map ojk_labl_mapinst;
+    void apply_erode(image_Byte8* inimg);
+    void apply_dilate(image_Byte8* inimg);
 
+    void open_morph(image_Byte8* inimg);
+    void close_morph(image_Byte8* inimg);
 
+    void cal_centriod(image_Byte8* inimg);
 
+    void conected_comp_labler(image_Byte8* scanab_img);
 
+    double obj_centrod();
+                        //char object_iditifer();
 
-std::vector<int> object_comp;
-
-
-int next_label;
 
 const int drc_rowxNESW[] = {1,0,-1,0};
 const int drc_rowyNESW[] = {0,1,0,-1};
 
+//image_procczor_mrk_1001.cpp
+
+#include "Objkfactory.h"
+#include "img_obkj.h"
 
 
-
-void image_procczor_mrk_1001:: open_morph(image_Byte8* inimg)
+void image_procczor_mrk_1001::open_morph(image_Byte8* inimg)
     {
       apply_dilate(inimg);
       apply_erode(inimg);
@@ -69,20 +76,27 @@ void image_procczor_mrk_1001:: open_morph(image_Byte8* inimg)
           apply_dilate(inimg);
 
         }
-//image_procczor_mrk_1001.cpp
 
-#include <iostream>
-#include <cstdlib>
-#include <cstdio>
+
 
 uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
+
+{
+  uint8_t tempthrsh_cal = 40;
+ return (tempthrsh_cal);
+}
+
 
 
 void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
 {
 
-      ojk_labl_mapinst.insert(std::make_pair(next_label,new_objc));
+  int current_label;
+  int  next_label;
+  int pix_par[2];
+      =2*(std::cos(thad))
+ std::vector<int> parent_label_array;
 
     uint16_t i,j;
 
@@ -94,11 +108,35 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
               if (scanab_img->pixelz[i,j] !=0)
                 {
-                  img_obkj*
-                next_label++;
+                  while (i>1 && i < scanab_img->get_h_rs())
+
+                  {if (scanab_img->pixelz[i-1,j]!=0)}
+                  pix_par[1]=j;
+                  pix_par[0]=i;
+
+                  ojk_labl_mapinst.insert(std::make_pair(pix_par,current_label);
+
+
+
+                  if (scanab_img->pixelz[i,j-1] !=0)
+                  {next_label++;
+
+                temp_onjc    = img_obj_fac.create_img_obk(next_label);
+
+                  }
+                  current_label = <int,int[2]>
 
                 }
-            }
+
+                img_obkj
+
+            for ()
+             {
+
+
+             }
+
+
       }
 
   }
@@ -117,11 +155,14 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
     for(r=0;r<rows;r++){
           for(c=0;c<cols;c++){
              if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
-             else image_tmp[r][c] = 255;
+             else image_tmp[r][c] = 1;
           }
        }
 
   }
+
+
+
 
   void image_procczor_mrk_1001::calc_hista()
   {
@@ -161,8 +202,6 @@ void image_procczor_mrk_1001::write_hista(int )
 }
 
 
-
-
 }
 
 
@@ -178,12 +217,12 @@ void Union_(int a, int b)
 
 void unionCoords(image_byte8* uni_img_pix ,int x, int y, int x2, int y2)
 {
-    if (y2 < uni_img_pix-get_h_rs() && x2 < uni_img_pix-get_w_cs() && uni_img_pix->pixelz[x][y] && input[x2][y2])
+    if (y2 < uni_img_pix->get_h_rs() && x2 < uni_img_pix->get_w_cs() && uni_img_pix->pixelz[x][y] && input[x2][y2])
         doUnion(x*h + y, x2*h + y2);
 }
 
 
-for (int i = 0; i < w*h; i++)
+for (int i = 0; i < uni_img_pix->get_w_cs()*uni_img_pix->get_h_rs(); i++)
        component[i] = i;
    for (int x = 0; x < w; x++)
    for (int y = 0; y < h; y++)
