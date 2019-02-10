@@ -5,17 +5,21 @@
 
 #include "image_Byte8.h"
 #include <string>
+void image_Byte8::read_image_to_matrex(ifstream &in_img)
+{
 
+	if (!in_img)
 
+	{
+		printf("eroror in imgloder fileread\n");
+	}
+int* img_byte_matrx = new int[image_area_pix+1];
+
+}
 	void load_img_tomatrx(ifstream &in_img)
 	{
-			if (!in_img)
 
-			{
-				printf("eroror in imgloder fileread\n");
-			}
 
-			int* img_byte_matrx = new int[image_area_pix+1];
 
 	}
 

@@ -23,7 +23,7 @@
     {
       int obj_id;
       int Arra_size;
-      foat centrod;
+      std::vector<int> centrod;
       long circularity;
       uint8_t bbox2[2][3];
       double second_momnent;

@@ -12,7 +12,7 @@
       void image_procczor_mrk_1001::apply_dilate(image_Byte8* inimg)
 
       {
-      
+
       }
 
     void image_procczor_mrk_1001::open_morph(image_Byte8* inimg)
@@ -34,6 +34,33 @@ uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
     {
        uint8_t tempthrsh_cal = 40;
        return (tempthrsh_cal);
+    }
+
+
+    void image_procczor_mrk_1001::cal_centriod(img_obkj* scn_obj_cer)
+    {
+      int centroid_r;
+      int centroid_c;
+      int r_sum;
+      int  c_sum;
+      map<int, int[2]> list_par_obj;
+        list_par_obj::const_iterator cons_itor;
+
+      for (cons_itor.begin(); cons_itor.end();cons_itor++)
+      {
+
+        int[2] tempintarray;
+      tempintarray = cons_itor->second;
+      r_sum  =+ tempintarray[0];
+      c_sum  =+ tempintarray[0];
+
+      }
+      centroid_r  = r_sum/cons_itor->first;
+      centroid_c =  r_sum/cons_itor->first;
+
+      scn_obj_cer->img_objk_prop.centrod[0]=centroid_r;
+      scn_obj_cer->img_objk_prop.centrod[0]=centroid_c;
+
     }
 
 void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
@@ -134,7 +161,7 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
   }
 
 
-
+  void circularity
 
   void image_procczor_mrk_1001::calc_hista()
   {
@@ -175,33 +202,3 @@ void image_procczor_mrk_1001::write_hista(int )
 
 
 }
-
-
-void Union_(int a, int b)
-{
-    // get the root component of a and b, and set the one's parent to the other
-    while (object_comp[a] != a)
-        a = object_comp[a];
-    while (object_comp[b] != b)
-        b = object_comp[b];
-    object_comp[b] = a;
-}
-
-void unionCoords(image_byte8* uni_img_pix ,int x, int y, int x2, int y2)
-{
-    if (y2 < uni_img_pix->get_h_rs() && x2 < uni_img_pix->get_w_cs() && uni_img_pix->pixelz[x][y] && input[x2][y2])
-        doUnion(x*h + y, x2*h + y2);
-}
-
-
-for (int i = 0; i < uni_img_pix->get_w_cs()*uni_img_pix->get_h_rs(); i++)
-       component[i] = i;
-   for (int x = 0; x < w; x++)
-   for (int y = 0; y < h; y++)
-   {
-       unionCoords(x, y, x+1, y);
-       unionCoords(x, y, x, y+1);
-   }
-
-
-};

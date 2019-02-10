@@ -56,7 +56,7 @@ public :
     double get_obj_centrod();
       get_obj_bbox();
       get_second_moment();
-    
+
                         //char object_iditifer();
 cal_bbox(img_obkj* img_obk_in)
 {

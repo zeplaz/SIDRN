@@ -33,7 +33,8 @@ class image_Byte8
 
     vector<int>pixelz[][];
 
-      void readImage(ifstream &inFile);
+      void read_image_to_matrex(ifstream &in_img);
+
 	    void writeImage(ofstream &outFile);
 
      void readHeader(ifstream &inimg);

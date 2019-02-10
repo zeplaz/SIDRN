@@ -2,7 +2,7 @@
 //
 
 /*
-
+// soruses and smaple codez
 other sorces
 jelouodsa
 
@@ -14,6 +14,34 @@ Portable PixMap[3] 	P3 	P6 	.ppm 	0–255 (RGB)
 void ()
 
 
+void Union_(int a, int b)
+{
+    // get the root component of a and b, and set the one's parent to the other
+    while (object_comp[a] != a)
+        a = object_comp[a];
+    while (object_comp[b] != b)
+        b = object_comp[b];
+    object_comp[b] = a;
+}
+
+void unionCoords(image_byte8* uni_img_pix ,int x, int y, int x2, int y2)
+{
+    if (y2 < uni_img_pix->get_h_rs() && x2 < uni_img_pix->get_w_cs() && uni_img_pix->pixelz[x][y] && input[x2][y2])
+        doUnion(x*h + y, x2*h + y2);
+}
+
+
+for (int i = 0; i < uni_img_pix->get_w_cs()*uni_img_pix->get_h_rs(); i++)
+       component[i] = i;
+   for (int x = 0; x < w; x++)
+   for (int y = 0; y < h; y++)
+   {
+       unionCoords(x, y, x+1, y);
+       unionCoords(x, y, x, y+1);
+   }
+
+
+};
 
 
 void erode (image_z* img, int p_w, int p_h)

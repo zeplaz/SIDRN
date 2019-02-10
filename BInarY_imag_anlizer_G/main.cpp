@@ -65,7 +65,7 @@ Process_cycle(image_Byte8* org_img ,image_Byte8* thsh_img);
 
         image_byte8* new_img1 = new image_Byte8();
 
-        new_img1->readImage(in_img);
+        new_img1->read_image_to_matrex(in_img);
 
         printf("Image Read Compleate\n");
 
@@ -77,11 +77,8 @@ Process_cycle(image_Byte8* org_img ,image_Byte8* thsh_img);
 
         proccedz_image = Process_cycle(threshold_image,new_img1);
 
-
-
-        improz1.(proccedz_image);
-        improz1.(proccedz_image);
-
+        //improz1.Process_cycle();
+      //  improz1.(proccedz_image);
 
 
       in_img.close();
