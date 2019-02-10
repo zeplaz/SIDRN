@@ -2,7 +2,18 @@
 
 #include "Objkfactory.h"
 #include "img_obkj.h"
+      void image_procczor_mrk_1001::apply_erode(image_Byte8* inimg)
 
+      {
+
+
+      }
+
+      void image_procczor_mrk_1001::apply_dilate(image_Byte8* inimg)
+
+      {
+      
+      }
 
     void image_procczor_mrk_1001::open_morph(image_Byte8* inimg)
         {

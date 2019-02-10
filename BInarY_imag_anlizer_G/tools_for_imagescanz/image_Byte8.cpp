@@ -7,16 +7,17 @@
 #include <string>
 
 
-void load_img_tomatrx(ifstream &in_img)
-{
-	if (!in_img)
-
+	void load_img_tomatrx(ifstream &in_img)
 	{
-		printf("eroror in imgloder fileread\n");
-	}
-int * img_byte_matrx = new int[image_area_pix+1];
+			if (!in_img)
 
-}
+			{
+				printf("eroror in imgloder fileread\n");
+			}
+
+			int* img_byte_matrx = new int[image_area_pix+1];
+
+	}
 
 bool skipChar(string discart_com){
 

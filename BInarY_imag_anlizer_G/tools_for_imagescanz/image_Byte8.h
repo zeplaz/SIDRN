@@ -1,4 +1,11 @@
 
+//image_Byte8.h
+
+#ifndef IMAGE_BYTE8_H
+#define IMAGE_BYTE8_H
+
+
+
 #include <iostream>
 #include <math.h>
 #include <fstream>
@@ -21,12 +28,13 @@ class image_Byte8
         	minpix(0),
       		maxpix(0),
 	        {}
-            vector<int>pixelz[][];
 
-    ~image_Byte8(){  delete[] byte_Array_pix;}
+      ~image_Byte8(){  delete[] byte_Array_pix;}
 
-     virtual void readImage(ifstream &inFile) = 0;
-	   virtual void writeImage(ofstream &outFile) = 0;
+    vector<int>pixelz[][];
+
+      void readImage(ifstream &inFile);
+	    void writeImage(ofstream &outFile);
 
      void readHeader(ifstream &inimg);
 
@@ -50,12 +58,8 @@ class image_Byte8
 
       uint16_t  image_area_pix;
 
-
-
-
 //
     //  void edgeDection();
      	//void scaleImage();
 
-
-}
+};
