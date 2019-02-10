@@ -14,13 +14,13 @@ void load_img_tomatrx(ifstream &in_img)
 	{
 		printf("eroror in imgloder fileread\n");
 	}
-uint8_t * img_byte_matrx = new uint8_t[image_area_pix+1];
+int * img_byte_matrx = new int[image_area_pix+1];
 
 }
 
 bool skipChar(string discart_com){
 
-	for(unsigned int i = 0; i < discart_com.length(); i++){
+	for(int i = 0; i < discart_com.length(); i++){
 
 		if(discart_com[i] == '#') return true;
 

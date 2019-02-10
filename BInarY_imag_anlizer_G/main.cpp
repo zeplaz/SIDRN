@@ -50,8 +50,8 @@ Process_cycle(image_Byte8* org_img ,image_Byte8* thsh_img);
 
 
      std::fstream log_file_stream;
-     time_t now = time(0);
-     tm* localtm = localtime(&now);
+     //time_t now = time(0);
+    // tm* localtm = localtime(&now);
 
 
 
@@ -75,7 +75,7 @@ Process_cycle(image_Byte8* org_img ,image_Byte8* thsh_img);
 
         image_byte8* proccedz_image = new image_Byte8();
 
-      proccedz_image = Process_cycle(threshold_image,new_img1);
+        proccedz_image = Process_cycle(threshold_image,new_img1);
 
 
 

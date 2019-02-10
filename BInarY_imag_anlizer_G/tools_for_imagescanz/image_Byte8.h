@@ -21,7 +21,7 @@ class image_Byte8
         	minpix(0),
       		maxpix(0),
 	        {}
-            vector<uint8_t>pixelz[][];
+            vector<int>pixelz[][];
 
     ~image_Byte8(){  delete[] byte_Array_pix;}
 
