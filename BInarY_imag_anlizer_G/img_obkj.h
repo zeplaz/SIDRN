@@ -27,6 +27,7 @@
       long circularity;
       uint8_t bbox2[2][3];
       double second_momnent;
+      double perimeter;
 
 
 

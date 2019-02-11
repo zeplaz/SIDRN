@@ -65,35 +65,65 @@ uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
 
 void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 {
-
+                          union_obj(parnt,coonect)
   uint8_t current_label;
-  uint8_t  next_label=3;
+  uint8_t  next_label;
+  uint16_t i,j;
   int pix_par[2];
+  std::list<int[2]>* pix_cord_comp_num_prt;
 
+          //    =2*(std::cos(thad))
+      // std::vector<int[2]> parent_label_array;
 
-      =2*(std::cos(thad))
+      void image_procczor_mrk_1001::union_obj(int parent_label, int conect_laebl )
+      {
+        std::get<1>(cons_itor_pix.find(parent_label)->second).merge(std::get<1>(cons_itor_pix.find(conect_laebl)->second));
 
-       std::vector<int> parent_label_array;
+        std::get<0>(cons_itor_pix.find(parent_label)->second)=+ std::get<0>(cons_itor_pix.find(conect_laebl)->second);
 
-    uint16_t i,j;
+        lb_count_pair_pixloc.erase(conect_laebl);
+
+      }
+
 
     for (i=0 ;  i< scanab_img->get_h_rs()+1; i++)
-
     {
       for (j =1; j < scanab_img->get_W_cs()+1;j++)
             {
-
               if (scanab_img->pixelz[i,j] !=0)
                 {
-                  while (i>1 && i < scanab_img->get_h_rs())
+                //  while (i>1 && i < scanab_img->get_h_rs())
+                  {
+                    if (scanab_img->pixelz[i-1,j]!=0)
+                    {
+                      scanab_img->pixelz[i,j] = pixelz[i-1,j];
+                      current_label = pixelz[i-1,j];
 
-                  {if (scanab_img->pixelz[i-1,j]!=0)}
+                      pix_par[1]=j;
+                      pix_par[0]=i;
 
-                  scanab_img->pixelz[i,j] = pixelz[i-1,j];
-                  current_label = pixelz[i-1,j];
+                      std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
 
-                  pix_par[1]=j;
-                  pix_par[0]=i;
+                      pix_cord_comp_num_prt = std::get<1>(cons_itor_pix.find(current_label)->second);
+                      pix_cord_comp_num_prt->push_back(pix_par);
+
+                    }
+//    std::unordered_map<vertex_type,std::unordered_set<vertex_type>>,
+
+                    lb_count_pair_pixloc.insert()
+                      buffer {
+
+                        std::make_pair(current_label,)
+
+                    for ( p =0; p< pix_cord_comp_num_vec.size()+1; p++ )
+                      {
+
+
+
+                      }
+
+
+                  }
 
                   r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);
                   }
@@ -144,43 +174,56 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
 
 
-  void image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th ,int rows,int cols );
-  { int r, c;
+    void image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th ,int rows,int cols );
+        { int r, c;
 
-  uint8_t threshold
-  uint8_t **image_tmp=NULL;
-   threshold = calculate_threashold(img_to_th);
+        uint8_t threshold
+        uint8_t **image_tmp=NULL;
+         threshold = calculate_threashold(img_to_th);
 
-    for(r=0;r<rows;r++){
-          for(c=0;c<cols;c++){
-             if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
-             else image_tmp[r][c] = 1;
-          }
-       }
-
-  }
-
-
-  void circularity
-
-  void image_procczor_mrk_1001::calc_hista()
-  {
-
-    //  bool flag_b = false;
-    int i, j;
-    int highist_alha;
-
-   this->hista = (uint8_t char*) maloc(this->maxpix);
-
-    highist_alha = this->imagez[0];
-
-  for (i = 0; i< toal_pix ; i++)
-  {
-      this->hista[this->image_gry] +=1;
+          for(r=0;r<rows;r++){
+                for(c=0;c<cols;c++)
+                {
+                   if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
+                   else image_tmp[r][c] = 1;
+                }
+             }
 
     }
 
-  for (i =0; i < this->max_pixal; i++)
+    void image_procczor_mrk_1001::cal_perimeter(img_obkj* in_objk)
+    {
+
+
+
+      in_objk->img_objk_prop.perimeter =
+    }
+
+    void image_procczor_mrk_1001::circularity(img_obkj* in_objk)
+    {
+
+      in_objk->img_objk_prop.circularity = (in_objk->perimeter * in_objk->perimeter) / (4 * PI * in_objk->img_objk_prop.Arra_size);
+
+  }
+
+    void image_procczor_mrk_1001::calc_hista()
+     {
+
+    //  bool flag_b = false;
+      int i, j;
+      int highist_alha;
+
+      this->hista = (uint8_t char*) maloc(this->maxpix);
+
+      highist_alha = this->imagez[0];
+
+      for (i = 0; i< toal_pix ; i++)
+        {
+          this->hista[this->image_gry] +=1;
+
+        }
+
+      for (i =0; i < this->max_pixal; i++)
 
           if (this->hista[i]> highist_alha)
           {
