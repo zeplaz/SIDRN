@@ -12,13 +12,11 @@
 #include "image_Byte8.h"
 
 static long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286;
-class image_procczor_mrk_1001
 
+class image_procczor_mrk_1001
 {
   private :
     typedef std::map<int,std::pair<int,std::list<int[2]>*>>> label_count_pair_pixloc;
-
-
     typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
     typedef std::map<uint8_t,img_obkj*> obj_labl_map;
 
@@ -53,6 +51,9 @@ class image_procczor_mrk_1001
       double get_obj_centrod();
         get_obj_bbox();
         get_second_moment();
+};
+
+
 
                         //char object_iditifer();
 cal_bbox(img_obkj* img_obk_in)

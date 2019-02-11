@@ -63,37 +63,29 @@ uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
 
     }
 
-void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
-{
-                          union_obj(parnt,coonect)
-  uint8_t current_label;
-  uint8_t  next_label=0;
-  uint16_t i,j;
-  int pix_par[2];
-  std::list<int[2]>* pix_cord_comp_num_prt;
+    void image_procczor_mrk_1001::union_obj(int parent_label, int conect_laebl);
+        {
+          std::get<1>(cons_itor_pix_lib.find(parent_label)->second).merge(std::get<1>(cons_itor_pix_lib.find(conect_laebl)->second));
 
-          //    =2*(std::cos(thad))
-      // std::vector<int[2]> parent_label_array;
+          std::get<0>(cons_itor_pix_lib.find(parent_label)->second)=+ std::get<0>(cons_itor_pix_lib.find(conect_laebl)->second);
 
-      void image_procczor_mrk_1001::union_obj(int parent_label, int conect_laebl )
+          lb_count_pair_pixloc.erase(conect_laebl);
+        }
+
+  void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
+  {                        
+    uint8_t current_label;
+    uint8_t  next_label=0;
+    uint16_t i,j;
+    int pix_par[2];
+    std::list<int[2]>* pix_cord_comp_num_prt;
+
+      for (i=0 ;  i< scanab_img->get_h_rs()+1; i++)
       {
-        std::get<1>(cons_itor_pix_lib.find(parent_label)->second).merge(std::get<1>(cons_itor_pix_lib.find(conect_laebl)->second));
-
-        std::get<0>(cons_itor_pix_lib.find(parent_label)->second)=+ std::get<0>(cons_itor_pix_lib.find(conect_laebl)->second);
-
-        lb_count_pair_pixloc.erase(conect_laebl);
-
-      }
-
-
-    for (i=0 ;  i< scanab_img->get_h_rs()+1; i++)
-    {
-      for (j =1; j < scanab_img->get_W_cs()+1;j++)
+        for (j =1; j < scanab_img->get_W_cs()+1;j++)
             {
               if (scanab_img->pixelz[i,j] !=0)
                 {
-
-
                     if ( j>1 && scanab_img->pixelz[i,j-1]!=0)
                     {
                       scanab_img->pixelz[i,j] = pixelz[i,j-1];
@@ -126,7 +118,6 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
                         {
                           union_obj(current_label,scanab_img->pixelz[i,j-1]);
                         }
-
                     }
 
                     if (scanab_img->pixelz[i,j-1] ==0 && scanab_img->pixelz[i-1,j] ==0)
@@ -145,11 +136,14 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
                       next_label++;
                     }
 
-                  }
+                  }}}
+
+// do object creation of vaild objctz
 
 
 
-
+                  //    =2*(std::cos(thad))
+              // std::vector<int[2]> parent_label_array;
 
 //    std::unordered_map<vertex_type,std::unordered_set<vertex_type>>,
 
@@ -160,14 +154,8 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
                     for ( p =0; p< pix_cord_comp_num_vec.size()+1; p++ )
                       {
-
-
-
                       }
-
-
-                  }
-
+                }
                   r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);
                   }
 
@@ -184,8 +172,6 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
                   }
 
-
-
                     scanab_img->pixelz[i,j]    =  current_label;
 
                      r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);             }
@@ -198,15 +184,10 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
                   }
 
-
-
                 }
-
                 img_obkj
-
             for ()
              {
-
              }
 
       }
