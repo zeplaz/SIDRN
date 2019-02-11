@@ -67,7 +67,7 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 {
                           union_obj(parnt,coonect)
   uint8_t current_label;
-  uint8_t  next_label;
+  uint8_t  next_label=0;
   uint16_t i,j;
   int pix_par[2];
   std::list<int[2]>* pix_cord_comp_num_prt;
@@ -77,9 +77,9 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
 
       void image_procczor_mrk_1001::union_obj(int parent_label, int conect_laebl )
       {
-        std::get<1>(cons_itor_pix.find(parent_label)->second).merge(std::get<1>(cons_itor_pix.find(conect_laebl)->second));
+        std::get<1>(cons_itor_pix_lib.find(parent_label)->second).merge(std::get<1>(cons_itor_pix_lib.find(conect_laebl)->second));
 
-        std::get<0>(cons_itor_pix.find(parent_label)->second)=+ std::get<0>(cons_itor_pix.find(conect_laebl)->second);
+        std::get<0>(cons_itor_pix_lib.find(parent_label)->second)=+ std::get<0>(cons_itor_pix_lib.find(conect_laebl)->second);
 
         lb_count_pair_pixloc.erase(conect_laebl);
 
@@ -92,12 +92,27 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
             {
               if (scanab_img->pixelz[i,j] !=0)
                 {
-                //  while (i>1 && i < scanab_img->get_h_rs())
-                  {
-                    if (scanab_img->pixelz[i-1,j]!=0)
+
+
+                    if ( j>1 && scanab_img->pixelz[i,j-1]!=0)
+                    {
+                      scanab_img->pixelz[i,j] = pixelz[i,j-1];
+                    //  current_label = scanab_img->pixelz[i,j-1];
+
+                      pix_par[1]=j;
+                      pix_par[0]=i;
+
+                      std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
+
+                      pix_cord_comp_num_prt = std::get<1>(cons_itor_pix_lib.find(current_label)->second);
+                      pix_cord_comp_num_prt->push_back(pix_par);
+
+                    }
+
+                    if (i>1 && scanab_img->pixelz[i-1,j]!=0)
                     {
                       scanab_img->pixelz[i,j] = pixelz[i-1,j];
-                      current_label = pixelz[i-1,j];
+                      current_label = scanab_img->pixelz[i-1,j];
 
                       pix_par[1]=j;
                       pix_par[0]=i;
@@ -107,7 +122,35 @@ void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
                       pix_cord_comp_num_prt = std::get<1>(cons_itor_pix.find(current_label)->second);
                       pix_cord_comp_num_prt->push_back(pix_par);
 
+                        if(scanab_img->pixelz[i,j-1]!=0)
+                        {
+                          union_obj(current_label,scanab_img->pixelz[i,j-1]);
+                        }
+
                     }
+
+                    if (scanab_img->pixelz[i,j-1] ==0 && scanab_img->pixelz[i-1,j] ==0)
+                    {
+
+                      scanab_img->pixelz[i,j] = next_label;
+                      pix_par[1]=j;
+                      pix_par[0]=i;
+
+                      std::list<int[2]>* temPrt_new_pixloc = new  std::list<int[2]>(pix_par);
+
+                      std::make_pair(1,temPrt_new_pixloc) in_par_necon;
+
+                      lb_count_pair_pixloc.insert(next_label,in_par_necon);
+                      current_label = next_label;
+                      next_label++;
+                    }
+
+                  }
+
+
+
+
+
 //    std::unordered_map<vertex_type,std::unordered_set<vertex_type>>,
 
                     lb_count_pair_pixloc.insert()
