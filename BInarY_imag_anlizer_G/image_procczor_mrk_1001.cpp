@@ -1,7 +1,7 @@
 //image_procczor_mrk_1001.cpp
 
 //#include "Objkfactory.h"
-#include "img_obkj.h"
+      //#include "img_obkj.h"
 
 /*
       void image_procczor_mrk_1001::apply_erode(image_Byte8* inimg)
@@ -31,30 +31,53 @@
 
         }
 */
+#include "image_procczor_mrk_1001.h"
 
-
-    uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
-
+          int image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th)
         {
-           uint8_t tempthrsh_cal = 40;
+           uint8_t tempthrsh_cal = 200;
+           printf("calcute threshold at200 \n");
            return (tempthrsh_cal);
         }
 
 
-    void image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th ,int rows,int cols );
-        { int r, c;
+      image_Byte8*  image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th)
+        {
 
-        uint8_t threshold
-        uint8_t **image_tmp=NULL;
-         threshold = calculate_threashold(img_to_th);
+          printf(" Running_threadholding_ imagprocessor \n" );
+          int r, c;
+          int threshold;
+        //  int **image_tmp=NULL;
+          image_Byte8* temp_iimg = new image_Byte8();
 
-          for(r=0;r<rows;r++){
-                for(c=0;c<cols;c++)
+            printf(" improz_01 \n" );
+          temp_iimg->img_height_rows =  img_to_th->img_height_rows;
+          temp_iimg-> img_width_colums= img_to_th->img_width_colums;
+          temp_iimg->maxPixelValue =    img_to_th->maxPixelValue;
+          temp_iimg->image_area_pix =   img_to_th->image_area_pix;
+
+          printf(" improz_02 \n" );
+
+           threshold = calculate_threashold(img_to_th);
+           printf(" improz_03 \n" );
+
+            for(r=0;r<temp_iimg->img_height_rows+1; r++)
+            {   // printf(" loopouter1proz \n" );
+
+              	std::vector<int> temp_thresh_vec;
+
+              for(c=0;c<temp_iimg->img_width_colums+1; c++)
                 {
-                   if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
-                   else image_tmp[r][c] = 1;
-                }
+                //  printf(" inloopouter2proz \n" );
+                  if(img_to_th->b_imgArray[r].at(c) < threshold)
+                  temp_thresh_vec.push_back(0);
+                 else temp_thresh_vec.push_back(1);
              }
+              temp_iimg->b_imgArray.push_back(temp_thresh_vec);
+
+           }
+                	printf("Threadolingcompleate returning pointer!\n");
+               return(temp_iimg);
     }
 
 
@@ -275,8 +298,3 @@ void image_procczor_mrk_1001::write_hista(int )
 
 
     /*/
-
-}
-
-
-}

@@ -111,7 +111,7 @@ int row=0;
  	while(row<img_height_rows+1)
 	{
 		getline(in_img, linez);
-		printf("loadingimage_data1\n");
+																	//	printf("loadingimage_data1\n");
 		std::string temp_s;
 			string_imgstrm.str("");
 			string_imgstrm.clear();
@@ -136,12 +136,6 @@ int row=0;
 
 	printf("Image_data_loaded to vector\n");
 
-		//	for (int i = 0; i<img_width_colums; i++)
-		//	{
-		 //   for (int j=0; j<img_height_rows; j++)
-		//			{
-
-		//		}}
 
 																	//debugforimageloading
 																	/*
@@ -152,12 +146,16 @@ int row=0;
 														}
 													}
 													*/
-
 }
 
 
 
+//	for (int i = 0; i<img_width_colums; i++)
+//	{
+ //   for (int j=0; j<img_height_rows; j++)
+//			{
 
+//		}}
 
 /*
 

@@ -50,17 +50,17 @@ void Image_Procees_inlizar(std::ifstream& in_img);
      	int get_MaxPixVal()
       {return maxPixelValue;}
 
-    protected :
 
-    	uint8_t readbytechar = ' ';
       uint16_t img_height_rows;
       uint16_t img_width_colums;
 
       int maxPixelValue;
-      uint8_t minpix;
-      uint8_t maxpix;
-
       uint16_t  image_area_pix;
+
+    protected :
+
+    	uint8_t readbytechar = ' ';
+
 
 //
     //  void edgeDection();
