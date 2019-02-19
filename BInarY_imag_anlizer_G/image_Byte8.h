@@ -11,8 +11,8 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include <time.h>
-  #include <bitset>
+//#include <time.h>
+//  #include <bitset>
 
 
 class image_Byte8
@@ -20,24 +20,26 @@ class image_Byte8
 
     public :
 
-      image_Byte8() :
-            img_height(0),
-      	  	img_width(0),
-      	  	img_maxPixelValue(0),
-          	imageSize(0)
-        	minpix(0),
-      		maxpix(0),
-	        {}
+   std::vector< std::vector<int>> b_imgArray;
 
-      ~image_Byte8(){  delete[] byte_Array_pix;}
+   std::stringstream string_imgstrm;
+   std::string linez;
+   std::string user_input_img_name;
 
-    vector<int>pixelz[][];
+      image_Byte8() {}
+      ~image_Byte8(){ }
 
-      void read_image_to_matrex(ifstream &in_img);
+    //std::vector<int>pixelz[][];
 
-	    void writeImage(ofstream &outFile);
+  //    void read_image_to_matrex(std::ifstream &in_img);
 
-     void readHeader(ifstream &inimg);
+	 //   void writeImage(std::ofstream &outFile);
+
+     //void readHeader(std::ifstream &inimg);
+
+  //   bool iz_Binary_T_ASCI_F(std::ifstream &in_img);
+
+void Image_Procees_inlizar(std::ifstream& in_img);
 
       uint16_t get_h_rs()
       {return img_height_rows;}
@@ -50,10 +52,11 @@ class image_Byte8
 
     protected :
 
+    	uint8_t readbytechar = ' ';
       uint16_t img_height_rows;
       uint16_t img_width_colums;
 
-      uint8_t maxPixelValue;
+      int maxPixelValue;
       uint8_t minpix;
       uint8_t maxpix;
 
@@ -64,3 +67,5 @@ class image_Byte8
      	//void scaleImage();
 
 };
+
+#endif

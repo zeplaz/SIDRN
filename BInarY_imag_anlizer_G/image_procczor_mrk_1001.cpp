@@ -1,7 +1,9 @@
 //image_procczor_mrk_1001.cpp
 
-#include "Objkfactory.h"
+//#include "Objkfactory.h"
 #include "img_obkj.h"
+
+/*
       void image_procczor_mrk_1001::apply_erode(image_Byte8* inimg)
 
       {
@@ -28,13 +30,36 @@
           apply_dilate(inimg);
 
         }
+*/
 
-uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
 
-    {
-       uint8_t tempthrsh_cal = 40;
-       return (tempthrsh_cal);
+    uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
+
+        {
+           uint8_t tempthrsh_cal = 40;
+           return (tempthrsh_cal);
+        }
+
+
+    void image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th ,int rows,int cols );
+        { int r, c;
+
+        uint8_t threshold
+        uint8_t **image_tmp=NULL;
+         threshold = calculate_threashold(img_to_th);
+
+          for(r=0;r<rows;r++){
+                for(c=0;c<cols;c++)
+                {
+                   if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
+                   else image_tmp[r][c] = 1;
+                }
+             }
     }
+
+
+
+    /*
 
 
     void image_procczor_mrk_1001::cal_centriod(img_obkj* scn_obj_cer)
@@ -48,8 +73,7 @@ uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
 
       for (cons_itor.begin(); cons_itor.end();cons_itor++)
       {
-
-        int[2] tempintarray;
+      int[2] tempintarray;
       tempintarray = cons_itor->second;
       r_sum  =+ tempintarray[0];
       c_sum  =+ tempintarray[0];
@@ -71,149 +95,132 @@ uint8_t image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th);
 
           lb_count_pair_pixloc.erase(conect_laebl);
         }
+    void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
+    {
+      uint8_t current_label;
+      uint8_t  next_label=0;
+      uint16_t i,j;
+      int pix_par[2];
+      std::list<int[2]>* pix_cord_comp_num_prt;
 
-  void image_procczor_mrk_1001::conected_comp_labler(image_Byte8* scanab_img);
-  {                        
-    uint8_t current_label;
-    uint8_t  next_label=0;
-    uint16_t i,j;
-    int pix_par[2];
-    std::list<int[2]>* pix_cord_comp_num_prt;
-
-      for (i=0 ;  i< scanab_img->get_h_rs()+1; i++)
-      {
-        for (j =1; j < scanab_img->get_W_cs()+1;j++)
-            {
-              if (scanab_img->pixelz[i,j] !=0)
-                {
-                    if ( j>1 && scanab_img->pixelz[i,j-1]!=0)
-                    {
-                      scanab_img->pixelz[i,j] = pixelz[i,j-1];
-                    //  current_label = scanab_img->pixelz[i,j-1];
-
-                      pix_par[1]=j;
-                      pix_par[0]=i;
-
-                      std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
-
-                      pix_cord_comp_num_prt = std::get<1>(cons_itor_pix_lib.find(current_label)->second);
-                      pix_cord_comp_num_prt->push_back(pix_par);
-
-                    }
-
-                    if (i>1 && scanab_img->pixelz[i-1,j]!=0)
-                    {
-                      scanab_img->pixelz[i,j] = pixelz[i-1,j];
-                      current_label = scanab_img->pixelz[i-1,j];
-
-                      pix_par[1]=j;
-                      pix_par[0]=i;
-
-                      std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
-
-                      pix_cord_comp_num_prt = std::get<1>(cons_itor_pix.find(current_label)->second);
-                      pix_cord_comp_num_prt->push_back(pix_par);
-
-                        if(scanab_img->pixelz[i,j-1]!=0)
-                        {
-                          union_obj(current_label,scanab_img->pixelz[i,j-1]);
-                        }
-                    }
-
-                    if (scanab_img->pixelz[i,j-1] ==0 && scanab_img->pixelz[i-1,j] ==0)
-                    {
-
-                      scanab_img->pixelz[i,j] = next_label;
-                      pix_par[1]=j;
-                      pix_par[0]=i;
-
-                      std::list<int[2]>* temPrt_new_pixloc = new  std::list<int[2]>(pix_par);
-
-                      std::make_pair(1,temPrt_new_pixloc) in_par_necon;
-
-                      lb_count_pair_pixloc.insert(next_label,in_par_necon);
-                      current_label = next_label;
-                      next_label++;
-                    }
-
-                  }}}
-
-// do object creation of vaild objctz
-
-
-
-                  //    =2*(std::cos(thad))
-              // std::vector<int[2]> parent_label_array;
-
-//    std::unordered_map<vertex_type,std::unordered_set<vertex_type>>,
-
-                    lb_count_pair_pixloc.insert()
-                      buffer {
-
-                        std::make_pair(current_label,)
-
-                    for ( p =0; p< pix_cord_comp_num_vec.size()+1; p++ )
-                      {
-                      }
-                }
-                  r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);
-                  }
-
-                  if  (scanab_img->pixelz[i,j-1] !=0)
+        for (i=0 ;  i< scanab_img->get_h_rs()+1; i++)
+        {
+          for (j =1; j < scanab_img->get_W_cs()+1;j++)
+              {
+                if (scanab_img->pixelz[i,j] !=0)
                   {
+                      if ( j>1 && scanab_img->pixelz[i,j-1]!=0)
+                      {
+                        scanab_img->pixelz[i,j] = pixelz[i,j-1];
+                      //  current_label = scanab_img->pixelz[i,j-1];
 
-                    scanab_img->pixelz[i,j] = pixelz[i,j-1];
-                    current_label = pixelz[i,j-1];
+                        pix_par[1]=j;
+                        pix_par[0]=i;
 
-                    pix_par[1]=j;
-                    pix_par[0]=i;
+                        std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
 
+                        pix_cord_comp_num_prt = std::get<1>(cons_itor_pix_lib.find(current_label)->second);
+                        pix_cord_comp_num_prt->push_back(pix_par);
+
+                      }
+
+                      if (i>1 && scanab_img->pixelz[i-1,j]!=0)
+                      {
+                        scanab_img->pixelz[i,j] = pixelz[i-1,j];
+                        current_label = scanab_img->pixelz[i-1,j];
+
+                        pix_par[1]=j;
+                        pix_par[0]=i;
+
+                        std::get<0>(cons_itor_pix.find(current_label)->second)=+1;
+
+                        pix_cord_comp_num_prt = std::get<1>(cons_itor_pix.find(current_label)->second);
+                        pix_cord_comp_num_prt->push_back(pix_par);
+
+                          if(scanab_img->pixelz[i,j-1]!=0)
+                          {
+                            union_obj(current_label,scanab_img->pixelz[i,j-1]);
+                          }
+                      }
+
+                      if (scanab_img->pixelz[i,j-1] ==0 && scanab_img->pixelz[i-1,j] ==0)
+                      {
+
+                        scanab_img->pixelz[i,j] = next_label;
+                        pix_par[1]=j;
+                        pix_par[0]=i;
+
+                        std::list<int[2]>* temPrt_new_pixloc = new  std::list<int[2]>(pix_par);
+
+                        std::make_pair(1,temPrt_new_pixloc) in_par_necon;
+
+                        lb_count_pair_pixloc.insert(next_label,in_par_necon);
+                        current_label = next_label;
+                        next_label++;
+                      }
+
+                    }}}
+
+  // do object creation of vaild objctz
+
+
+
+                    //    =2*(std::cos(thad))
+                // std::vector<int[2]> parent_label_array;
+
+  //    std::unordered_map<vertex_type,std::unordered_set<vertex_type>>,
+
+                      lb_count_pair_pixloc.insert()
+                        buffer {
+
+                          std::make_pair(current_label,)
+
+                      for ( p =0; p< pix_cord_comp_num_vec.size()+1; p++ )
+                        {
+                        }
+                  }
                     r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);
+                    }
+
+                    if  (scanab_img->pixelz[i,j-1] !=0)
+                    {
+
+                      scanab_img->pixelz[i,j] = pixelz[i,j-1];
+                      current_label = pixelz[i,j-1];
+
+                      pix_par[1]=j;
+                      pix_par[0]=i;
+
+                      r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);
+
+                    }
+
+                      scanab_img->pixelz[i,j]    =  current_label;
+
+                       r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);             }
+
+
+                      next_label--;
+
+                  temp_onjc  = img_obj_fac.create_img_obk(next_label);
+                    ojk_labl_mapinst.insert(std::make_pair(next_label,pix_par);
+
+                    }
 
                   }
+                  img_obkj
+              for ()
+               {
+               }
 
-                    scanab_img->pixelz[i,j]    =  current_label;
-
-                     r_cpar_map_lb.insert(std::make_pair(current_label,pix_par);             }
-
-
-                    next_label--;
-
-                temp_onjc  = img_obj_fac.create_img_obk(next_label);
-                  ojk_labl_mapinst.insert(std::make_pair(next_label,pix_par);
-
-                  }
-
-                }
-                img_obkj
-            for ()
-             {
-             }
-
-      }
-
-  }
-
-
-
-
-
-    void image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th ,int rows,int cols );
-        { int r, c;
-
-        uint8_t threshold
-        uint8_t **image_tmp=NULL;
-         threshold = calculate_threashold(img_to_th);
-
-          for(r=0;r<rows;r++){
-                for(c=0;c<cols;c++)
-                {
-                   if(img_to_th[r][c] < threshold) image_tmp[r][c] = 0;
-                   else image_tmp[r][c] = 1;
-                }
-             }
+        }
 
     }
+
+
+
+
+
 
     void image_procczor_mrk_1001::cal_perimeter(img_obkj* in_objk)
     {
@@ -264,6 +271,10 @@ void image_procczor_mrk_1001::write_hista(int )
 
   std::FILE * hisa_fpOut;
 
+
+
+
+    /*/
 
 }
 
