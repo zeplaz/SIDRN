@@ -11,11 +11,14 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+
+
+#include "vrt_image.h"
 //#include <time.h>
 //  #include <bitset>
 
 
-class image_Byte8
+class image_Byte8 : public vrt_image
 {
 
     public :
@@ -39,23 +42,25 @@ class image_Byte8
 
   //   bool iz_Binary_T_ASCI_F(std::ifstream &in_img);
 
-void Image_Procees_inlizar(std::ifstream& in_img);
+    virtual void Image_Procees_inlizar(std::ifstream& in_img);
 
-      uint16_t get_h_rs()
+    virtual void write_image(std::ofstream& out_img);
+
+      int get_h_rs()
       {return img_height_rows;}
 
-      uint16_t get_W_cs()
+      int get_W_cs()
       {return img_width_colums;}
 
      	int get_MaxPixVal()
       {return maxPixelValue;}
 
 
-      uint16_t img_height_rows;
-      uint16_t img_width_colums;
+      int img_height_rows;
+      int img_width_colums;
 
       int maxPixelValue;
-      uint16_t  image_area_pix;
+      int  image_area_pix;
 
     protected :
 

@@ -28,23 +28,25 @@ class image_procczor_mrk_1001
   //image_Byte8;
 
   private :
-  //  typedef std::map<int,std::pair<int,std::list<int[2]>*>>> label_count_pair_pixloc;
-    //typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
-  //  typedef std::map<uint8_t,img_obkj*> obj_labl_map;
+    typedef std::map<int,std::vector<int>> label_count_pair_pixloc;
+    typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
+    //typedef std::map<uint8_t,img_obkj*> obj_labl_map;
 
     private :
      //Objkfactory img_obj_fac;
 
-    // label_count_pair_pixloc lb_count_pair_pixloc;
-  //   label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
+     label_count_pair_pixloc lb_count_pair_pixloc;
+      label_count_pair_pixloc::iterator itor_pix_lib;
+     label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
 
      //std::list<int[2]>* obcj_corn_list_prt;
 
     public :
 
       int Obj_total;
-    //  obj_labl_map ojk_labl_mapinst;
-    //  cordnt_labl_map r_cpar_map_lb;
+
+      //obj_labl_map ojk_labl_mapinst;
+      cordnt_labl_map r_cpar_map_lb;
 
       image_Byte8* thresholdImg(image_Byte8* inimg);
       int calculate_threashold(image_Byte8* img_to_th);
@@ -59,7 +61,7 @@ class image_procczor_mrk_1001
       //void cal_centriod(img_obkj* img_obk_in);
       //void cal_bbox(img_obkj* img_obk_in);
 
-    //  union_obj(int parent_label, int conect_laebl );
+    void  union_obj(int parent_label, int conect_laebl);
 
     //  double get_obj_centrod();
       //  get_obj_bbox();

@@ -11,36 +11,52 @@
 #include "image_Byte8.h"
 #include "image_procczor_mrk_1001.h"
 
-int main(int argc, char* argv[])
-
-{
-
-std::ifstream in_img;
-//std::ofstream outf_stream;
-std::fstream log_file_stream;
 
 
-printf(" IMage_scan Main Execution \n" );
 
-  image_Byte8* new_img1 = new image_Byte8();
+  int main(int argc, char* argv[])
 
-    image_Byte8* thesholdimg;
+  {
 
-  new_img1->Image_Procees_inlizar(in_img);
-
-//  new_image.Image_Procees_inlizar(in_img);
-
-
-image_procczor_mrk_1001 image_procs_ins;
-
-printf(" created imagprocessor \n" );
+    std::ifstream in_img;
+    std::ofstream outf_stream;
+    std::fstream log_file_stream;
 
 
-          thesholdimg    =  image_procs_ins.thresholdImg(new_img1);
+      printf(" IMage_scan Main Execution \n" );
 
-delete new_img1;
+      image_Byte8* new_img1 = new image_Byte8();
 
-printf("endprogam\n");
+      image_Byte8* thesholdimg;
+
+      new_img1->Image_Procees_inlizar(in_img);
+
+      //  new_image.Image_Procees_inlizar(in_img);
+
+      image_procczor_mrk_1001 image_procs_ins;
+
+        printf(" created imagprocessor \n" );
+
+      thesholdimg  =  image_procs_ins.thresholdImg(new_img1);
+
+        printf(" thehold image created\n" );
+
+
+      image_procs_ins.conected_comp_labler(thesholdimg);
+            printf("Connected_compon_laber_compleate:\n");
+
+      //outf_stream.open("outpufile",std::ios::binary
+      	//		            | std::ios::out
+      //						| std::ios::trunc);
+
+        //  thesholdimg->write_image(outf_stream);
+
+      //   outf_stream.close();
+
+
+      delete new_img1;
+
+      printf("endprogam\n");
 
 
 
