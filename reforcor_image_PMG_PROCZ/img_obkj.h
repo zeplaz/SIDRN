@@ -6,18 +6,39 @@
 #include <utility>
 #include <vector>
 
+//3rdparty sfml lib for displays
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
+//
+
   class img_obkj
   {
 
+
+
+ private :
+   int be_id;
+   static int be_NextValidID;
+
+   void set_id(int val);
+   img_objk_prop.obj_id= label;
   public :
+
+
+
   std::vector<int[2]> obj_pixel_pars
 
   //std::vector<std::pair<int,int[2]>> object_pixel_;
-      img_obkj(int label){ img_objk_prop.obj_id= label;}
+
+      img_obkj(int label)
+        {set_id(label);}
+
       ~img_obkj(){}
 
     //  std::list<int[2]>
     //  std::list<int[2]>::iterator it;
+
 
     struct obj_propertiez
     {

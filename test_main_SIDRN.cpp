@@ -4,6 +4,9 @@
 
 
 //libz from std
+serz non rutine tasks, socal ingltinece complex critical thinking and creative problem solving.
+complex
+socal //
 
 #include <cstdio>
 #include <fstream>
