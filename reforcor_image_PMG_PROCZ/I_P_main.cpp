@@ -13,7 +13,7 @@
 
 //libs sorcelibs
 #include "Image_PGM_P2.h"
-
+#include "image_procczor_mrk_1022.h"
 
 
 
@@ -57,9 +57,10 @@
     //  Image_PGM_P2 new_img2;
 
       Image_PGM_P2* new_img1 = new Image_PGM_P2();
-
+      image_procczor_mrk_1022 new_proz;
 
       new_img1->Image_Procees_inlizar(in_img);
+
 
 
     //  std::vector<std::vector<uint32_t>>* prt__img_rawvec_data= new  std::vector<std::vector<uint32_t>>(new_img1->b_imgArray);
@@ -71,11 +72,12 @@
   //std::string commissaire_pass;
 
 
-      printf(" Enter your Orgburo commissaire Code \n");
+      printf(" Enter your Orgburo commissaire Code: \n");
+      std::cin >>  commissaire_c;
       std::getline(std::cin, commissaire_c);
 
       log_file_stream << commissaire_c << " hasLogedON at: " << asctime(localtm) << "\n";
-      printf(" To Quit enter q and press enter:\n");
+    //  printf(" To Quit enter q and press enter:\n");
 
 
 
@@ -96,6 +98,7 @@
 
         //    while (!quit_t){
           //  }
+          new_proz.hisagramcal_(new_img1,0);
           new_img1->write_image(outf_stream);
 
             glewoutortor.displayImage(new_img1->b_imgArray, new_img1->get_W_cs(),new_img1->get_h_rs());

@@ -30,15 +30,16 @@
           apply_dilate(inimg);
 
         }
+
+
+
 */
+
+
+
 #include "image_procczor_mrk_1001.h"
 
-          int image_procczor_mrk_1001::calculate_threashold(image_Byte8* img_to_th)
-        {
-           int  tempthrsh_cal = 250;
-           printf("calcute threshold at120 \n");
-           return (tempthrsh_cal);
-        }
+          
 
 
       image_Byte8*  image_procczor_mrk_1001::thresholdImg( image_Byte8* img_to_th)

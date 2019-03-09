@@ -3,8 +3,7 @@
 #ifndef IMAGE_PROZ_MKI_H
 #define IMAGE_PROZ_MKI_H
 
-
-
+//clinz
 #include <cstdlib>
 #include <cstdio>
 
@@ -16,7 +15,9 @@
 #include <map>
 
 
-#include "image_Byte8.h"
+//sorcelibz
+#include "Histagramz.h"
+#include "Image_PGM_P2.h"
 
 //#include "Objkfactory.h"
 
@@ -24,46 +25,47 @@
 
 static long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286;
 
-class image_procczor_mrk_1001
+class image_procczor_mrk_1022
 {
   //image_Byte8;
 
   private :
-    typedef std::map<int,std::vector<int>> label_count_pair_pixloc;
-    typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
+    //typedef std::map<int,std::vector<int>> label_count_pair_pixloc;
+  //  typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
     //typedef std::map<uint8_t,img_obkj*> obj_labl_map;
 
     private :
      //Objkfactory img_obj_fac;
 
-     label_count_pair_pixloc lb_count_pair_pixloc;
-      label_count_pair_pixloc::iterator itor_pix_lib;
-     label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
+     //label_count_pair_pixloc lb_count_pair_pixloc;
+  //    label_count_pair_pixloc::iterator itor_pix_lib;
+  //   label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
 
      //std::list<int[2]>* obcj_corn_list_prt;
 
     public :
+    void   hisagramcal_(Image_PGM_P2* img_inz, int mode);
 
-      int Obj_total;
+      //int Obj_total;
 
       //obj_labl_map ojk_labl_mapinst;
-      cordnt_labl_map r_cpar_map_lb;
+    //  cordnt_labl_map r_cpar_map_lb;
 
-      image_Byte8* thresholdImg(image_Byte8* inimg);
-      int calculate_threashold(image_Byte8* img_to_th);
+    //  image_Byte8* thresholdImg(image_Byte8* inimg);
+    //  int calculate_threashold(image_Byte8* img_to_th);
 
-      void apply_erode(image_Byte8* inimg);
-      void apply_dilate(image_Byte8* inimg);
-      void open_morph(image_Byte8* inimg);
-      void close_morph(image_Byte8* inimg);
+    //  void apply_erode(image_Byte8* inimg);
+    //  void apply_dilate(image_Byte8* inimg);
+  //    void open_morph(image_Byte8* inimg);
+    //  void close_morph(image_Byte8* inimg);
 
-      void conected_comp_labler(image_Byte8* scanab_img);
+  //    void conected_comp_labler(image_Byte8* scanab_img);
 
 
       //void cal_centriod(img_obkj* img_obk_in);
       //void cal_bbox(img_obkj* img_obk_in);
 
-    void  union_obj(int parent_label, int conect_laebl);
+  //  void  union_obj(int parent_label, int conect_laebl);
 
     //  double get_obj_centrod();
       //  get_obj_bbox();

@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <istream>
-
+#include <string>
 
 //sfml libs
 
@@ -35,18 +35,17 @@
 
     public :
 
+        std::vector<std::vector<uint32_t>> b_imgArray;
 
         Image_PGM_P2(){};
+       ~Image_PGM_P2(){};
 
-        int rtn_img_id()const
-        {return _image_ID;}
-
-      ~Image_PGM_P2(){};
        virtual  void  Image_Procees_inlizar(std::ifstream& in_img);
        virtual void update();
        virtual  void write_image(std::ofstream& out_img);
 
-       std::vector<std::vector<uint32_t>> b_imgArray;
+       int rtn_img_id()const
+       {return _image_ID;}
 
        uint32_t get_h_rs()
        {return img_height_rows;}

@@ -11,13 +11,19 @@
          printf("latr\n");
        }
 
+      // uint32_t string_to_uint_32(std::string l_bit)
+    //   {
+    //             l_bit.str_c();
+    //   }
+
          void  Image_PGM_P2::Image_Procees_inlizar(std::ifstream& in_img)
        {
           std::string linez;
 
+
           std::string tempdimetion[2];
 
-          printf("please Enter file image Name:\n");
+          printf("please Enter file image Name you wish to process:\n");
 
   				std::cin >> user_input_img_name;
 
@@ -41,7 +47,7 @@
                   }
 
                   std::stringstream string_imgstrm(linez);
-                           
+
                  int d=0;
                  while (string_imgstrm && d<2)
                   {
@@ -49,14 +55,14 @@
                     d++;
                   }
 
-                  img_height_rows =std::strtoul(tempdimetion[1].c_str(),NULL,0);
-                  img_width_colums= std::strtoul(tempdimetion[0].c_str(),NULL,0);
+                  img_height_rows =std::strtoul(tempdimetion[1].c_str(),nullptr,0);
+                  img_width_colums= std::strtoul(tempdimetion[0].c_str(),nullptr,0);
                   image_area_pix = img_width_colums*img_height_rows;
                   std::cout << "image area: " << image_area_pix <<std::endl;
 
                   getline(in_img, linez);
 
-                  maxPixelValue = strtoul(linez.c_str(),NULL,0);//String to int conversion
+                  maxPixelValue = strtoul(linez.c_str(),nullptr,0);//String to int conversion
 
                std::cout << "The grayscale range for this image is 0 to " << maxPixelValue << "." << std::endl;
 
@@ -67,14 +73,14 @@
                    {
                       in_img >> std::ws;//Extracts as many whitespace characters as possible from the current position in the input sequence.
                       std::getline(in_img, linez, ' ');
-                      tempvec.push_back(strtoul(linez.c_str(),NULL,0));
+                      tempvec.push_back(strtoul(linez.c_str(), nullptr,0));
                     }
                       b_imgArray.push_back(tempvec);
                   }
 
                 }// end of ifvaild p2;
           in_img.close();
-          printf("file is closed and hopefully loaded! int a image object for processing acess via the raw vec<vec_uint32> or processor effects and display optionz\n");
+          printf("file is closed and hopefully loaded!\n image is loaded into vec<vec> uint32_t for processing\n");
         }//end of fileread
 
  }
