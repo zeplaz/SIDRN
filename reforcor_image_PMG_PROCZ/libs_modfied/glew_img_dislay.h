@@ -20,7 +20,7 @@ class  glew_img_dislay{
       glew_img_dislay(){};
       ~glew_img_dislay(){};
 
-        void displayImage(std::vector<std::vector<uint32_t>> imageData, int width, int height);
+        void displayImage(std::vector<std::vector<uint32_t>> imageData, uint32_t width, uint32_t height);
         void   printShaderCompileStatus(GLuint shader, std::string name);
 
         const GLchar* vertexSource =

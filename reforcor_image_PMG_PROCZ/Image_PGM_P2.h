@@ -38,6 +38,17 @@
         std::vector<std::vector<uint32_t>> b_imgArray;
 
         Image_PGM_P2(){};
+          Image_PGM_P2(Image_PGM_P2* oh_imgcopz)
+          {
+          img_height_rows  =oh_imgcopz->img_height_rows;
+          img_width_colums  =  oh_imgcopz->img_width_colums;
+maxPixelValue=  oh_imgcopz->maxPixelValue;
+          image_area_pix    =    oh_imgcopz->image_area_pix;
+            sf_image_texture_obj  =      oh_imgcopz->sf_image_texture_obj;
+            sf_image_texture_sprite_obj  =    oh_imgcopz-> sf_image_texture_sprite_obj;
+            b_imgArray  =    oh_imgcopz->b_imgArray;
+
+          };
        ~Image_PGM_P2(){};
 
        virtual  void  Image_Procees_inlizar(std::ifstream& in_img);
@@ -55,14 +66,14 @@
 
         int get_MaxPixVal()
        {return maxPixelValue;}
+       uint32_t img_height_rows;
+       uint32_t img_width_colums;
 
+       uint32_t maxPixelValue;
+       uint32_t  image_area_pix;
  protected:
   // uint8_t readbytechar = ' ';
-   uint32_t img_height_rows;
-   uint32_t img_width_colums;
 
-   uint32_t maxPixelValue;
-   uint32_t  image_area_pix;
 
 
        //sfml display objects

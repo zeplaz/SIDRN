@@ -98,13 +98,29 @@
 
         //    while (!quit_t){
           //  }
-          new_proz.hisagramcal_(new_img1,0);
+        //  new_proz.hisagramcal_(new_img1,0);
+
+
+
           new_img1->write_image(outf_stream);
+          log_file_stream << "imagewritentofile"<< asctime(localtm) << "\n";
 
             glewoutortor.displayImage(new_img1->b_imgArray, new_img1->get_W_cs(),new_img1->get_h_rs());
+              log_file_stream << "funnwierd glthingdid itz prokez"<< asctime(localtm) << "\n";
+
+            new_proz.conected_comp_labler(new_img1);
+            log_file_stream << "connetocponetzz"<< asctime(localtm) << "\n";
 
 
-            //cleanuo
+            Image_PGM_P2* thshed_img= new Image_PGM_P2(new_proz.thresholdImg(new_img1));
+            log_file_stream << "theshold and new thed obnkimg"<< asctime(localtm) << "\n";
+
+            new_proz.conected_comp_labler(thshed_img);
+              log_file_stream << "contomzb2"<< asctime(localtm) << "\n";
+                 //cleanuo
             delete new_img1;
+              delete thshed_img;
+
+            log_file_stream.close();
           return 0;
           }

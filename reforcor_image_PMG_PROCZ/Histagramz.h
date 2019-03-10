@@ -38,14 +38,14 @@ class Histagramz{
 
 
    inline  void create_empty_hista(int num_bucketz)
-      {
+      { printf(" in createemptyyz\n");
         for (uint8_t i = 0; num_bucketz<i; i++)
             {vec_binz.push_back(0);}
 
       }
 
     inline void read_hista_cml_L()
-     {
+     { printf(" in readhista\n" );
        std::vector<std::string> hista_str_symbz;
 
        for (int i =0; i< vec_binz.size(); i++)

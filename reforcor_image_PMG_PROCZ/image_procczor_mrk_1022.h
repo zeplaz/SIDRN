@@ -30,26 +30,31 @@ class image_procczor_mrk_1022
   //image_Byte8;
 
   private :
-    //typedef std::map<int,std::vector<int>> label_count_pair_pixloc;
-  //  typedef std::map<uint8_t,int[2]>    cordnt_labl_map;
+  typedef std::map<uint32_t,std::vector<uint32_t>> label_count_pair_pixloc;
+  typedef std::map<uint32_t,uint32_t[2]>    cordnt_labl_map;
+
     //typedef std::map<uint8_t,img_obkj*> obj_labl_map;
 
     private :
-     //Objkfactory img_obj_fac;
+    //Objkfactory img_obj_fac;
 
-     //label_count_pair_pixloc lb_count_pair_pixloc;
-  //    label_count_pair_pixloc::iterator itor_pix_lib;
-  //   label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
+    label_count_pair_pixloc lb_count_pair_pixloc;
+    label_count_pair_pixloc::iterator itor_pix_lib;
+     label_count_pair_pixloc::const_iterator cons_itor_pix_lib;
 
-     //std::list<int[2]>* obcj_corn_list_prt;
+     std::list<uint32_t[2]>* obcj_corn_list_prt;
+     void  union_obj(uint32_t parent_label, uint32_t conect_laebl);
+
 
     public :
+    Image_PGM_P2* thresholdImg(Image_PGM_P2* inimg);
+    uint32_t calculate_threashold(Image_PGM_P2* img_to_th);
     void   hisagramcal_(Image_PGM_P2* img_inz, int mode);
 
-      //int Obj_total;
+      int Obj_total;
 
-      //obj_labl_map ojk_labl_mapinst;
-    //  cordnt_labl_map r_cpar_map_lb;
+   //obj_labl_map ojk_labl_mapinst;
+     cordnt_labl_map r_cpar_map_lb;
 
     //  image_Byte8* thresholdImg(image_Byte8* inimg);
     //  int calculate_threashold(image_Byte8* img_to_th);
@@ -59,7 +64,7 @@ class image_procczor_mrk_1022
   //    void open_morph(image_Byte8* inimg);
     //  void close_morph(image_Byte8* inimg);
 
-  //    void conected_comp_labler(image_Byte8* scanab_img);
+      void conected_comp_labler(Image_PGM_P2* scanab_img);
 
 
       //void cal_centriod(img_obkj* img_obk_in);

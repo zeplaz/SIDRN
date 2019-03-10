@@ -19,9 +19,9 @@ void glew_img_dislay::printShaderCompileStatus(GLuint shader, std::string name){
     }
 }
 
-void glew_img_dislay::displayImage(std::vector<std::vector<uint32_t>> imageData, int width, int height){
+void glew_img_dislay::displayImage(std::vector<std::vector<uint32_t>> imageData, uint32_t width, uint32_t height){
 
-  uint32_t output_array[width * height];
+  unsigned char  output_array[width * height];
 
       for (uint32_t i =0; i<height;  i++)
       {
@@ -36,7 +36,7 @@ void glew_img_dislay::displayImage(std::vector<std::vector<uint32_t>> imageData,
     settings.depthBits = 24;
     settings.stencilBits = 8;
     //Create window
-    sf::Window window(sf::VideoMode(width, height), "Image Output", sf::Style::Close, settings);
+    sf::Window window(sf::VideoMode(width*5, height*5), "Image Output", sf::Style::Close, settings);
 
     window.setFramerateLimit(60);
 
