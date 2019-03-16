@@ -26,6 +26,16 @@ class Histagramz{
     inline  int size_of_hista()
       {return (vec_binz.size());}
 
+
+int bucket_size;
+int Num_of_bucketz = (int)ceilz(bucket_size);
+std::vector<int> histgramz_vec(Num_of_bucketz);
+
+for ()
+{for()
+{ int bucktz = (int)floorz(image_size/bucket_size)
+
+}}
     inline  void insert_to_bin(int bin_in)
       {
           if (bin_in > vec_binz.size())

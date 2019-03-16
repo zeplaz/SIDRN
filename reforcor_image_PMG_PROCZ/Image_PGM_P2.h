@@ -34,7 +34,7 @@
        std::string user_input_img_name;
 
     public :
-
+        std::vector<std::vector<double>> pix_fetur_dub_vec;
         std::vector<std::vector<uint32_t>> b_imgArray;
 
         Image_PGM_P2(){};
@@ -42,10 +42,10 @@
           {
           img_height_rows  =oh_imgcopz->img_height_rows;
           img_width_colums  =  oh_imgcopz->img_width_colums;
-maxPixelValue=  oh_imgcopz->maxPixelValue;
+          maxPixelValue=  oh_imgcopz->maxPixelValue;
           image_area_pix    =    oh_imgcopz->image_area_pix;
-            sf_image_texture_obj  =      oh_imgcopz->sf_image_texture_obj;
-            sf_image_texture_sprite_obj  =    oh_imgcopz-> sf_image_texture_sprite_obj;
+          //  sf_image_texture_obj  =      oh_imgcopz->sf_image_texture_obj;
+          //  sf_image_texture_sprite_obj  =    oh_imgcopz-> sf_image_texture_sprite_obj;
             b_imgArray  =    oh_imgcopz->b_imgArray;
 
           };
@@ -60,6 +60,10 @@ maxPixelValue=  oh_imgcopz->maxPixelValue;
 
        uint32_t get_h_rs()
        {return img_height_rows;}
+       std::vector<std::vector<double>>* return_prt_feture_vec()
+       {
+         return(&pix_fetur_dub_vec);
+       }
 
        uint32_t get_W_cs()
        {return img_width_colums;}
@@ -77,8 +81,8 @@ maxPixelValue=  oh_imgcopz->maxPixelValue;
 
 
        //sfml display objects
-       sf::Texture     sf_image_texture_obj;        // the texture which will contain our pixel data
-       sf::Sprite      sf_image_texture_sprite_obj;         // the sprite which will actually draw it
+    //   sf::Texture     sf_image_texture_obj;        // the texture which will contain our pixel data
+    //   sf::Sprite      sf_image_texture_sprite_obj;         // the sprite which will actually draw it
       //void  sf_loadImage_for_display(const char* pathname, sf::Texture& img_textur, sf::Sprite& img_sprite);
 
 
