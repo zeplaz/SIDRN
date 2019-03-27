@@ -1,6 +1,22 @@
 # SIDRN
  (system-ingrgated-data-responce-network)..Orgburoz system for intgreated datafeedz to the agentzprocessinmagecmdprotcalz.
 
+MAIN_DIR:.
+includes;
+BinarY_imag_anlizer_G. begings work on some binary parts of images.
+inputcolz handles tests in input devices, for event loops.
+Refc_vison current working DIR.for progress on image processing and seg.
+reencnotez has notes and code refs.
+reforcor_image_PMG_PR.. deals with graycale image filters and masks. and well as some refacoring of output streamsand inout etc. starts outlineing for further compent and thread support.
+reorz_img has models and images
+
+
+
+
+
+
+
+
 system is built with, comcation between a posgresSQL server, and c++ aplcoiations, both a cmd line interface api, as well as a dashbord dispay mechinsime --selcuded-. sgemating compents to privlage level binary compilation, to provent rever-se mechinecode.-- futehr extations should include tools for regulair repsonce feedback, with recursieve analattics,.. and an expation of, emergent stablity in unstable envrometnal systemesz. 
 
 ++colabration rGk. 

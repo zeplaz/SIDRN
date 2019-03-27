@@ -1,0 +1,208 @@
+
+
+
+    #define CALL_MEMBER_FN(object,ptrToMember)  ((object).*(ptrToMember))
+
+        typedef  int (Fred::*FredMemFn)(char x, float y);  // Please do this!
+        FredMemFn p = &Fred::f;
+        void userCode(FredMemFn p)
+{ /*...*/ }
+
+And it’s also trivial to declare functions that return member-function pointers:
+
+FredMemFn userCode()
+{ /*...*/ }
+
+// FredMemFn points to a member of Fred that takes (char,float)
+typedef  int (Fred::*FredMemFn)(char x, float y);
+
+Step 2: create a #define macro if you don’t have std::invoke:
+
+#define CALL_MEMBER_FN(object,ptrToMember)  ((object).*(ptrToMember))
+
+Now your array of pointers-to-member-functions is straightforward:
+
+FredMemFn a[] = { &Fred::f, &Fred::g, &Fred::h, &Fred::i };
+
+And your usage of one of the member function pointers is also straightforward:
+
+void userCode(Fred& fred, int memFnNum)
+{
+  // Assume memFnNum is between 0 and 3 inclusive:
+  std::invoke(a[memFnNum], fred, 'x', 3.14);
+}
+
+or if you don’t have std::invoke,
+
+void userCode(Fred& fred, int memFnNum)
+{
+  // Assume memFnNum is between 0 and 3 inclusive:
+  CALL_MEMBER_FN(fred, a[memFnNum]) ('x', 3.14);
+}
+
+
+
+class Funct {
+public:
+  virtual int doit(int x) = 0;
+  virtual ~Funct() = 0;
+};
+inline Funct::~Funct() { }  // defined even though it's pure virtual; it's faster this way; trust me
+
+Then instead of three functions, you create three derived classes:
+
+class Funct1 : public Funct {
+public:
+  virtual int doit(int x) { /*...code from funct1...*/ }
+};
+class Funct2 : public Funct {
+public:
+  virtual int doit(int x) { /*...code from funct2...*/ }
+};
+class Funct3 : public Funct {
+public:
+  virtual int doit(int x) { /*...code from funct3...*/ }
+};
+
+Then instead of passing a function-pointer, you pass a Funct*. I’ll create a typedef called FunctPtr merely to make the rest of the code similar to the old-fashioned approach:
+
+typedef Funct* FunctPtr;
+void myCode(FunctPtr f)
+{
+  // ...
+  f->doit( /*...args-go-here...*/ );
+  // ...
+}
+
+You can create an array of them in almost the same way:
+
+FunctPtr array[10];
+array[0] = new Funct1( /*...ctor-args...*/ );
+array[1] = new Funct1( /*...ctor-args...*/ );
+array[2] = new Funct3( /*...ctor-args...*/ );
+array[3] = new Funct2( /*...ctor-args...*/ );
+// ...
+
+
+class Funct1 {
+public:
+  Funct1(float y) : y_(y) { }
+  int operator()(int x) { /*...code from funct1...*/ }
+private:
+  float y_;
+};
+class Funct2 {
+public:
+  Funct2(const std::string& y, int z) : y_(y), z_(z) { }
+  int operator()(int x) { /*...code from funct2...*/ }
+private:
+  std::string y_;
+  int z_;
+};
+class Funct3 {
+public:
+  Funct3(const std::vector<double>& y) : y_(y) { }
+  int operator()(int x) { /*...code from funct3...*/ }
+private:
+  std::vector<double> y_;
+};
+emplate <typename FunctObj>
+void myCode(FunctObj f)
+{
+  // ...
+  f( /*...args-go-here...*/ );
+  // ...
+}
+
+When the compiler compiles the above, it might inline-expand the call which might improve performance.
+
+Here is one way to call the above:
+
+void blah()
+{
+  // ...
+  Funct2 x("functionoids are powerful", 42);
+  myCode(x);
+  // ...
+}
+
+Aside: as was hinted at in the first paragraph above, you may also pass in the names of normal functions (though you might incur the cost of the function call when the caller uses these):
+
+void myNormalFunction(int x);
+void blah()
+{
+  // ...
+  myCode(myNormalFunction);
+  // ...
+}
+
+template<class T>
+class monitor
+{
+public:
+    template<typename ...Args>
+    monitor(Args&&... args) : m_cl(std::forward<Args>(args)...){}
+
+    struct monitor_helper
+    {
+        monitor_helper(monitor* mon) : m_mon(mon), m_ul(mon->m_lock) {}
+        T* operator->() { return &m_mon->m_cl;}
+        monitor* m_mon;
+        std::unique_lock<std::mutex> m_ul;
+    };
+
+    monitor_helper operator->() { return monitor_helper(this); }
+    monitor_helper ManuallyLock() { return monitor_helper(this); }
+    T& GetThreadUnsafeAccess() { return m_cl; }
+
+private:
+    T           m_cl;
+    std::mutex  m_lock;
+};
+
+
+monitor<std::vector<int>> threadSafeVector {5};
+
+threadSafeVector->push_back(0);
+threadSafeVector->push_back(1);
+threadSafeVector->push_back(2);
+
+// Create a bunch of threads that hammer the vector
+std::vector<std::thread> threads;
+for(int i=0; i<16; ++i)
+{
+    threads.push_back(std::thread([&]()
+    {
+        for(int i=0; i<1024; ++i)
+        {
+            threadSafeVector->push_back(i);
+        }
+    }));
+}
+
+// You can explicitely take a lock then call multiple functions
+// without the overhead of a relock each time. The 'lock handle'
+// destructor will unlock the lock correctly. This is necessary
+// if you want a chain of logically connected operations
+{
+    auto lockedHandle = threadSafeVector.ManuallyLock();
+    if(!lockedHandle->empty())
+    {
+        lockedHandle->pop_back();
+        lockedHandle->push_back(-3);
+    }
+}
+
+for(auto& t : threads)
+{
+    t.join();
+}
+
+// And finally access the underlying object in a raw fashion without a lock
+// Use with Caution!
+
+std::vector<int>& rawVector = threadSafeVector.GetThreadUnsafeAccess();
+rawVector.push_back(555);
+
+// Should be 16393 (5+3+16*1024+1)
+std::cout << threadSafeVector->size() << std::endl;
