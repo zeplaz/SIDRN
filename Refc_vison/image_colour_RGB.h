@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
   std::vector<double> pix_fetur_duble;
-  std::map<int,pix_fetur_duble*> PIx_fet_map_id;
+  std::unordered_map<int,pix_fetur_duble*> PIx_fet_map_id;
 } pix_feturez_strc;
 
   typedef struct {
@@ -25,127 +25,62 @@ typedef struct {
   } image_RGB_wfet;
 
 
-class PPM_RGB_P6P
+class image_colour_RGB
 {
 
-private :
-char cha_buffer[16];
-image_RGB_wfet* raw_img_wfet;
-int _c_int, rgb_inticy_col;
+  private :
+    char cha_buffer[16];
+    //char**
+    image_RGB_wfet* raw_img_wfet;
+    int _c_int, rgb_inticy_col, _Image_ID;
+    FILE *in_FILE;
 
- FILE *in_FILE;
+  public :
 
-public :
+    image_colour_RGB()(int new_id){_Image_ID =new_id;}
 
-bool read_rgb_img(const char *file_load_nm)
-{
-
-  in_FILE = fopen(file_load_nm,"rb");
-
-  if(!in_FILE)
-  {
-    fprintf(stderr, " Unable to open file '%s'\n",file_load_nm);
-    return false;
-
-  }
+    bool read_rgb_img(const char *file_load_nm);
+    bool write_RGB_img(const char *out_filename,image_RGB_wfet* out_img);
 
 
-if(!fgets(cha_buffer, sizeof(cha_buffer),in_FILE))
-{
-  perror(file_load_nm);
-
-}
-if (cha_buffer[0]!='P' || cha_buffer[1]!='6')
-{
-  fprintf(stderr, " file not PPM P6\n");
-  return false;
-}
-
-//acclate isspace
-
-  raw_img_wfet* img_r = new raw_img_wfet();
-
-  if (!img_r)
-  {
-     fprintf(stderr, "eror creating emptyfile\n");
-     return false;
-  }
-
-    _c_int = getc(in_FILE);
-    while(_c_int=='#')
+    inline char** alloc_raw_input_array(size_t x_dimention, size_t y_dimention)
     {
-      while (getc(in_FILE) != '\n');
-      _c_int = getc(in_FILE);
+      char** base_array = new char*[x_dimention];
+      for (size_t i =0; i<x_dimention)
+      {
+
+      }
     }
-
-    ungetc(_c_int, in_FILE);
-
-
-//size of imagec
- if (fscanf(in_FILE, "%d %d", &raw_img_wfet->x_size, &raw_img_wfet->y_size) !=2)
- {
-    fprintf(stderr, "error imgald image size error \n");
-   return false;
-
- }
-
- //read colorintenityz
- if(fscanf(in_FILE, "%d", &rgb_inticy_col) !=1))
- {
-   fprintf(stderr, "Invalided intenity comp \n");
-  return false;
- }
-
-
- //if colorcomnt not 8?
-
- //
- while (fgetc(in_FILE) !='\n')
- {
-   raw_img_wfet->ary_intencty = new pix_intzity()
-
- }
- if(fread(raw_img_wfet->ary_intencty , 3* raw_img_wfet->x_size, raw_img_wfet->y_size, in_FILE) !=raw_img_wfet->y_size)
- {
-   fprintf(stderr, "errloading img data");
-   return false;
-    }
-
-return true;
-}
-
-
-bool write_RGB_img(const char *out_filename,image_RGB_wfet* out_img)
-{
-  FILE *out_FILE;
-  out_FILE = fopen(out_filename,"wb");
-
-  if(!out_FILE)
+  inline  void relase_base_array(char** array_in, size_t xdimention)
   {
-    fprintf(stderr,"unable to open file to write\n");
+
   }
-
-//print the fileeader
-
-    fprintf(out_FILE,"P6\n");
-
-//
-fprintf(out_FILE, "# Notez:procezzedimgprocor0.33\n");
-
-
-  /* code */
-    fprintf(out_FILE, "%d %d\n",raw_img_wfet->x_size,raw_img_wfet->y_size);
-
-
-}
-    //send out array to img
-    fwrite(out_img->ary_intencty,3*out_img->x_size,out_img->y_size,out_FILE);
-    printf("file writen to file '%s'\n",out_filename);
-    fclose(out_FILE);
-
-
-
-  fprintf(,)
-}
-
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }

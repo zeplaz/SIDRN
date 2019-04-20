@@ -1,0 +1,366 @@
+void gl_enter_2_5d_mode (void)
+{
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+
+    glLoadIdentity();
+
+    double scale = 50;
+    glOrtho(-scale,
+            scale,
+            -scale * 0.7,
+            scale * 0.7,
+            -scale,
+            scale);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glLoadIdentity();
+
+    glRotatef(35.264f, 1.0f, 0.0f, 0.0f);
+    glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
+}
+
+void gl_leave_2_5d_mode (void)
+{
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+}
+
+then draw a cube in it
+
+void cube (double size)
+{
+    glBegin(GL_QUADS);
+
+    glVertex3f(size,size,size);
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(size,-size,size);
+
+    glVertex3f(size,size,-size);
+    glVertex3f(-size,size,-size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(size,-size,-size);
+
+    glVertex3f(size,size,size);
+    glVertex3f(size,-size,size);
+    glVertex3f(size,-size,-size);
+    glVertex3f(size,size,-size);
+
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(-size,size,-size);
+
+    glVertex3f(size,size,size);
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,size,-size);
+    glVertex3f(size,size,-size);
+
+    glVertex3f(size,-size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(size,-size,-size);
+
+    glEnd();
+}
+
+void test (void)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    cube(1.0);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+}
+
+
+
+    Home
+        Public
+
+    Stack Overflow
+    Tags
+    Users
+    Jobs
+
+    Teams
+
+        Create Team
+
+true isometric projection with opengl
+Ask Question
+16
+
+I am a newbie in OpenGL programming with C++ and not very good at mathematics. Is there a simple way to have isometric projection?
+
+I mean the true isometric projection, not the general orthogonal projection.
+
+(Isometric projection happens only when projections of unit X, Y and Z vectors are equally long and angles between them are exactly 120 degrees.)
+
+Code snippets are highly appreciated..
+c++ opengl projection isometric
+shareimprove this question
+edited Jun 28 '11 at 16:11
+genpfault
+42.6k954100
+asked Jun 29 '09 at 16:21
+someone
+1862414
+
+    duplicate of allegro.cc/forums/thread/600737 – aib Jul 1 '09 at 8:46
+
+add a comment
+4 Answers
+active
+oldest
+votes
+27
+
+Try using gluLookAt
+
+glClearColor(0.0, 0.0, 0.0, 1.0);
+glClear(GL_COLOR_BUFFER_BIT);
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+
+/* use this length so that camera is 1 unit away from origin */
+double dist = sqrt(1 / 3.0);
+
+gluLookAt(dist, dist, dist,  /* position of camera */
+          0.0,  0.0,  0.0,   /* where camera is pointing at */
+          0.0,  1.0,  0.0);  /* which direction is up */
+glMatrixMode(GL_MODELVIEW);
+
+glBegin(GL_LINES);
+
+glColor3d(1.0, 0.0, 0.0);
+glVertex3d(0.0, 0.0, 0.0);
+glVertex3d(1.0, 0.0, 0.0);
+
+glColor3d(0.0, 1.0, 0.0);
+glVertex3d(0.0, 0.0, 0.0);
+glVertex3d(0.0, 1.0, 0.0);
+
+glColor3d(0.0, 0.0, 1.0);
+glVertex3d(0.0, 0.0, 0.0);
+glVertex3d(0.0, 0.0, 1.0);
+
+glEnd();
+
+glFlush();
+
+Results in
+
+alt text
+
+We can draw a cube to check that parallel lines are indeed parallel
+
+glPushMatrix();
+glTranslated(0.5, 0.5, 0.5);
+glColor3d(0.5, 0.5, 0.5);
+glutWireCube(1);
+glPopMatrix();
+
+alt text
+shareimprove this answer
+edited Feb 8 '17 at 14:13
+Community♦
+11
+answered Jun 29 '09 at 16:27
+cobbal
+59.8k14128149
+
+    This won't give you an isometric projection, because parallel lines, say along the x and y axes, won't appear parallel, when they actually should. – Jesse Beder Jun 29 '09 at 17:08
+    look at the picture on the wikipedia article that was linked too in the question, this looks exactly like that projection. Any parallel lines will appear parallel because this is a Orthographic projection (en.wikipedia.org/wiki/Orthographic_projection). The x and y axes are not parallel. – cobbal Jun 29 '09 at 17:12
+    I don't mean the x and y axes are parallel, but that lines parallel to the x axis should appear parallel in an isometric projection (and I don't think they will in yours), and similarly in the y direction. – Jesse Beder Jun 29 '09 at 17:53
+    1
+    Whoops, my bad. I missed that you were only calling gluLookAt. +1 now. – Jesse Beder Jun 29 '09 at 20:47
+
+add a comment
+7
+
+An isometric projection is just a matter of using an orthographic projection with a specific rotation angle.
+
+You should be able to choose any of the 8 potential orientations, with a orthographic projection, and get a perfect isometric view of your model. Just follow the math in your referenced Wiki article for setting up the view matrix, and do an orthographic projection for your projection matrix, and you're all set.
+shareimprove this answer
+answered Jun 29 '09 at 16:46
+Reed Copsey
+472k599871280
+add a comment
+3
+
+Maybe I'm not quite grokking the math correctly, but couldn't you just position your camera as it explains in that Wikipedia link and use a standard orthogonal projection?
+
+Even if it's not the same, the projection stack is entirely up to you.
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+// your isometric matrix here (see math on Wikipedia)
+glMatrixMode(GL_MODELVIEW);
+
+shareimprove this answer
+answered Jun 29 '09 at 16:28
+Bob Somers
+5,60653546
+add a comment
+1
+
+If you do not want to use GLU, here is bare bones using glOrtho
+
+void gl_enter_2_5d_mode (void)
+{
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+
+    glLoadIdentity();
+
+    double scale = 50;
+    glOrtho(-scale,
+            scale,
+            -scale * 0.7,
+            scale * 0.7,
+            -scale,
+            scale);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glLoadIdentity();
+
+    glRotatef(35.264f, 1.0f, 0.0f, 0.0f);
+    glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
+}
+
+void gl_leave_2_5d_mode (void)
+{
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+}
+
+then draw a cube in it
+
+void cube (double size)
+{
+    glBegin(GL_QUADS);
+
+    glVertex3f(size,size,size);
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(size,-size,size);
+
+    glVertex3f(size,size,-size);
+    glVertex3f(-size,size,-size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(size,-size,-size);
+
+    glVertex3f(size,size,size);
+    glVertex3f(size,-size,size);
+    glVertex3f(size,-size,-size);
+    glVertex3f(size,size,-size);
+
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(-size,size,-size);
+
+    glVertex3f(size,size,size);
+    glVertex3f(-size,size,size);
+    glVertex3f(-size,size,-size);
+    glVertex3f(size,size,-size);
+
+    glVertex3f(size,-size,size);
+    glVertex3f(-size,-size,size);
+    glVertex3f(-size,-size,-size);
+    glVertex3f(size,-size,-size);
+
+    glEnd();
+}
+
+void test (void)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    cube(1.0);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+}
+
+and call something like this
+
+gl_enter_2_5d_mode()
+test()
+gl_leave_2_5d_mode()
+
+
+void gl_init_2d_mode (void)
+{
+    /*
+     * Enable Texture Mapping
+     */
+    glEnable(GL_TEXTURE_2D);
+
+    /*
+     * Enable alpha blending for sprites
+     */
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    /*
+     * Setup our viewport
+     */
+    glViewport(0, 0, game.video_pix_width,
+               game.video_pix_height);
+
+    /*
+     * Make sure we're changing the model view and not the projection
+     */
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    /*
+     * Reset the view
+     */
+    glLoadIdentity();
+
+    gl_init_fbo();
+}
+
+void gl_enter_2d_mode (void)
+{
+    /*
+     * Change to the projection matrix and set our viewing volume.
+     */
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+
+    /*
+     * Reset the view
+     */
+    glLoadIdentity();
+
+    /*
+     * 2D projection
+     */
+    glOrtho(0,
+             game.video_gl_width, game.video_gl_height,
+             0, -1200.0, 1200.0);
+
+    /*
+     * Make sure we're changing the model view and not the projection
+     */
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    /*
+     * Reset the view
+     */
+    glLoadIdentity();
+}
