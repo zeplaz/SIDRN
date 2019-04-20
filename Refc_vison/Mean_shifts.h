@@ -9,9 +9,12 @@
 #include <iostream>
 #include <vector>
 
-
 #include "imagkjz_RGB.h"
 #include "pixel_feture_xy_RGB.h"
+
+#define MAX_CONVRG_ITRATIONZ 5
+#define SHIFT_RGB_ELPZON 0.41786991919
+#define SHIFT_SPACE_ELPZON 0.2801065834
 
 class imagkjz_RGB;
 
@@ -37,25 +40,23 @@ void split_xyfrom_ID_Lamda( int& widx, int& hty, const int &pix_ID)
 {}
 
 
-Mean_shifts::Mean_shifts(double sband, double cband)
-{
-spc_bandwith =sband;
-h_bandwith = cband;
-}
+//Mean_shifts.cpp
+
+  Mean_shifts::Mean_shifts(double sband, double cband)
+    {
+      spc_bandwith = sband;
+      h_bandwith   = cband;
+    }
 
 //meanshiftseg
-
-
-void meanshift_seg_RGB(imagkjz_RGB& img_ref)
+  void Mean_shifts::meanshift_seg_RGB(imagkjz_RGB& img_ref)
     {
-      int rowz = reinterpret_cast<int> img_ref->img_header.widthx;                   //raw_img_wfet.x_size;
-      int colmz =reinterpret_cast<int> img_ref->img_header.highty;
-
-
+      int rowz  = reinterpret_cast<int> img_ref->img_header.widthx;                   //raw_img_wfet.x_size;
+      int colmz = reinterpret_cast<int> img_ref->img_header.highty;
 
       pixel_feture_xy_RGB cur_pix_fetrz;
       pixel_feture_xy_RGB prev_pix_fetrz;
-      pixel_feture_xy_RGB pix_sum;
+      pixel_feture_xy_RGB fetur_sum;
       pixel_feture_xy_RGB point;
 
       int east;
@@ -67,24 +68,53 @@ void meanshift_seg_RGB(imagkjz_RGB& img_ref)
       int itrationz;
 
       for(int i = 0; i < rowz; i++){
-		for(int j = 0; j < colmz; j++){
-			east = (j - hs) > 0 ? (j - hs) : 0;
-			west = (j + hs) < colmz ? (j + hs) : colmz;
-			north = (i - hs) > 0 ? (i - hs) : 0;
-      south = (i + hs) < rowz ? (i + hs) : rowz;
+		      for(int j = 0; j < colmz; j++){
 
-      cur_pix_fetrz.point_setter(img_ref,i,j);
-      step = 0;
+          	east = (j - spc_bandwith) > 0 ? (j - spc_bandwith) : 0;
+      			west = (j + spc_bandwith) < colmz ? (j + spc_bandwith) : colmz;
+      			north = (i - spc_bandwith) > 0 ? (i - spc_bandwith) : 0;
+            south = (i + spc_bandwith) < rowz ? (i + spc_bandwith) : rowz;
 
-      do {
-        prev_pix_fetrz.copyer(cur_pix_fetrz);
+            cur_pix_fetrz.point_setter(img_ref,i,j);
+            step = 0;
 
+            do {
+              prev_pix_fetrz.copyer(cur_pix_fetrz);
+              fetur_sum.pmaual_feture_set(0,0,0,0,0);
 
-      } while();
-                   //raw_img_wfet.y_size;
-    }
+              total_pointz=0;
 
+              for(int windx=north; windx<south;windx++ ){
+                for(int windy=east; windy<west; windy++)
+                  { int id=(windx*windy)+windy;
+                    double r,g,b;
+                     image_intcity_struc* cur_feture_stc= locat_pixel_fet_data(id);
 
+                    r  = cur_feture_stc->img_colour_intisity_double[0];
+                    g  = cur_feture_stc->img_colour_intisity_double[1];
+                    b  = cur_feture_stc->img_colour_intisity_double[2];
+
+                     point.pmaual_feture_set((double)windx,(double)windy,r,g,b);
+
+                     if (point.point_RGB_distance(cur_pix_fetrz)<h_bandwith)
+                     {
+                       fetur_sum.fetureaccumalor(point);
+                       total_pointz++;
+                     }
+                   }
+                 }
+                 //scale to normliz
+                 fetur_sum.pointscaler(1.0/total_pointz);
+                 cur_pix_fetrz.pcopyer(fetur_sum);
+                 itrationz++;
+               } while((cur_pix_fetrz.point_spatial_distance(prev_pix_fetrz)>SHIFT_RGB_ELPZON) &&
+               (cur_pix_fetrz>)
+                         //raw_img_wfet.y_size;
+          }
+
+	}while((PtCur.MSPoint5DColorDistance(PtPrev) > MS_MEAN_SHIFT_TOL_COLOR)
+  && (PtCur.MSPoint5DSpatialDistance(PtPrev) > MS_MEAN_SHIFT_TOL_SPATIAL) &&
+   (step < MS_MAX_NUM_CONVERGENCE_STEPS));
 
 size_t img_int_byte_size;
 
