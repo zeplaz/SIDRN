@@ -1,7 +1,6 @@
 
 
 
-
 //img
 
 #ifndef IMAGKJZ_H
@@ -12,7 +11,7 @@
 #include <fstream>
 #include <cstdint>
 
-
+  namespace image_realm {
 //strucz? move to include?
     typedef struct {
       double img_colour_intisity_double[3];
@@ -37,13 +36,9 @@ class  imagkjz_RGB{
       std::unordered_map<int,RGB_pix_intzity> img_RGB_intzty_map;
       std::unordered_map<int,RGB_pix_intzity>::iterator incity_map_iter;
 
-
-
-
     public:
       void load_image_RGB();
       void inilzatfeture_space();
-
       image_intcity_struc*  locat_pixel_fet_data(int id_pixloc);
 
 
@@ -52,9 +47,28 @@ class  imagkjz_RGB{
           auto i_header = img_header{};
           instream >> i_header.majic_numz >> i_header.widthx >> i_header.highty >>  i_header.rgb_max_intity;
           instream.ignore(256, '\n');
-
           return header;
          }
+
+
+
+         inline void write_head(std::ostream out_stream, img_header const& out_head)
+         {
+
+           out_stream << out_head.majic_numz << "\n"
+                      << out_head.widthx << "\n"
+                      << out_head.highty << "\n"
+                      <<out_head.rgb_max_intity << "\n";
+         }
+
+         inline void write_raw_pix_data(std::ostream& out_strem,
+                                        std::uint8_t const* const pix_raw_dat,
+                                        std::size_t const size)
+           {
+             out_strem.write(reinterpret_cast<char const*>(pix_raw_dat),size);
+           }
+
+
 
        inline  void read_pix_rgb_raw(std::istream& in_img_stream, std::vector<uint8_t>* const pixel_raw_RGB)
         {
@@ -65,108 +79,21 @@ class  imagkjz_RGB{
            printf("!@ERROR::datainticity read falure\n");
           }
          }
+
+
+      inline    void write_image(std::ostream& out_stream,std::size_t const x_with
+                                  std::size_t const y_high, std::uint8_t const* const pixdata)
+                                  {
+                                    auto out_header = img_header{};
+                                    out_header.majic_numz = "P6";
+                                    out_header.widthx = x_with;
+                                    out_header.highty = y_high;
+
+                                    image_realm::write_head(out_stream,out_header);
+                                    image_realm::write_raw_pix_data(out_stream,pixdata,out_header.x_with,out_header.y_high*3);
+                                  }
+
 };
+}
 
 #endif
-
-// imagjka.cpp.
-
-#include "imagkjz_RGB.h"
-
-  void imagkjz_RGB::linilzatfeture_space()
-  {
-      int Pix_id;
-
-      for(Pix_id=0; Pix_id<raw_img_rgb_vec.size(),Pix_id++)
-      {
-        RGB_pix_intzity image_intcity_struc;
-      //.image_intcity_struc.colour_rgb_Raw
-        image_intcity_struc.img_colour_intisity_double[Pix_id]  = reinterpret_cast<double>(raw_img_rgb_vec.at(Pix_id));
-        image_intcity_struc.img_colour_intisity_double[Pix_id+1]= reinterpret_cast<double>(raw_img_rgb_vec.at(Pix_id+1));
-        image_intcity_struc.img_colour_intisity_double[Pix_id+2]= reinterpret_cast<double>(aw_img_rgb_vec.at(Pix_id+2));
-
-        img_RGB_intzty_map.insert(Pix_id,image_intcity_struc);
-      }
-      //reinterpret_cast<uint16_t>
-   }
-
-  image_intcity_struc* imagkjz_RGB::locat_pixel_fet_data(int id_pixloc)
-   {
-      incity_map_iter = img_RGB_intzty_map.find(id_pixloc);
-
-    if(img_RGB_intzty_map.end())
-     {
-      printf("||_NOTFOUND_DATA_ORPIXEL UKNOWN>\n");
-      return nullptr;
-     }
-
-     else {
-         return (*incity_map_iter.second);
-     }
-   }
-
-
-
-void imagkjz_RGB::load_image_RGB(std::istream& input_strm,
-                                std::vector<std::uint8_t>* const pixel_raw_RGB)
-                              //  std::size_t* const wx,
-                              //     ::size_t* const hy,
-    {
-        auto img_header = read_header(input_strm);
-
-      //  *wx  =  ;
-      //  *hy  =  img_header.highty;
-
-//        std::string file_name;
-  //      std::string img_header;
-
-        pixel_raw_RGB->resize((img_header.widthx)*(img_header.highty)*3);
-
-        read_pix_rgb_raw(input_strm,pixel_raw_RGB);
-
-
-      }
-
-
-/*
-
-
-
-    std::fstream in_fstream;
-
-    uint8_t input_byte;
-
-    std::cout << "\n |/>|Please Input fileName to Load: VAILD PPM RGB byteplz:\n";
-    std::cin >> file_name;
-
-    in_fstream.open(file_name, std::ios_base::in | std::ios_base::binary);
-
-    if (in_fstream.is_open())
-      {
-      in_fstream>> img_header;
-
-         if (strcmp(header.c_str(), "P6") != 0)
-          {
-            printf("ERROR:NOT P6\n");
-          }
-
-        in_fstream >> widthx;
-        in_fstream >> highty;
-        in_fstream >>rgb_max_intity;
-
-        img_size = widthx*highty*3;
-
-          while(!in_fstream.eof())
-          in_fstream.read((char*)   )
-        }
-      }
-
-
-
-      std::istream& operator >>(std::istream &inputStream, imagkjz_RGB &other)
-      {
-
-      }
-
-
-      */
