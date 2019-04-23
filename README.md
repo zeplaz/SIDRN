@@ -7,17 +7,20 @@ includes;
 The lose files, are more for intrest. active reserch, or little bits of colour! the main file stucture is this.
 
 
-FOLDERS: 
+:FOLDERS: 
+
 cmd_modual_Strat_ ;
-here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
+	here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
-sysm_engine0.01shirz
-engine to run imulations, uncludes tools and the image processy system and likely other modual 
-reserch, though things built inside here will be used to construct or aid int the building of
-diffrent symulators, modlers and games.
+sysm_engine0.01shirz_ ;
+
+	engine to run imulations, uncludes tools and the image processy system and likely other modual 
+	reserch, though things built inside here will be used to construct or aid int the building of
+	diffrent symulators, modlers and games.
 
 
-Image_process parts_;
+Image_process parts_ ; 
+
 this folder includes two projects. though in rough state,
 
 		BinarY_imag_anlizer_G. begings work on some binary parts of images.
@@ -33,7 +36,7 @@ this folder includes two projects. though in rough state,
 
 
 
-
+							##30#
 system is built with, comcation between a posgresSQL server, and c++ aplcoiations, both a cmd line interface api, as well as a dashbord dispay mechinsime --selcuded-. sgemating compents to privlage level binary compilation, to provent rever-se mechinecode.-- futehr extations should include tools for regulair repsonce feedback, with recursieve analattics,.. and an expation of, emergent stablity in unstable envrometnal systemesz. 
 
 ++colabration rGk. 
