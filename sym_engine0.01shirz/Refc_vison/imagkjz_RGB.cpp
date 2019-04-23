@@ -36,19 +36,19 @@
    }
 
 
-void imagkjz_RGB::load_image_RGB(std::istream& input_strm,
-                                std::vector<std::uint8_t>* const pixel_raw_RGB)
-                              //  std::size_t* const wx,
+    void imagkjz_RGB::load_image_RGB(std::istream& input_strm)
+     {
+        std::vector<std::uint8_t>* const pixel_raw_RGB  = &raw_img_rgb_vec;
                               //     ::size_t* const hy,
-    {   auto img_header = read_header(input_strm);
+        auto img_header = read_header(input_strm);
 
         pixel_raw_RGB->resize((img_header.widthx)*(img_header.highty)*3);
         img_size = img_header.widthx*img_header.highty;
-        read_pix_rgb_raw(input_strm,pixel_raw_RGB);
+        imagkjz_RGB::read_pix_rgb_raw(input_strm,pixel_raw_RGB);
 
               //  *wx  =  ;
               //  *hy  =  img_header.highty;
         //        std::string file_name;
           //      std::string img_header;
-
+            //  std::size_t* const wx,
       }

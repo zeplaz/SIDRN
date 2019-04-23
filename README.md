@@ -3,15 +3,32 @@
 
 MAIN_DIR:.
 includes;
-BinarY_imag_anlizer_G. begings work on some binary parts of images.
-inputcolz handles tests in input devices, for event loops.
-Refc_vison current working DIR.for progress on image processing and seg.
-reencnotez has notes and code refs.
-reforcor_image_PMG_PR.. deals with graycale image filters and masks. and well as some refacoring of output streamsand inout etc. starts outlineing for further compent and thread support.
-reorz_img has models and images
+
+The lose files, are more for intrest. active reserch, or little bits of colour! the main file stucture is this.
 
 
+FOLDERS: 
+cmd_modual_Strat_ ;
+here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
+sysm_engine0.01shirz
+engine to run imulations, uncludes tools and the image processy system and likely other modual 
+reserch, though things built inside here will be used to construct or aid int the building of
+diffrent symulators, modlers and games.
+
+
+Image_process parts_;
+this folder includes two projects. though in rough state,
+
+		BinarY_imag_anlizer_G. begings work on some binary parts of images.
+		inputcolz handles tests in input devices, for event loops.
+		Refc_vison current working DIR.for progress on image processing and seg.
+		reencnotez has notes and code refs.
+
+		reforcor_image_PMG_PR.. deals with graycale image filters and masks. and well as 
+		some refacoring of output streamsand inout etc. 
+		starts outlineing for further compent and thread support.
+		reorz_img has models and images
 
 
 
