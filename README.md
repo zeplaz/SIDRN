@@ -10,6 +10,7 @@ The lose files, are more for intrest. active reserch, or little bits of colour! 
 :FOLDERS: 
 
 cmd_modual_Strat_ ;
+
 	here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
 sysm_engine0.01shirz_ ;
@@ -17,6 +18,7 @@ sysm_engine0.01shirz_ ;
 	engine to run imulations, uncludes tools and the image processy system and likely other modual 
 	reserch, though things built inside here will be used to construct or aid int the building of
 	diffrent symulators, modlers and games.
+								
 
 
 Image_process parts_ ; 
@@ -33,10 +35,10 @@ this folder includes two projects. though in rough state,
 		starts outlineing for further compent and thread support.
 		reorz_img has models and images
 
-
-
-
+							
+}:|
 							##30#
+
 system is built with, comcation between a posgresSQL server, and c++ aplcoiations, both a cmd line interface api, as well as a dashbord dispay mechinsime --selcuded-. sgemating compents to privlage level binary compilation, to provent rever-se mechinecode.-- futehr extations should include tools for regulair repsonce feedback, with recursieve analattics,.. and an expation of, emergent stablity in unstable envrometnal systemesz. 
 
 ++colabration rGk. 
