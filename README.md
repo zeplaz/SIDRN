@@ -14,10 +14,11 @@ cmd_modual_Strat_ ;
 	here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
 sysm_engine0.01shirz_ ;
-
+	
 	engine to run imulations, uncludes tools and the image processy system and likely other modual 
 	reserch, though things built inside here will be used to construct or aid int the building of
 	diffrent symulators, modlers and games.
+	{namespace shirz}
 								
 
 
