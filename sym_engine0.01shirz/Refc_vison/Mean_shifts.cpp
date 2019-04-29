@@ -4,6 +4,7 @@
 
 #include "Mean_shifts.h"
 
+ #include <cstring>
 
 #define MAX_CONVRG_ITRATIONZ 7
 #define SHIFT_RGB_ELPZON 0.41786991919
@@ -23,7 +24,7 @@
     {// imagkjz_RGB meanshifted_image;
 
     //  meanshifted_image = *img_ref;
-    std::vector<std::touple<double,double,double>> filterd_pix_vec;
+    std::vector<std::tuple<double,double,double>> filterd_pix_vec;
       int rowz  = reinterpret_cast<int> img_ref->img_header.widthx;                   //raw_img_wfet.x_size;
       int colmz = reinterpret_cast<int> img_ref->img_header.highty;
 
@@ -206,7 +207,7 @@
            //std::tie();
           // image_intcity_struc.img_colour_intisity_double[Pix_id]
             std::touple<double,double,double>* temp_touple_RGB;
-            temp_touple_RGB  = pixl_point.getptr_channl_touple()
+            temp_touple_RGB  = pixl_point.getptr_channl_touple();
 
             raw_img_rgb_vec.at(Pix_id)   = reinterpret_cast<uint8_t>(std::get<0>(temp_touple_RGB));
             raw_img_rgb_vec.at(Pix_id+1) = reinterpret_cast<uint8_t>(std::get<1>(temp_touple_RGB));

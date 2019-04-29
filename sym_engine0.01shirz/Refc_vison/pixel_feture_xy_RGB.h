@@ -6,22 +6,26 @@
 
 //std libz
 #include <utility>
-#include <touple>
+#include <tuple>
 
 //localincluz
 #include "imagkjz_RGB.h"
 
+//declare used class
+  class imagkjz_RGB;
+
+
   class pixel_feture_xy_RGB
   {
     public:
-    std::touple<double,double,double> rgb_chanell_tuple;
+    std::tuple<double,double,double> rgb_chanell_tuple;
     double pix_xy_fet[2];
 
     public :
 
     pixel_feture_xy_RGB();
 
-    std::touple<double,double,double>* getptr_channl_touple();
+    std::tuple<double,double,double>* getptr_channl_touple();
 
     void pcopyer(pixel_feture_xy_RGB);
     void pmaual_feture_set(double,double,double,double,double);

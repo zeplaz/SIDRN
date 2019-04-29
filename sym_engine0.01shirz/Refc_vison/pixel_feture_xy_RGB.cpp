@@ -1,6 +1,9 @@
 //pixel_feture_xy_RGB.cpp
 
+  #include <math.h>
+
   #include "pixel_feture_xy_RGB.h"
+  #include "RGB_pix_intzity.h"
 
   pixel_feture_xy_RGB::pixel_feture_xy_RGB()
     {
@@ -9,7 +12,7 @@
     }
 
 // tuple feture pointer genrtz
-  std::touple<double,double,double>* pixel_feture_xy_RGB::getptr_channl_touple()
+  std::tuple<double,double,double>* pixel_feture_xy_RGB::getptr_channl_touple()
     {
       return *rgb_chanell_tuple;
     }
@@ -34,8 +37,7 @@
       {
           double red,green,blue;
           int Pix_id = (x*y)+y;
-          image_intcity_struc*  prt_instysturc =
-                                newimage_intcity_struc(load_pix->locat_pixel_fet_data(Pix_id));
+          RGB_pix_intzity*  prt_instysturc = load_pix->locat_pixel_fet_data(Pix_id);
 
           pix_xy_fet[0] = x;
           pix_xy_fet[1] = y;
