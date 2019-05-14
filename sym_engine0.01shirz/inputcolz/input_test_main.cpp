@@ -23,7 +23,6 @@ int main(int argc, char* argv[])
 	std::cout << "\nVendor ID: " << id.vendorId << "\nProduct ID: " << id.productId << std::endl;
 	sf::String controller("Joystick Use: " + id.name);
 
-
 //controller
 
 if (sf::Joystick::isConnected(0)){
@@ -102,7 +101,7 @@ while (!quit_t){
      			square.move(turbo*speed.x*TimePerFrame.asSeconds(), turbo*speed.y*TimePerFrame.asSeconds());
 
    }
-	 window.clear(sf::Color(255, 0, 255));
+	 window.clear(sf::Color(0, 0, 0));
  		window.draw(square);
  		window.display();
  }}
