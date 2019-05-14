@@ -1,19 +1,18 @@
 # SIDRN
  (system-ingrgated-data-responce-network)..Orgburoz system for intgreated datafeedz to the agentzprocessinmagecmdprotcalz.
 
-MAIN_DIR:.
+#### |ROOT_DIR;
 includes;
-
 The lose files, are more for intrest. active reserch, or little bits of colour! the main file stucture is this.
 
 
-:FOLDERS: 
+#### :FOLDERS: 
 
-cmd_modual_Strat_ ;
+##### cmd_modual_Strat_ ;
 
 	here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
-sysm_engine0.01shirz_ ;
+##### sysm_engine0.01shirz_ ;
 	
 	engine to run imulations, uncludes tools and the image processy system and likely other modual 
 	reserch, though things built inside here will be used to construct or aid int the building of
@@ -22,7 +21,7 @@ sysm_engine0.01shirz_ ;
 								
 
 
-Image_process parts_ ; 
+##### Image_process parts_ ; 
 
 this folder includes two projects. though in rough state,
 
