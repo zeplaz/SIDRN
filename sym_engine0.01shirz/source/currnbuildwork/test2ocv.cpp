@@ -28,9 +28,15 @@ static const Color Black;
 
 //mysufdz
 #include "USB_controler.h"
-#include "curve.h"
-
-
+//#include "curve.h"
+#inlcude "curve_sf_dis.h"
+std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vector2f
+{
+           float x = (float)indpend;
+           float y= (float)-std::sin(indpend);
+           sf::Vector2f temp_vec =(x,y);
+  return (temp_vec);
+}
 
 
 
@@ -40,6 +46,10 @@ static const Color Black;
   bool load_video = false;
   bool debug_st=false;
   bool is_video_loaded=false;
+
+
+
+
 
   switch ((char)argv[i])
     {
@@ -129,7 +139,18 @@ static const Color Black;
       std::cout << " height: " << vid_cap.get(cv::CAP_PROP_FRAME_HEIGHT) << '\n';
       std::cout << "Capturing FPS: " << vid_cap.get(cv::CAP_PROP_FPS) <<'\n';
     }
-//cout << "would you like histagram?"
+    //cout << "would you like histagram?"
+    //cout << "load, a curvefunc?" << '\n';
+    size_t curvesiz=50;
+    float intvral= 0.5f;
+    float modifer = 1;
+
+      //mathobjcz
+      curve_sf_dis curve_type_ojk_A1(curvesiz,intvral);
+      curve_type_ojk_A1.genrate_curve(curve_sin_ptr,modifer);
+
+          //  new_sin_curve.genrate_curve(new_sin_curve.sin_curve,modifer);
+
   while (sfmlwindow.isOpen())
   {
     int fmnum= 0;
@@ -181,7 +202,7 @@ static const Color Black;
            //render?
             sfmlwindow.clear(sf::Color(0, 0, 0));
             //drawlist
-            sfmlwindow.draw();
+            sfmlwindow.draw(curve_type_ojk_A1);
             sfmlwindow.display();
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
