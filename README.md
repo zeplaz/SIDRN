@@ -9,21 +9,23 @@ The lose files, are more for intrest. active reserch, or little bits of colour! 
 #### :FOLDERS: 
 
 ##### cmd_modual_Strat_ ;
-
-	here is a game, primary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
+	
+	here is a game, will live, current just some art and notezprimary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
 
 ##### sysm_engine0.01shirz_ ;
-	
-	engine to run imulations, uncludes tools and the image processy system and likely other modual 
-	reserch, though things built inside here will be used to construct or aid int the building of
-	diffrent symulators, modlers and games.
-	{namespace shirz}
+		Pramary working folder of current stuff, is exported to apprate locations. go to SORCE FOLDER for most uptodate work, 
+		engine to run imulations, uncludes tools and the image processy system and likely 			other modual 
+		reserch, though things built inside here will be used to construct or aid in the building of
+		diffrent symulators, modlers and games.
+		{namespace shirz}.. 
+		in this folder find subfolder as they are built out, for most recent tests goto sorce, test binarys
+		in binary test fodler. see readm me in folder. 
 								
 
 
 ##### Image_process parts_ ; 
 
-this folder includes two projects. though in rough state,
+this folder includes three projects. though in rough state,
 
 		BinarY_imag_anlizer_G. begings work on some binary parts of images.
 		inputcolz handles tests in input devices, for event loops.
@@ -34,6 +36,18 @@ this folder includes two projects. though in rough state,
 		some refacoring of output streamsand inout etc. 
 		starts outlineing for further compent and thread support.
 		reorz_img has models and images
+		
+		Refac_vison.. final test incarantion currntly does not compile, but most of the 
+		algurthms assoated with building a meanshift image processor, will be ustilized
+		
+
+
+
+##### Lamda_to_function&&_curvegenrator_display_ ; 
+		sfml dispaly of curves genreated by lamdaz
+
+##### curve_genrator_with_usb_contlz_ ; 
+		showcases cruve lamdas modifed by usb controls
 
 							
 }:|

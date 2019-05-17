@@ -30,14 +30,44 @@ static const Color Black;
 #include "USB_controler.h"
 //#include "curve.h"
 #inlcude "curve_sf_dis.h"
+/*
 std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vector2f
 {
            float x = (float)indpend;
            float y= (float)-std::sin(indpend);
            sf::Vector2f temp_vec =(x,y);
   return (temp_vec);
-}
+}*/
 
+auto curve_sin_ptr=[&](auto indpend)->sf::Vector2f
+{
+        //using Type = decltype(indpend);
+  //    std::function<sf::Vector2f(param...)>
+           float x = indpend;
+           float y= -std::sin(indpend)*100;
+           //std::cout << "x:" << x <<'\n' << " y:" << y << '\n';
+           sf::Vector2f temp_vec(x,y);
+  return (temp_vec);
+};
+
+auto curve_othz_ptr=[&](auto indpend)->sf::Vector2f
+{
+        //using Type = decltype(indpend);
+  //    std::function<sf::Vector2f(param...)>
+           float x = indpend;
+           float y= (-std::sin(indpend)/(std::sin(indpend)*std::sin(indpend)))*100;
+           //std::cout << "x:" << x <<'\n' << " y:" << y << '\n';
+           sf::Vector2f temp_vec(x,y);
+  return (temp_vec);
+};
+
+
+ static struct const curve_paramz {
+   size_t curvesiz=1000;
+   float intvral= 0.5f;
+   float modifer = 2;
+   float  indepentvar = 3;
+ };
 
 
   int main(int argc, char* argv[])
@@ -46,7 +76,7 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
   bool load_video = false;
   bool debug_st=false;
   bool is_video_loaded=false;
-
+  size_t load_curvez = 0;
 
 
 
@@ -93,6 +123,8 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
        int hue_bins;
        int saturation_bins;
 
+
+
        std::cout << "input: hue bins;";
        std::cin >> hue_bins;
 
@@ -111,13 +143,15 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
   sf::RenderWindow sfmlwindow(sf::VideoMode(800, 600, 32), "Cmd_dispaly", sf::Style::Default);
   sf::Event e;
 
-  //sf::ParticleSystem particles(1000);
-//load the USB cotrnlz
-   if(load_controlUSB == true)
-    {
-      USB_controler usb_cmd_ctlz;
-      usb_cmd_ctlz.load_controlr();
-    }
+      //sf::ParticleSystem particles(1000);
+    //load the USB cotrnlz
+       if(load_controlUSB == true)
+        {
+          USB_controler usb_cmd_ctlz;
+          usb_cmd_ctlz.load_controlr();
+        }
+
+
 
 //cvbeing
   cv::Mat vframe;
@@ -145,9 +179,16 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
     float intvral= 0.5f;
     float modifer = 1;
 
-      //mathobjcz
-      curve_sf_dis curve_type_ojk_A1(curvesiz,intvral);
-      curve_type_ojk_A1.genrate_curve(curve_sin_ptr,modifer);
+    //if (create sfmlcurive)
+    if(load_curvez !=0)
+    {
+    //  for size_t i=0;i<load_curvez;i++)
+      {
+        curve_sf_dis curve_type_ojk_A1(curvesiz,intvral);
+        curve_sf_dis curve_type_ojk_A2(curvesiz,intvral);
+
+      }
+    }
 
           //  new_sin_curve.genrate_curve(new_sin_curve.sin_curve,modifer);
 
@@ -157,11 +198,29 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
 
       while (is_video_loaded)
        {
+
+         //LOAD CV next fram.
          vid_cap >>vframe;
          //if(vframe.empty()) break;
+
+
+         //do some caluationz
+
+
+
+
+         //egnrate basic curvez
+
+
+          // CONTUNE WITH CV STUFF. make histagambaiscz
+         cv::cvtColor(vid_cap,v_fram_hsv,cv::COLOR_BGR2HSV);
+
+
+
+
+
          cv::imshow(windowname,vframe);
 
-         cv::cvtColor(vid_cap,v_fram_hsv,cv::COLOR_BGR2HSV);
 
          char key =(char)cv::waitKey(24);
 
@@ -179,12 +238,14 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
                }
 
                //control polling.
-               speed = sf::Vector2f(sf::Joystick::getAxisPosition(0, sf::Joystick::X), sf::Joystick::getAxisPosition(0, sf::Joystick::Y));
+               ctrlin_speed = sf::Vector2f(sf::Joystick::getAxisPosition(0, sf::Joystick::X), sf::Joystick::getAxisPosition(0, sf::Joystick::Y));
 
                if (e.type == sf::Event::JoystickMoved){
                  move = true;
-                 std::cout << "X axis: " << speed.x << std::endl;
-                 std::cout << "Y axis: " << speed.y << std::endl;
+                 std::cout << "X axis: " << ctrlin_speed.x << std::endl;
+                 std::cout << "Y axis: " << ctrlin_speed.y << std::endl;
+                 indepentvar= (float)ctrlin_speed.y*(float)ctrlin_speed.x;
+
                }
 
                else{
@@ -194,15 +255,22 @@ std::function<(sf::Vector2f,...paramz)> curve_sin_ptr=[](void* indpend)->sf::Vec
                if (sf::Joystick::isButtonPressed(0, 0))
                {//"A" button on the XBox 360 controller
                  std::cout <<"button1" << std::endl;
-                 vframe
+                 //vframe
                }
 
-           }//endpooloop.
+           }//end EVENTloop.
+
+           // doc altionz after evtnloopz
+           curve_type_ojk_A1.genrate_curve(curve_sin_ptr,indepentvar,intvral);
+           curve_type_ojk_A1.genrate_curve(curve_othz_ptr,indepentvar,intvral);
                       //auto transfer_window_control = [](windowctl_state,condtion){}
            //render?
             sfmlwindow.clear(sf::Color(0, 0, 0));
             //drawlist
-            sfmlwindow.draw(curve_type_ojk_A1);
+            sfmlwindow.draw(curve_type_ojk_A1.curve_line));
+
+            sfmlwindow.draw(curve_type_ojk_A2.curve_line));
+
             sfmlwindow.display();
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
