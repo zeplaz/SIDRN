@@ -1,19 +1,18 @@
 # SIDRN
- (system-ingrgated-data-responce-network)..Orgburoz system for intgreated datafeedz to the agentzprocessinmagecmdprotcalz.
+ (system-ingrgated-data-responce-network)..Orgburoz system for intgreated datafeedz to the //agentzprocessinmagecmdprotcalz.
 
 #### |ROOT_DIR;
-includes;
-The lose files, are more for intrest. active reserch, or little bits of colour! the main file stucture is this.
+###### The lose files, are more for intrest. active reserch, or little bits of colour! file stucture as follows
 
 
 #### :FOLDERS: 
 
 ##### cmd_modual_Strat_ ;
 	
-	here is a game, will live, current just some art and notezprimary work of me and ryan k. includes assets and uses the Sym_enigne "shirz"
+	here is a game, will live, current just some art and notezprimary work of me and ryan k. includes assets and will use the Sym_enigne "shirz"
 
-##### sysm_engine0.01shirz_ ;
-		Pramary working folder of current stuff, is exported to apprate locations. go to SORCE FOLDER for most uptodate work, 
+##### sysm_engine0.01_shirz_ ;
+		Pramary working folder of current project, go to SORCE FOLDER for most uptodate work likely current buildsing blocks.  
 		engine to run imulations, uncludes tools and the image processy system and likely 			other modual 
 		reserch, though things built inside here will be used to construct or aid in the building of
 		diffrent symulators, modlers and games.
@@ -40,15 +39,6 @@ this folder includes three projects. though in rough state,
 		Refac_vison.. final test incarantion currntly does not compile, but most of the 
 		algurthms assoated with building a meanshift image processor, will be ustilized
 		
-
-
-
-##### Lamda_to_function&&_curvegenrator_display_ ; 
-		sfml dispaly of curves genreated by lamdaz
-
-##### curve_genrator_with_usb_contlz_ ; 
-		showcases cruve lamdas modifed by usb controls
-
 							
 }:|
 							##30#
