@@ -1,7 +1,6 @@
 # SIDRN
  {system-ingrgated-data-responce-network}..
 	
-
 ###### Top LEVEL view to working space of current Projects. _Zepalz {Matthew Edmund Duffy && orgburo} if you'r looking for the core code go right to sym_engine0.01_shirz_/source however i advice you to check out the top level of sym_engine0.01_shirz_/readME.md 
 
 
