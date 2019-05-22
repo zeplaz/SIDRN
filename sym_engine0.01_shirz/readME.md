@@ -4,20 +4,6 @@
 
 #### :FOLDERS: 
 
-##### binary_tests
-		includez exported binaries of tests along the way
-
-##### Images of tests 
-		some screen caps of stages.
-
-##### modelsz 
-		notes made by hand or starUML for mostly ideas and helping see were there going
-			math notes, and other drawings assoated with the vision.. currntly i need
-		to recmpess alot of them to smaller size(i scan usally to high res), so more do exsit outside of the current git 
-
-##### notez 
-		very lose, bits of code, essays or notes i find useful inspring or refental Needs update
-
 ##### source
 		where current, work can be found and were enegine sorce will live when done!
 		there are subfolders there so i will invite you to look at the readme inside!
@@ -33,6 +19,22 @@
 
 		##### inputcolz
 		verybasic sfml usbjoysicktest
+
+##### binary_tests
+		includez exported binaries of tests along the way
+
+##### Images of tests 
+		some screen caps of stages.
+
+##### modelsz 
+		notes made by hand or starUML for mostly ideas and helping see were there going
+		math notes, and other drawings assoated with the vision.. currntly i need
+		to recmpess alot of them to smaller size(i scan usally to high res), so more do 		exsit outside of the current git 
+
+##### notez 
+		very lose, bits of code, essays or notes i find useful inspring or refental Needs update
+
+
 
 
 as things are just being build. 
