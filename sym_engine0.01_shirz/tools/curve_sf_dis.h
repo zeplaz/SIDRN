@@ -47,19 +47,8 @@ class curve_sf_dis : public sf::VertexArray
         {
             std::cout << "Enter_cuvre genrator\n";
 
-              switch(base_colour)
-              {
-                case white:    baseColour = colour.white;   break;
-                case  red:     baseColour = colour.red;     break;
-                case  green:   baseColour = colour.green;   break;
-                case  blue:    baseColour = colour.blue;    break;
-                case  yellow:  baseColour = colour.yellow;  break;
-                case  cyan:    baseColour = colour.cyan;    break;
-                case  magenta: baseColour = colour.magenta; break;
 
-                default :  baseColour = colour.transparent;
-               }
-
+            change_colour(base_colour);
 
              curve_line.setPrimitiveType(sf::LinesStrip);
              paramz_max= (float)size_line;
@@ -84,12 +73,12 @@ template<typename functiontype>
        for (auto x = paramz_min; x < paramz_max ; x+=interval)
          {
           //    std::cout << "value:" << x << '\n';
-                   if( b == true)
-                   { b= false;
-                     next_colour =next_colour + sf::Color::Magenta;
-                   }
-                   else { b= true;
-                      next_colour =next_colour -(sf::Color::Yellow+sf::Color::Cyan);}
+                //   if( b == true)
+                ///   { b= false;
+              //       next_colour =next_colour + sf::Color::Magenta;
+            //       }
+            //       else { b= true;
+              //        next_colour =next_colour -(sf::Color::Yellow+sf::Color::Cyan);}
 
           sf::Vector2f newtem_vec = line_func(indeptz+x);
           sf::Vertex tempvrtx(newtem_vec);
@@ -98,6 +87,22 @@ template<typename functiontype>
           curve_line.append(tempvrtx);
 
         }
+    }
+
+    inline void change_colour(int base_colour)
+    {
+      switch(base_colour)
+      {
+        case white:    baseColour = colour.white;   break;
+        case  red:     baseColour = colour.red;     break;
+        case  green:   baseColour = colour.green;   break;
+        case  blue:    baseColour = colour.blue;    break;
+        case  yellow:  baseColour = colour.yellow;  break;
+        case  cyan:    baseColour = colour.cyan;    break;
+        case  magenta: baseColour = colour.magenta; break;
+
+        default :  baseColour = colour.transparent;
+       }
     }
 
     };

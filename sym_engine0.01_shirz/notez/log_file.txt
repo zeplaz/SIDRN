@@ -42,3 +42,9 @@ d hasLogedON at: Sat Feb  9 21:37:16 2019
 
 SIDRN ended exuection: Sat Feb  9 21:37:16 2019
 
+SIDRN begain exuection: Wed May 22 17:34:44 2019
+
+ds hasLogedON at: Wed May 22 17:34:44 2019
+
+SIDRN ended exuection: Wed May 22 17:34:44 2019
+
