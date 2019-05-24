@@ -9,7 +9,8 @@
 		there are subfolders there so i will invite you to look at the readme inside!
 
 ##### test_modualz
-		contains subfolders for bits built
+		contains mainfiles which test out aspects of the program and complie and pass
+		to the next phase.
 		
 		##### |modual_test_labzm.cpp|
 		Lamda_to_function&&_curvegenrator_display 
