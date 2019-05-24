@@ -1,24 +1,14 @@
 
+//curve_sf_dis2.h
 
-/*static const Color Black;
-   84     static const Color White;
-   85     static const Color Red;
-   86     static const Color Green;
-   87     static const Color Blue;
-   88     static const Color Yellow;
-   89     static const Color Magenta;
-   90     static const Color Cyan;
-   91     static const Color Transparent;*/
+#pragma once
 
 #include <SFML/Graphics.hpp>
 
 #include <math.h>
 #include <iostream>
 
-enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
-
-
-
+static enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
 class curve_sf_dis : public sf::VertexArray
 {
@@ -63,14 +53,14 @@ class curve_sf_dis : public sf::VertexArray
 //auto f=[&](int x){std::cout<<a<<'\n';};
 //foo( [](void* ptr, int x){ auto* pf = static_cast<decltype(f)*>(ptr);
 // (*pf)(x); }, &f );
-template<typename functiontype>
+template<typename functiontype,typename... curve_gen_parmz>
 //inline void genrate_curve([](void*line_func))
   //inline  void genrate_curve(functiontype(*line_func)(paramz...), float scal)
-  inline void genrate_curve (functiontype&& line_func,float indeptz, float interval)
-    {
+  inline void genrate_curve (functiontype&& line_func,curve_gen_parmz* curv_pakprmz)
+    {   //interval = std::index_sequence_for<Types...>());
        sf::Color next_colour= baseColour;
        bool b;
-       for (auto x = paramz_min; x < paramz_max ; x+=interval)
+       for (auto x = paramz_min; x < paramz_max ; x+=curv_pakprmz->interval)
          {
           //    std::cout << "value:" << x << '\n';
                 //   if( b == true)
@@ -127,3 +117,14 @@ template<typename functiontype>
 
 };
 */
+
+
+/*static const Color Black;
+   84     static const Color White;
+   85     static const Color Red;
+   86     static const Color Green;
+   87     static const Color Blue;
+   88     static const Color Yellow;
+   89     static const Color Magenta;
+   90     static const Color Cyan;
+   91     static const Color Transparent;*/

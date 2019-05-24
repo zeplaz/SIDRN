@@ -8,25 +8,36 @@
 		where current, work can be found and were enegine sorce will live when done!
 		there are subfolders there so i will invite you to look at the readme inside!
 
-##### tools
+##### test_modualz
 		contains subfolders for bits built
-
-		##### Lamda_to_function&&_curvegenrator_display_ ; 
+		
+		##### |modual_test_labzm.cpp|
+		Lamda_to_function&&_curvegenrator_display 
 		sfml dispaly of curves genreated by lamdaz
 
-		##### curve_genrator_with_usb_contlz_ ; 
-		showcases cruve lamdas modifed by usb controls_;
+		##### |inpit_pluz_curvetest.cpp|
+		curve_genrator_with_usb_contlz_  
+		showcases cruve lamdas modifed by usb controls
 
-		##### inputcolz
+		##### |input_test_main.cpp|
 		verybasic sfml usbjoysicktest
 
+		#####|usb__colourchange_curvv_03.cpp|
+			usbcontrolr now chnacges colour aswell
+
+		####|Two Headerfiles USB_controler.h and |curve_sf_dis.h|
+			these headers work with these tests, and have been changed
+			to some degree or will, in the sorce..and will be numberd from hear on out
+			so that this folder can remain simpler to test out the build yourself.
+			
+		
 ##### binary_tests
 		includez exported binaries of tests along the way
 
 ##### Images of tests 
 		some screen caps of stages.
 
-##### modelsz 
+##### modelz 
 		notes made by hand or starUML for mostly ideas and helping see were there going
 		math notes, and other drawings assoated with the vision.. currntly i need
 		to recmpess alot of them to smaller size(i scan usally to high res), so more do 		exsit outside of the current git 

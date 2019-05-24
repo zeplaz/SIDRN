@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <chrono>
+#include <unordered_map>
 
 #include "curve_sf_dis.h"
 #include "USB_controler.h"
@@ -24,7 +25,7 @@ typedef struct {
 
 static int next_curve_id = 0;
 
-curve_prt_contr* curve_factory
+bool curve_factory
 {
 
 }
@@ -67,24 +68,35 @@ curve_prt_contr* curve_factory
 
   // defind in curve enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
-
+  typedef  struct curve_base_parm {
+    curve_base_parm* next_cuvr_parm;
+      size_t curvesiz=1000;
+      float intvral= 0.5f;
+      float modifer = 2;
+      float firiction = -1.2;
+      float  indepentvar = 3;
+      int colourcycle;
+       }curve_base_parmz;
 
 
 int main(int argc, char* argv[])
 {
-  std::chrono::steady_clock::time_point Program_lanch = std::chrono::steady_clock::now();
+  std::chrono::steady_clock::time_point Program_lanch_pt = std::chrono::steady_clock::now();
   //basic paramz for curive ovlzy not goina lvie here.
+  std::chrono::steady_clock::duration accumlator{};
 
-  struct curve_base_parmz {
-    size_t curvesiz=1000;
-    float intvral= 0.5f;
-    float modifer = 2;
-    float firiction = -1.2;
-    float  indepentvar = 3;
-    int colourcycle;
-     }curve_base_parmz;
 
-     //create render windowz that will be  existinn at lanch...
+    // map setupz
+    std::unordered_map<int,curve_sf_dis*> curve_map;
+
+    //parmz move!
+
+     curve_base_parm* prt_parm_curve1 = new curve_base_parm(curve_base_parmz);
+     curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
+
+      delete[] prt_parm_curve2;
+      delete[] prt_parm_curve1;
+         //create render windowz that will be  existinn at lanch...
 
   sf::RenderWindow sfmlwindow(sf::VideoMode(1000,1000, 32), "Cmd_dispaly", sf::Style::Default);
   sf::RenderWindow _2ndarycmdwindo(sf::VideoMode(500,700, 24), "2ndary_dislcmd", sf::Style::Default);
@@ -170,23 +182,29 @@ int main(int argc, char* argv[])
         }//end of pooling loop
 
           // curive updatez.!
+
+          for ( auto it = curve_map.begin(); it != curve_map.end(); ++it )
+          {
+              curve_sf_dis* prt_curve;
+              prt_curve=it->second;
+              prt_curve->genrate_curve(,prt_parm_curve);
+
+
+          }
     curve_type_ojk_A1.genrate_curve(curve_sin_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A1.genrate_curve(curve_othz_ptr,indepentvar,curve_base_parmz.intvral);
     curve_type_ojk_A2.genrate_curve(curve_othz_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
 
 
-
-    run_render(sfmlwindow,curve_type_ojk_A2.curve_line);
+      run_render(sfmlwindow,curve_type_ojk_A2.curve_line);
       run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
     //sfmlwindow.draw(curve_type_ojk_A1.curve_line);
   //  sfmlwindow.draw(curve_type_ojk_A2.curve_line);
 
+      accumlator =+ ( std::chrono::steady_clock::now()-Program_lanch_pt);
+}//eendof sfml window lop
 
-  }//endofvideoloop
-
-  //
-  //endzslfmwindow
-    std::cout <<"shuting down..normalzzz" << '\n';
+      std::cout <<"shuting down..normalzzz" << '\n';
   return 0;
 
 }
