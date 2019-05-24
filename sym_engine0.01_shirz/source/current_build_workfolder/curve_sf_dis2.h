@@ -10,6 +10,69 @@
 
 static enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
+template <typename coe_type>
+ struct Coefficient{
+     coe_type coeff_var;
+
+  //   + - * /
+
+     Coefficient operator+(const Coefficient& co2)
+     {
+       Coefficient.coeff_var = this->coeff_var+co2.coeff_var;
+     }
+  //   Coefficient operator+(const Coefficient&,const Coefficient&);
+
+};
+      template <typename cons_type>
+      struct parameter_constant
+      {
+        const cons_type  constan_var;
+      };
+
+
+      typedef struct polynomal
+      {
+        int numberofterms;
+        std::touple<parameter_constant,Coefficient,int> polynomi;
+        std::stack<polynomi> polnymstack;
+
+        polynomal(auto...p)
+        {
+
+        }
+        
+        constexpr auto operator()(auto...p){return polynomal(p...);}
+
+
+            sf::Vector2f operator()(auto...p)
+            {
+                for p..
+               return sf::Vector2f(x,y);
+            }
+
+            template <int... A>
+
+              sf::Vector2f func() {
+              sf::Vector2f b = {};
+                auto values = {A...};
+
+                std::for_each(values.begin(), values.end(), [&](int n)
+                {b[n]
+
+                  ;});
+                return b;
+            }
+            std::array<bool, SIZE>
+
+
+          polynomal operator+(const Coefficient& co2)
+          {
+
+          }
+
+      };
+
+
 class curve_sf_dis : public sf::VertexArray
 {
     public :
@@ -32,6 +95,8 @@ class curve_sf_dis : public sf::VertexArray
     float paramz_max;
     float interval_depth;
     sf::Color baseColour = colour.transparent;
+
+    polynomal** ptr_polyarray;
 
     curve_sf_dis(std::size_t size_line, float step,int base_colour): vertxcount(size_line),interval_depth(step)
         {
@@ -56,7 +121,10 @@ class curve_sf_dis : public sf::VertexArray
 template<typename functiontype,typename... curve_gen_parmz>
 //inline void genrate_curve([](void*line_func))
   //inline  void genrate_curve(functiontype(*line_func)(paramz...), float scal)
-  inline void genrate_curve (functiontype&& line_func,curve_gen_parmz* curv_pakprmz)
+
+
+ inline void genrate_curve (functiontype&& line_func, auto indeptz, auto interval)
+//  inline void genrate_curve (functiontype&& line_func,curve_gen_parmz* curv_pakprmz)
     {   //interval = std::index_sequence_for<Types...>());
        sf::Color next_colour= baseColour;
        bool b;
@@ -78,6 +146,29 @@ template<typename functiontype,typename... curve_gen_parmz>
 
         }
     }
+
+
+      inline void genrate_curve (polynomal& poly,auto parm_var,auto interval)
+      {
+            sf::Color next_colour= baseColour;
+
+            for (auto x = paramz_min; x < paramz_max ; x+=curv_pakprmz->interval)
+               {
+                  sf::Vector2f temp_point= poly(parm_var+x);
+                  sf::Vertex tempvrtx(temp_point);
+
+                  tempvrtx.color = next_colour;
+                  curve_line.append(tempvrtx);
+
+               }
+
+      }
+
+
+      inline void gen_poly(int numpli,int(&cofi_array)[numpli] ,int (&par_cons_ary)[numpli]);
+      {
+
+      }
 
     inline void change_colour(int base_colour)
     {
