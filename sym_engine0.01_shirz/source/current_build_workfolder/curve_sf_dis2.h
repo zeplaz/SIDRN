@@ -10,69 +10,6 @@
 
 static enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
-template <typename coe_type>
- struct Coefficient{
-     coe_type coeff_var;
-
-  //   + - * /
-
-     Coefficient operator+(const Coefficient& co2)
-     {
-       Coefficient.coeff_var = this->coeff_var+co2.coeff_var;
-     }
-  //   Coefficient operator+(const Coefficient&,const Coefficient&);
-
-};
-      template <typename cons_type>
-      struct parameter_constant
-      {
-        const cons_type  constan_var;
-      };
-
-
-      typedef struct polynomal
-      {
-        int numberofterms;
-        std::touple<parameter_constant,Coefficient,int> polynomi;
-        std::stack<polynomi> polnymstack;
-
-        polynomal(auto...p)
-        {
-
-        }
-        
-        constexpr auto operator()(auto...p){return polynomal(p...);}
-
-
-            sf::Vector2f operator()(auto...p)
-            {
-                for p..
-               return sf::Vector2f(x,y);
-            }
-
-            template <int... A>
-
-              sf::Vector2f func() {
-              sf::Vector2f b = {};
-                auto values = {A...};
-
-                std::for_each(values.begin(), values.end(), [&](int n)
-                {b[n]
-
-                  ;});
-                return b;
-            }
-            std::array<bool, SIZE>
-
-
-          polynomal operator+(const Coefficient& co2)
-          {
-
-          }
-
-      };
-
-
 class curve_sf_dis : public sf::VertexArray
 {
     public :
