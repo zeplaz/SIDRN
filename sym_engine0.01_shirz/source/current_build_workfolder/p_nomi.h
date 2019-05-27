@@ -1,8 +1,10 @@
 
-#pragma once
+
+
 
 #include <iostream>
 #include <math.h>       /* pow */
+#include <ratio>
 
 #include "Indeterminate.h"
 
@@ -13,10 +15,15 @@
           nomi_type coefficient;
           //  int degree;
             Indeterminate<nomi_type> inter_name;
-            nomi_type power;
+            std::ratio power;
 
             //p_nomi()
-            p_nomi(int ind_name, auto powr,auto coefficient);
+            p_nomi(int ind_name, auto powr,auto coefficient)
+            {
+
+            }
+
+            
 
             friend p_nomi<nomi_type> operator+( const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b);
             friend p_nomi<nomi_type> operator*(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b);
@@ -27,7 +34,8 @@
               //to thus do manluation on the new algebic expressooin
               nomi_type operator()(nomi_type in_value)
               {
-                 auto inder_part=pow(in_value,power);
+                { auto inder_part=pow(in_value,power::num/power::den);}
+
                 return (this->coefficient*inder_part);
               }
         };
@@ -36,17 +44,17 @@ template<typename nomi_type>
         p_nomi<nomi_type> operator+( p_nomi<nomi_type> &a,  p_nomi<nomi_type> &b)
         {
             p_nomi<nomi_type> temp_pn;
-            if(a->power != b->power)
+            if(std::ratio_not_equal<a->power, b->power>)
             {
               std::cerr << "degree is not equail no addtion possable";
-                temp_pn.power = -1;
+                //temp_pn.power = -1;
                 temp_pn.inter_name.set_error();
               return temp_pn;
             }
             if(a->inter_name != b->inter_name)
               {
                   std::cerr << "nonmatching intermidary is not equail no addtion possable";
-                temp_pn.power = -1;
+                //temp_pn.power = -1;
                 temp_pn.inter_name.set_error();
                   return temp_pn;
               }
@@ -63,13 +71,13 @@ template<typename nomi_type>
             if(a.inter_name != b.inter_name)
             {
                   std::cerr << "nonmatching intermidary is not equail no addtion possable";
-                temp_pn.power = -1;
+                //temp_pn.power = -1;
                 temp_pn.inter_name.set_error();
                   return temp_pn;
             }
 
             temp_pn =a;
-            temp_pn.power =+b.power;
+            std::ratio_add <temp_pn.power,b.power> ;
             temp_pn.coefficient =*b.coefficient;
           return temp_pn;
       }
@@ -78,17 +86,17 @@ template<typename nomi_type>
       p_nomi<nomi_type> operator-(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b)
       {
         p_nomi<nomi_type> temp_pn;
-        if(a->power != b->power)
+        if(std::ratio_not_equal<a->power, b->power>)
         {
             std::cerr << "degree is not equail no addtion possable";
-            temp_pn.power = -1;
+            //temp_pn.power = -1;
             temp_pn.inter_name.set_error();
           return temp_pn;
         }
         if(a->inter_name != b->inter_name)
           {
               std::cerr << "nonmatching intermidary is not equail no addtion possable";
-            temp_pn.power = -1;
+          //  temp_pn.power = -1;
             temp_pn.inter_name.set_error();
               return temp_pn;
           }
