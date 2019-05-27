@@ -126,7 +126,14 @@ template<typename functiontype,typename... curve_gen_parmz>
     };
 
 
+/*
 
+
+class curve_handler()
+{
+  private :
+
+};
 /*
     template <typename ... tyed_covr_fuc>
     void function_plot(const tyed_covr_fuc&... args)
