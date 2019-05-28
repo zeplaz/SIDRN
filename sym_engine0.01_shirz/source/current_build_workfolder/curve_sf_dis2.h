@@ -10,6 +10,9 @@
 
 static enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
+
+using namespace polyz;
+
 class curve_sf_dis : public sf::VertexArray
 {
     public :
@@ -33,7 +36,7 @@ class curve_sf_dis : public sf::VertexArray
     float interval_depth;
     sf::Color baseColour = colour.transparent;
 
-    polynomal** ptr_polyarray;
+    //polynomal** ptr_polyarray;
 
     curve_sf_dis(std::size_t size_line, float step,int base_colour): vertxcount(size_line),interval_depth(step)
         {
@@ -54,11 +57,11 @@ class curve_sf_dis : public sf::VertexArray
           }
 //auto f=[&](int x){std::cout<<a<<'\n';};
 //foo( [](void* ptr, int x){ auto* pf = static_cast<decltype(f)*>(ptr);
-// (*pf)(x); }, &f );
-template<typename functiontype,typename... curve_gen_parmz>
-//inline void genrate_curve([](void*line_func))
+// (*pf)(x); }, &f );//inline void genrate_curve([](void*line_func))
   //inline  void genrate_curve(functiontype(*line_func)(paramz...), float scal)
 
+
+template<typename functiontype,typename... curve_gen_parmz>
 
  inline void genrate_curve (functiontype&& line_func, auto indeptz, auto interval)
 //  inline void genrate_curve (functiontype&& line_func,curve_gen_parmz* curv_pakprmz)
@@ -89,9 +92,10 @@ template<typename functiontype,typename... curve_gen_parmz>
       {
             sf::Color next_colour= baseColour;
 
+
             for (auto x = paramz_min; x < paramz_max ; x+=curv_pakprmz->interval)
                {
-                  sf::Vector2f temp_point= poly(parm_var+x);
+                  sf::Vector2f temp_point= poly.solutionval(parm_var+x);
                   sf::Vertex tempvrtx(temp_point);
 
                   tempvrtx.color = next_colour;
@@ -102,10 +106,10 @@ template<typename functiontype,typename... curve_gen_parmz>
       }
 
 
-      inline void gen_poly(int numpli,int(&cofi_array)[numpli] ,int (&par_cons_ary)[numpli]);
-      {
+    //  inline void gen_poly(int numpli,int(&cofi_array)[numpli] ,int (&par_cons_ary)[numpli]);
+  //    {
 
-      }
+  //    }
 
     inline void change_colour(int base_colour)
     {

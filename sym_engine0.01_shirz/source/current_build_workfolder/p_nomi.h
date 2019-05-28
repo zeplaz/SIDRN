@@ -7,43 +7,73 @@
 #include <ratio>
 
 #include "Indeterminate.h"
+/*
+template<
+    std::intmax_t Num,
+    std::intmax_t Denom = 1
+>
+auto ratio_ = std::ratio<Num, Denom>{};*/
 
+template<
+    std::intmax_t A,
+    std::intmax_t B,
+    std::intmax_t C,
+    std::intmax_t D
+>
+constexpr typename std::ratio_add<std::ratio<A, B>, std::ratio<C, D>>::type
+operator+(std::ratio<A, B>, std::ratio<C, D>) {}
 
-        template<typename nomi_type>
+        template<typename nomi_type, std::intmax_t Num, std::intmax_t Denom = 1>
         struct p_nomi
         {
           nomi_type coefficient;
           //  int degree;
             Indeterminate<nomi_type> inter_name;
-            std::ratio power;
+            typedef std::ratio<Num,Denom> power;
+
+
+
+
+
 
             //p_nomi()
-            p_nomi(int ind_name, auto powr,auto coefficient)
+            p_nomi(int ind_name, std::ratio<Num,Denom> powr,auto in_cof)
             {
+              inter_name.set_inter_name(ind_name);
+              power = powr;
+              coefficient= in_cof;
+              }
 
+                p_nomi(Indeterminate<nomi_type> ind_name, std::ratio<Num,Denom> powr,auto in_cof)
+                {
+                  inter_name =ind_name;
+                  power =powr;
+                coefficient  =in_cof;
+
+                }
+            inline int return_degree() const
+            {
+              return(power::num);
             }
-
-            
-
-            friend p_nomi<nomi_type> operator+( const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b);
-            friend p_nomi<nomi_type> operator*(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b);
-            friend p_nomi<nomi_type> operator-(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b);
+            friend p_nomi<nomi_type,Num,Denom> operator+( const p_nomi<nomi_type,Num,Denom> &a, const p_nomi<nomi_type,Num,Denom> &b);
+            friend p_nomi<nomi_type,Num,Denom> operator*(const p_nomi<nomi_type,Num,Denom> &a, const p_nomi<nomi_type,Num,Denom> &b);
+            friend p_nomi<nomi_type,Num,Denom> operator-(const p_nomi<nomi_type,Num,Denom> &a, const p_nomi<nomi_type,Num,Denom> &b);
             //ovrloaded opratorz
 
               // thiking about changing this so 2x*4y^2 =aintmdary 8(xy^2)aka pulling out coffienz
               //to thus do manluation on the new algebic expressooin
               nomi_type operator()(nomi_type in_value)
               {
-                { auto inder_part=pow(in_value,power::num/power::den);}
+               auto inder_part=pow(in_value,power::num/power::den);
 
                 return (this->coefficient*inder_part);
               }
         };
 
-template<typename nomi_type>
-        p_nomi<nomi_type> operator+( p_nomi<nomi_type> &a,  p_nomi<nomi_type> &b)
+template<typename nomi_type,std::intmax_t Num, std::intmax_t Denom = 1>
+        p_nomi<nomi_type,Num,Denom> operator+( p_nomi<nomi_type,Num,Denom> &a,  p_nomi<nomi_type,Num,Denom> &b)
         {
-            p_nomi<nomi_type> temp_pn;
+            p_nomi<nomi_type,Num,Denom> temp_pn;
             if(std::ratio_not_equal<a->power, b->power>)
             {
               std::cerr << "degree is not equail no addtion possable";
@@ -64,10 +94,10 @@ template<typename nomi_type>
               return temp_pn;
             }
 
-template<typename nomi_type>
-        p_nomi<nomi_type> operator*(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b)
+template<typename nomi_type,std::intmax_t Num, std::intmax_t Denom = 1>
+        p_nomi<nomi_type,Num,Denom> operator*(const p_nomi<nomi_type,Num,Denom> &a, const p_nomi<nomi_type,Num,Denom> &b)
         {
-            p_nomi<nomi_type> temp_pn;
+            p_nomi<nomi_type,Num,Denom> temp_pn;
             if(a.inter_name != b.inter_name)
             {
                   std::cerr << "nonmatching intermidary is not equail no addtion possable";
@@ -82,10 +112,10 @@ template<typename nomi_type>
           return temp_pn;
       }
 
-template<typename nomi_type>
-      p_nomi<nomi_type> operator-(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b)
+template<typename nomi_type,std::intmax_t Num, std::intmax_t Denom = 1>
+      p_nomi<nomi_type,Num,Denom> operator-(const p_nomi<nomi_type,Num,Denom> &a, const p_nomi<nomi_type,Num,Denom> &b)
       {
-        p_nomi<nomi_type> temp_pn;
+        p_nomi<nomi_type,Num,Denom> temp_pn;
         if(std::ratio_not_equal<a->power, b->power>)
         {
             std::cerr << "degree is not equail no addtion possable";

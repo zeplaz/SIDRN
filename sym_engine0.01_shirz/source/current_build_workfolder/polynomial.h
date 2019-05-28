@@ -26,6 +26,20 @@ template<nametype base_type>
 
     public :
 
+    polynomal(int num_polyz, paramz..)
+  {  std::va_list varblist;
+    for (i=0; i<num_polyz i++ )
+    { //int current_degree;
+      std::va_start(varblist,num_polyz);
+      p_nomi  temp_poiln (varblist,p_nomi);
+    if(temp_poiln.return_degree() > degree )
+        {
+          degree =temp_poiln.return_degree();
+        }
+        polnymstack.push(temp_poiln);
+    }
+  }
+
     void add_polni( int var_name, std::ratio<base_type,base_type> _power,auto coeffent )
     {
       if(_power::num > degree)
@@ -51,34 +65,28 @@ template<nametype base_type>
       }
       return nullptr;
     }
-
-  constexpr auto operator()(auto...p,auto..cof){return polynomal(p...,auto...cof);}
+/*
+  constexpr auto operator()(auto...power,auto..cof){return polynomal(power...,auto...cof);}
   polynomal polynomal() {
 
-  std::stack<auto> values = {values.push(power...)};
-  std::stack<auto> values = {values.push(cof...)};
+  std::stack<auto> stk_powerz = {stk_powerz.push(power...)};
+  std::stack<auto> stk_coeff = {stk_coeff.push(cof...)};
 
+    std::cout<< "You Have utilized the polymofpic legth, you must now assign Indetermintz" << '\n'
+            << "you must now give the inderment a name" << '\n';
+              for
 
-    std::for_each(values.begin(), values.end(), [&](int power)
-    {b[n]
+                  }
+    //std::for_each(values.begin(), values.end(), [&](int power)
+  //  {b[n]
 
-      ;});
-    return b;
+      //;});
+    //return b;
+*/
 
-
-    polynomal(int num_polyz, paramz..)
-  {  std::va_list varblist;
-    for (i=0; i<num_polyz i++ )
-    {
-      std::va_start(varblist,num_polyz)
-      p_nomi  temp_poiln (varblist,p_nomi);
-    if(temp_poiln. >)  
-        polnymstack.push
-    }
-  }
 };
 
-
+/*
 
     sf::Vector2f operator()(auto...p)
     {
@@ -178,3 +186,4 @@ template<nametype base_type>
         {
 
         }
+*/

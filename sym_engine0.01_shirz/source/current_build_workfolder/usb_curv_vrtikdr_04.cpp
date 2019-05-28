@@ -16,7 +16,7 @@
 
 #include "curve_sf_dis.h"
 #include "USB_controler.h"
-
+#include "polynomial.h"
 /*
 typedef struct {
   int curve_id;
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 {
   std::chrono::steady_clock::time_point Program_lanch_pt = std::chrono::steady_clock::now();
   //basic paramz for curive ovlzy not goina lvie here.
-  std::chrono::steady_clock::duration accumlator{};
+//  std::chrono::steady_clock::duration accumlator{};
 
 
     // map setupz
@@ -92,14 +92,13 @@ int main(int argc, char* argv[])
     //parmz move!
 
      curve_base_parm* prt_parm_curve1 = new curve_base_parm(curve_base_parmz);
-     curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
+     //curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
+      //curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
 
-      delete[] prt_parm_curve2;
-      delete[] prt_parm_curve1;
          //create render windowz that will be  existinn at lanch...
 
   sf::RenderWindow sfmlwindow(sf::VideoMode(1000,1000, 32), "Cmd_dispaly", sf::Style::Default);
-  sf::RenderWindow _2ndarycmdwindo(sf::VideoMode(500,700, 24), "2ndary_dislcmd", sf::Style::Default);
+  //sf::RenderWindow _2ndarycmdwindo(sf::VideoMode(500,700, 24), "2ndary_dislcmd", sf::Style::Default);
 
 
       //main event capure for main window
@@ -115,9 +114,22 @@ int main(int argc, char* argv[])
         //std::cout << "input_video_filename:";
       //  std::cin >>filenamestring;
 
-  curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
-  curve_sf_dis curve_type_ojk_A2(curve_base_parmz.curvesiz,curve_base_parmz.intvral,6);
+      //some polyz to teszt
 
+      std::ratio<3,1> cubedegree;
+      std::ratio<1,1> base_1;
+      double cofA_6 =6;
+      double cofA_2 =2;
+
+      p_nomi p_6x_2(_x,cubedegree,cofA_6);
+      p_nomi p_2x_1(_x,base_1,cofA_2);
+
+      polynomial newpoly(2,p_6x_2,p_2x_1);
+
+
+  //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
+//  curve_sf_dis curve_type_ojk_A2(curve_base_parmz.curvesiz,curve_base_parmz.intvral,6);
+curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral);
 
   while (sfmlwindow.isOpen())
     {     //mandory escape
@@ -164,6 +176,7 @@ int main(int argc, char* argv[])
               {
                 std::cout <<"selcted Next curve:" << '\n';
 
+
               }
 
           if (sf::Joystick::isButtonPressed(0, 0))
@@ -176,13 +189,15 @@ int main(int argc, char* argv[])
                 }
               std::cout << curve_base_parmz.colourcycle << " is Selected," << '\n';
 
-              curve_type_ojk_A2.change_colour(curve_base_parmz.colourcycle);
+              curve_type_ojk_A3.change_colour(curve_base_parmz.colourcycle);
               //vframe
             }
         }//end of pooling loop
 
           // curive updatez.!
 
+
+/*
           for ( auto it = curve_map.begin(); it != curve_map.end(); ++it )
           {
               curve_sf_dis* prt_curve;
@@ -191,19 +206,23 @@ int main(int argc, char* argv[])
 
 
           }
-    curve_type_ojk_A1.genrate_curve(curve_sin_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
+          */
+  //  curve_type_ojk_A1.genrate_curve(curve_sin_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A1.genrate_curve(curve_othz_ptr,indepentvar,curve_base_parmz.intvral);
-    curve_type_ojk_A2.genrate_curve(curve_othz_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
+  //  curve_type_ojk_A2.genrate_curve(curve_othz_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
+    curve_type_ojk_A3.genrate_curve(2,newpoly,prt_parm_curve1->indepentvar);
 
 
-      run_render(sfmlwindow,curve_type_ojk_A2.curve_line);
-      run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
+      run_render(sfmlwindow,curve_type_ojk_A3.curve_line);
+      //run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
     //sfmlwindow.draw(curve_type_ojk_A1.curve_line);
   //  sfmlwindow.draw(curve_type_ojk_A2.curve_line);
-
-      accumlator =+ ( std::chrono::steady_clock::now()-Program_lanch_pt);
+      //accumlator =+ ( std::chrono::steady_clock::now()-Program_lanch_pt);
 }//eendof sfml window lop
 
+delete[] prt_parm_curve2;
+delete[] prt_parm_curve1;
+delete[] prt_parm_curve3;
       std::cout <<"shuting down..normalzzz" << '\n';
   return 0;
 
