@@ -8,7 +8,12 @@
 #include <math.h>
 #include <iostream>
 
-static enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
+
+
+#include "polynomial.h"
+
+namespace polyz{
+ enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};}
 
 
 using namespace polyz;
@@ -38,7 +43,7 @@ class curve_sf_dis : public sf::VertexArray
 
     //polynomal** ptr_polyarray;
 
-    curve_sf_dis(std::size_t size_line, float step,int base_colour): vertxcount(size_line),interval_depth(step)
+    curve_sf_dis(std::size_t size_line, double step,int base_colour): vertxcount(size_line),interval_depth(step)
         {
             std::cout << "Enter_cuvre genrator\n";
 
@@ -68,7 +73,7 @@ template<typename functiontype,typename... curve_gen_parmz>
     {   //interval = std::index_sequence_for<Types...>());
        sf::Color next_colour= baseColour;
        bool b;
-       for (auto x = paramz_min; x < paramz_max ; x+=curv_pakprmz->interval)
+       for (auto x = paramz_min; x < paramz_max ; x+=interval)
          {
           //    std::cout << "value:" << x << '\n';
                 //   if( b == true)
@@ -78,7 +83,7 @@ template<typename functiontype,typename... curve_gen_parmz>
             //       else { b= true;
               //        next_colour =next_colour -(sf::Color::Yellow+sf::Color::Cyan);}
 
-          sf::Vector2f newtem_vec = line_func(indeptz+x);
+          sf::Vector2f newtem_vec = line_func(x);
           sf::Vertex tempvrtx(newtem_vec);
 
           tempvrtx.color = next_colour;
@@ -87,16 +92,19 @@ template<typename functiontype,typename... curve_gen_parmz>
         }
     }
 
-
-      inline void genrate_curve (polynomal& poly,auto parm_var,auto interval)
+  //  template <typename bastype>
+      inline void genrate_curve (int numof, auto poly, auto parm_var,auto interval)
       {
             sf::Color next_colour= baseColour;
 
 
-            for (auto x = paramz_min; x < paramz_max ; x+=curv_pakprmz->interval)
+            for (auto x = paramz_min; x < paramz_max ; x+=interval)
                {
-                  sf::Vector2f temp_point= poly.solutionval(parm_var+x);
-                  sf::Vertex tempvrtx(temp_point);
+
+                  float temp_point_y= static_cast<float>(poly->solutionval(parm_var+x));
+                  //std::cout <<"currentyvale for curve: " << poly->solutionval(x) << '\n';
+                   sf::Vector2f cur_point (temp_point_y,x);
+                  sf::Vertex tempvrtx(cur_point);
 
                   tempvrtx.color = next_colour;
                   curve_line.append(tempvrtx);

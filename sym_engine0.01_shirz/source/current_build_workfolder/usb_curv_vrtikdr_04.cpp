@@ -68,13 +68,13 @@ bool curve_factory
 
   // defind in curve enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
-  typedef  struct curve_base_parm {
+    struct curve_base_parm {
     curve_base_parm* next_cuvr_parm;
       size_t curvesiz=1000;
       double intvral= 0.5f;
       double modifer = 2;
       double firiction = -1.2;
-      double  indepentvar = 3;
+      double  indepentvar = 1;
       int colourcycle;
        }curve_base_parmz;
 
@@ -118,20 +118,20 @@ int main(int argc, char* argv[])
 
       //std::ratio<3,1> cubedegree;
     //  std::ratio<1,1> base_1;
-    int cube_power[2]= {3,1};
+    int cube_power[2]= {1,1};
       int base_1[2]= {1,1};
-      double cofA_6 =6;
+      double cofA_6 =2;
       double cofA_2 =2;
 
       p_nomi<double> p_6x_3(_x,cube_power,cofA_6);
       p_nomi<double> p_2x_1(_x,base_1,cofA_2);
 
       polynomial<double> newpoly(2,p_6x_3,p_2x_1);
-
+      polynomial<double>* prt_newpolyz = &newpoly;
 
   //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
 //  curve_sf_dis curve_type_ojk_A2(curve_base_parmz.curvesiz,curve_base_parmz.intvral,6);
-curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral);
+curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,green);
 
   while (sfmlwindow.isOpen())
     {     //mandory escape
@@ -164,15 +164,18 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
          if (e_main.type == sf::Event::JoystickMoved)
            {
              usb_cmd_ctlz.move = true;
-             std::cout << "X axis: " << usb_cmd_ctlz.ctrlin_speed.x << std::endl;
-             std::cout << "Y axis: " << usb_cmd_ctlz.ctrlin_speed.y << std::endl;
-             curve_base_parmz.indepentvar= +usb_cmd_ctlz.ctrlin_speed.y*usb_cmd_ctlz.ctrlin_speed.x;
+            // std::cout << "X axis: " << usb_cmd_ctlz.ctrlin_speed.x << std::endl;
+          //   std::cout << "Y axis: " << usb_cmd_ctlz.ctrlin_speed.y << std::endl;
+             curve_base_parmz.indepentvar= +usb_cmd_ctlz.ctrlin_speed.y+usb_cmd_ctlz.ctrlin_speed.x;
+              std::cout << "new move order:"<< curve_base_parmz.indepentvar << '\n';
+
+
 
            }
          else
             {
               usb_cmd_ctlz.move = false;
-              curve_base_parmz.indepentvar -= curve_base_parmz.firiction;
+              //curve_base_parmz.indepentvar -= curve_base_parmz.firiction;
             }
               if (sf::Joystick::isButtonPressed(0, 1))
               {
@@ -197,8 +200,6 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
         }//end of pooling loop
 
           // curive updatez.!
-
-
 /*
           for ( auto it = curve_map.begin(); it != curve_map.end(); ++it )
           {
@@ -209,11 +210,22 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
 
           }
           */
+
   //  curve_type_ojk_A1.genrate_curve(curve_sin_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A1.genrate_curve(curve_othz_ptr,indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A2.genrate_curve(curve_othz_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
-    curve_type_ojk_A3.genrate_curve(2,newpoly,prt_parm_curve1->indepentvar);
 
+
+
+//double randox=1;
+//for(int i =0; i<500; i++)
+//{ randox++;
+
+//}
+int numblak=0;
+    curve_type_ojk_A3.genrate_curve(numblak,prt_newpolyz,prt_parm_curve1->indepentvar,curve_base_parmz.intvral);
+
+    std::cout << "next solution: " << prt_newpolyz->solutionval(prt_parm_curve1->indepentvar) << '\n';
 
       run_render(sfmlwindow,curve_type_ojk_A3.curve_line);
       //run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
