@@ -123,10 +123,10 @@ int main(int argc, char* argv[])
       double cofA_6 =6;
       double cofA_2 =2;
 
-      p_nomi<double> p_6x_2(_x,cube_power,cofA_6);
+      p_nomi<double> p_6x_3(_x,cube_power,cofA_6);
       p_nomi<double> p_2x_1(_x,base_1,cofA_2);
 
-      polynomial<double> newpoly(2,p_6x_2,p_2x_1);
+      polynomial<double> newpoly(2,p_6x_3,p_2x_1);
 
 
   //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
