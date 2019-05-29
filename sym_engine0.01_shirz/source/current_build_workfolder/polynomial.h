@@ -13,8 +13,6 @@
     //  template <typename cons_type>
   //  enum Ind_name{ _error=-1, x=1,_y=2, _z=3,_alpha=4};
 
-
-
 template<typename base_type>
   class polynomial
   {

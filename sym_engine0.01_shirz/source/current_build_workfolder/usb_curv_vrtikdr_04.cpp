@@ -14,7 +14,7 @@
 #include <chrono>
 #include <unordered_map>
 
-#include "curve_sf_dis.h"
+#include "curve_sf_dis2.h"
 #include "USB_controler.h"
 #include "polynomial.h"
 /*
@@ -71,14 +71,14 @@ bool curve_factory
   typedef  struct curve_base_parm {
     curve_base_parm* next_cuvr_parm;
       size_t curvesiz=1000;
-      float intvral= 0.5f;
-      float modifer = 2;
-      float firiction = -1.2;
-      float  indepentvar = 3;
+      double intvral= 0.5f;
+      double modifer = 2;
+      double firiction = -1.2;
+      double  indepentvar = 3;
       int colourcycle;
        }curve_base_parmz;
 
-
+using namespace polyz;
 int main(int argc, char* argv[])
 {
   std::chrono::steady_clock::time_point Program_lanch_pt = std::chrono::steady_clock::now();
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
     //parmz move!
 
-     curve_base_parm* prt_parm_curve1 = new curve_base_parm(curve_base_parmz);
+     curve_base_parm* prt_parm_curve1 = &curve_base_parmz;
      //curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
       //curve_base_parm* prt_parm_curve2 = new curve_base_parm(curve_base_parmz);
 
@@ -116,15 +116,17 @@ int main(int argc, char* argv[])
 
       //some polyz to teszt
 
-      std::ratio<3,1> cubedegree;
-      std::ratio<1,1> base_1;
+      //std::ratio<3,1> cubedegree;
+    //  std::ratio<1,1> base_1;
+    int cube_power[2]= {3,1};
+      int base_1[2]= {1,1};
       double cofA_6 =6;
       double cofA_2 =2;
 
-      p_nomi p_6x_2(_x,cubedegree,cofA_6);
-      p_nomi p_2x_1(_x,base_1,cofA_2);
+      p_nomi<double> p_6x_2(_x,cube_power,cofA_6);
+      p_nomi<double> p_2x_1(_x,base_1,cofA_2);
 
-      polynomial newpoly(2,p_6x_2,p_2x_1);
+      polynomial<double> newpoly(2,p_6x_2,p_2x_1);
 
 
   //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
@@ -135,7 +137,7 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
     {     //mandory escape
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
           {
-              _2ndarycmdwindo.close();
+            //  _2ndarycmdwindo.close();
               sfmlwindow.close();
             }
 
@@ -149,7 +151,7 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
         //shutdown events,
         if(e_main.type == sf::Event::Closed)
           {
-            _2ndarycmdwindo.close();
+            //_2ndarycmdwindo.close();
             sfmlwindow.close();
 
             std::cout << "closeing windowsdml" <<'\n';
@@ -220,9 +222,9 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
       //accumlator =+ ( std::chrono::steady_clock::now()-Program_lanch_pt);
 }//eendof sfml window lop
 
-delete[] prt_parm_curve2;
 delete[] prt_parm_curve1;
-delete[] prt_parm_curve3;
+//delete[] prt_parm_curve1;
+//delete[] prt_parm_curve3;
       std::cout <<"shuting down..normalzzz" << '\n';
   return 0;
 

@@ -13,8 +13,6 @@ template<
     std::intmax_t Denom = 1
 >
 auto ratio_ = std::ratio<Num, Denom>{};*/
-
-
         template<typename nomi_type>
         struct p_nomi
         {
