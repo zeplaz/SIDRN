@@ -69,7 +69,7 @@ bool curve_factory
   // defind in curve enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};
 
     struct curve_base_parm {
-    curve_base_parm* next_cuvr_parm;
+      //curve_base_parm* next_cuvr_parm;
       size_t curvesiz=1000;
       double intvral= 0.5f;
       double modifer = 2;
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 
 
     // map setupz
-    std::unordered_map<int,curve_sf_dis*> curve_map;
+  //  std::unordered_map<int,curve_sf_dis*> curve_map;
 
     //parmz move!
 
@@ -118,10 +118,10 @@ int main(int argc, char* argv[])
 
       //std::ratio<3,1> cubedegree;
     //  std::ratio<1,1> base_1;
-    int cube_power[2]= {1,1};
-      int base_1[2]= {1,1};
-      double cofA_6 =2;
-      double cofA_2 =2;
+    int cube_power[2]= {3,2};
+      int base_1[2]= {1,2};
+      double cofA_6 =1.2;
+      double cofA_2 =1.12;
 
       p_nomi<double> p_6x_3(_x,cube_power,cofA_6);
       p_nomi<double> p_2x_1(_x,base_1,cofA_2);
@@ -132,6 +132,7 @@ int main(int argc, char* argv[])
   //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
 //  curve_sf_dis curve_type_ojk_A2(curve_base_parmz.curvesiz,curve_base_parmz.intvral,6);
 curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,green);
+curve_sf_dis curve_type_ojk_A4( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,blue);
 
   while (sfmlwindow.isOpen())
     {     //mandory escape
@@ -168,7 +169,7 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
           //   std::cout << "Y axis: " << usb_cmd_ctlz.ctrlin_speed.y << std::endl;
              curve_base_parmz.indepentvar= +usb_cmd_ctlz.ctrlin_speed.y+usb_cmd_ctlz.ctrlin_speed.x;
               std::cout << "new move order:"<< curve_base_parmz.indepentvar << '\n';
-
+              std::cout << "next solution: " << prt_newpolyz->solutionval(prt_parm_curve1->indepentvar) << '\n';
 
 
            }
@@ -195,6 +196,7 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
               std::cout << curve_base_parmz.colourcycle << " is Selected," << '\n';
 
               curve_type_ojk_A3.change_colour(curve_base_parmz.colourcycle);
+                curve_type_ojk_A4.change_colour(curve_base_parmz.colourcycle);
               //vframe
             }
         }//end of pooling loop
@@ -214,27 +216,28 @@ curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
   //  curve_type_ojk_A1.genrate_curve(curve_sin_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A1.genrate_curve(curve_othz_ptr,indepentvar,curve_base_parmz.intvral);
   //  curve_type_ojk_A2.genrate_curve(curve_othz_ptr,curve_base_parmz.indepentvar,curve_base_parmz.intvral);
+/*
+
+
+double randox=1;
+for(int i =0; i<500; i++)
+{ randox++;
+
+}*/
+ curve_type_ojk_A4.genrate_curve(curve_base_parmz.intvral,prt_parm_curve1->indepentvar, curve_othz_ptr);
+ curve_type_ojk_A3.genrate_curve(prt_newpolyz,prt_parm_curve1->indepentvar,curve_base_parmz.intvral);
 
 
 
-//double randox=1;
-//for(int i =0; i<500; i++)
-//{ randox++;
-
-//}
-int numblak=0;
-    curve_type_ojk_A3.genrate_curve(numblak,prt_newpolyz,prt_parm_curve1->indepentvar,curve_base_parmz.intvral);
-
-    std::cout << "next solution: " << prt_newpolyz->solutionval(prt_parm_curve1->indepentvar) << '\n';
-
-      run_render(sfmlwindow,curve_type_ojk_A3.curve_line);
+      run_render(sfmlwindow,curve_type_ojk_A3.curve_line,curve_type_ojk_A4.curve_line);
       //run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
     //sfmlwindow.draw(curve_type_ojk_A1.curve_line);
   //  sfmlwindow.draw(curve_type_ojk_A2.curve_line);
       //accumlator =+ ( std::chrono::steady_clock::now()-Program_lanch_pt);
 }//eendof sfml window lop
 
-delete[] prt_parm_curve1;
+//delete[] prt_parm_curve1;
+//delete[]  prt_newpolyz;
 //delete[] prt_parm_curve1;
 //delete[] prt_parm_curve3;
       std::cout <<"shuting down..normalzzz" << '\n';

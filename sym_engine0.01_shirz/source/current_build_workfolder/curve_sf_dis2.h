@@ -68,7 +68,7 @@ class curve_sf_dis : public sf::VertexArray
 
 template<typename functiontype,typename... curve_gen_parmz>
 
- inline void genrate_curve (functiontype&& line_func, auto indeptz, auto interval)
+ inline void genrate_curve (auto interval,  auto indeptz, functiontype&& line_func)
 //  inline void genrate_curve (functiontype&& line_func,curve_gen_parmz* curv_pakprmz)
     {   //interval = std::index_sequence_for<Types...>());
        sf::Color next_colour= baseColour;
@@ -83,7 +83,7 @@ template<typename functiontype,typename... curve_gen_parmz>
             //       else { b= true;
               //        next_colour =next_colour -(sf::Color::Yellow+sf::Color::Cyan);}
 
-          sf::Vector2f newtem_vec = line_func(x);
+          sf::Vector2f newtem_vec = line_func(x+indeptz);
           sf::Vertex tempvrtx(newtem_vec);
 
           tempvrtx.color = next_colour;
@@ -93,7 +93,30 @@ template<typename functiontype,typename... curve_gen_parmz>
     }
 
   //  template <typename bastype>
-      inline void genrate_curve (int numof, auto poly, auto parm_var,auto interval)
+
+
+  inline void genrate_curve (auto poly, auto parm_var,double interval)
+  {
+        sf::Color next_colour= baseColour;
+
+
+        for (auto x = paramz_min; x < paramz_max ; x+=interval)
+           {
+
+              float temp_point_y= static_cast<float>(poly->solutionval(parm_var+x));
+              //std::cout <<"currentyvale for curve: " << poly->solutionval(x) << '\n';
+               sf::Vector2f cur_point (temp_point_y,x);
+              sf::Vertex tempvrtx(cur_point);
+
+              tempvrtx.color = next_colour;
+              curve_line.append(tempvrtx);
+
+           }
+
+  }
+
+  template<typename functiontype>
+      inline void genrate_curve (functiontype&& line_func, auto poly, auto parm_var,auto interval)
       {
             sf::Color next_colour= baseColour;
 
@@ -101,9 +124,12 @@ template<typename functiontype,typename... curve_gen_parmz>
             for (auto x = paramz_min; x < paramz_max ; x+=interval)
                {
 
-                  float temp_point_y= static_cast<float>(poly->solutionval(parm_var+x));
+
                   //std::cout <<"currentyvale for curve: " << poly->solutionval(x) << '\n';
-                   sf::Vector2f cur_point (temp_point_y,x);
+                  float tempval= static_cast<float>(poly->solutionval(parm_var+x));
+                  if(tempval<0)
+                  {tempval=tempval*-1.f;}
+                   sf::Vector2f cur_point= line_func(tempval);
                   sf::Vertex tempvrtx(cur_point);
 
                   tempvrtx.color = next_colour;
