@@ -1,6 +1,6 @@
 
 
-
+#pragma once
 
 #include <iostream>
 #include <math.h>       /* pow */
@@ -105,7 +105,7 @@ template<typename nomi_type>
                       return temp_pn;
                   }
 
-            
+
 
 template<typename nomi_type>
         p_nomi<nomi_type> operator*(const p_nomi<nomi_type> &a, const p_nomi<nomi_type> &b)

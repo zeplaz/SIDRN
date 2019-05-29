@@ -15,7 +15,7 @@
 
 
 
-template<nametype base_type>
+template<typename base_type>
   class polynomial
   {
     private :
@@ -26,12 +26,13 @@ template<nametype base_type>
 
     public :
 
-    polynomal(int num_polyz, paramz..)
-  {  std::va_list varblist;
-    for (i=0; i<num_polyz i++ )
+    polynomial<base_type>(int num_polyz,...)
+  {  va_list varblist;
+    for (int i=0; i <num_polyz; i++ )
     { //int current_degree;
-      std::va_start(varblist,num_polyz);
-      p_nomi  temp_poiln (varblist,p_nomi);
+      va_start(varblist,num_polyz);
+      p_nomi<base_type> temp_poiln =  va_arg(varblist,p_nomi<base_type>);
+
     if(temp_poiln.return_degree() > degree )
         {
           degree =temp_poiln.return_degree();
@@ -40,30 +41,34 @@ template<nametype base_type>
     }
   }
 
-    void add_polni( int var_name, std::ratio<base_type,base_type> _power,auto coeffent )
+    void add_polni( int var_name, int* _power,auto coeffent )
     {
-      if(_power::num > degree)
+      if(_power[0]> degree)
       {
-        degree =_power::num;
+        degree =_power[0];
       }
 
-      p_nomi new_pli(var_name,_power,coeffent);
+      p_nomi<base_type> new_pli(var_name,_power,coeffent);
       polnymstack.push(new_pli);
     }
 
-    void* solutionval(auto in_var)
+    base_type solutionval(auto in_var)
     {
       if(polnymstack.size()!=0)
-      { p_nomi<base_type> temp_poli = polnymstack.peek();
-      for (i=1; i<polnymstack.size(); i++ )
+      { p_nomi<base_type> temp_poli = polnymstack.top();
+
+          auto solution =temp_poli(in_var);
+      for (int i=1; i<polnymstack.size(); i++ )
       {
-        auto solution =+temp_poli(in_var);
+
         polnymstack.pop();
-        temp_poli = polnymstack.peek();
+        temp_poli = polnymstack.top();
+        solution =+temp_poli(in_var);
       }
       return solution;
+
       }
-      return nullptr;
+      return '\n';
     }
 /*
   constexpr auto operator()(auto...power,auto..cof){return polynomal(power...,auto...cof);}
