@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ratio>
 #include "Indeterminate.h"
-#include "p_nomi.h"
+#include "p_nomi_withoutratio.h"
 
 
 using namespace polyz;
@@ -12,11 +12,14 @@ using namespace polyz;
 int main(int argc, char* argv[])
 {
 Indeterminate<double> newidz;
-std::ratio<3,1> cube_deg;
+int cube_deg[2];
+cube_deg[0]=3;
+cube_deg[1]=1;
 double cof_=3;
 
+
 newidz.set_inter_name(_y);
-p_nomi test_sing_poli(newidz,cube_deg,cof_);
+p_nomi<double> test_sing_poli(newidz,cube_deg,cof_);
 //  Indeterminate<double>  newidz(_x);
 
 
