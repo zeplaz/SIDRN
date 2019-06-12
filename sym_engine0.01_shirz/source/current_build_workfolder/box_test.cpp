@@ -14,7 +14,21 @@
 #include "Math_lamdaz.hpp"
 #include "B_box.hpp"
 
-main(int argc, char* argv[])
+
+
+template<typename... todrawz>
+void run_render(sf::RenderWindow& sfmlwindow,todrawz ...drawlizt)
+{
+      //printf("processing renderz\n");
+
+      sfmlwindow.clear(sf::Color(0, 0, 0));
+      //drawlist unfolder
+      (sfmlwindow.draw(drawlizt), ...);
+
+      sfmlwindow.display();
+}
+
+int main(int argc, char* argv[])
 {
 
   //create render windowz that will be  existinn at lanch...
@@ -30,10 +44,20 @@ main(int argc, char* argv[])
   USB_controler usb_cmd_ctlz;
   usb_cmd_ctlz.load_controlr();
 
-  box_functions_sqr newBox;
-  
+  box_functions newBox;
+
+  newBox.set_offset(100,100);
+  newBox.set_dimetions(300,300);
+
+    int cubed[2]= {3,1};
+  //  p_nomi<float> d2cubed(1,cubed,2.f);
+
+    //polynomial<float> d2cubed_poly(1,d2cubed);
+    //polynomial<float>* prt_d2cubed_poly = new polynomial<float>(d2cubed_poly);
+    //newBox.construct_poly(prt_d2cubed_poly,red,2.f,2.f,false);
 
 
+  newBox.construct_poly(curve_sin_ptr,red,2.f,2.f,false);
   while (sfmlwindow.isOpen())
     {     //mandory escape
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -71,10 +95,13 @@ main(int argc, char* argv[])
                    }
                }
 
-
+              //
+               auto prt_to_boxfuncdrawable = newBox.drawable();
+               run_render(sfmlwindow,*prt_to_boxfuncdrawable);
 
           }
 
+  //delete[] prt_d2cubed_poly;
   std::cout <<"shuting down..normalzzz" << '\n';
 
 return 0;

@@ -18,14 +18,15 @@ template<typename base_type>
   {
     private :
     int degree;
-
     //  std::touple<Indeterminate,Coefficient,int> polynomi;
     std::stack<p_nomi<base_type>> polnymstack;
 
     public :
 
     polynomial<base_type>(int num_polyz,...)
-  {  va_list varblist;
+  {
+    va_list varblist;
+
     for (int i=0; i <num_polyz; i++ )
     { //int current_degree;
       va_start(varblist,num_polyz);
@@ -39,7 +40,7 @@ template<typename base_type>
     }
   }
 
-    void add_polni( int var_name, int* _power,auto coeffent )
+    inline void add_polni( int var_name, int* _power,auto coeffent )
     {
       if(_power[0]> degree)
       {
@@ -50,7 +51,7 @@ template<typename base_type>
       polnymstack.push(new_pli);
     }
 
-    base_type solutionval(auto in_var)
+  inline  base_type solutionval(auto in_var)
     {
       if(polnymstack.size()!=0)
       {
@@ -70,8 +71,8 @@ template<typename base_type>
       }
       return '\n';
      }
-
-  std::valarray<base_type> solutionval(std:: inditmentlist,int numof_indetermz,...)
+/*
+  inline std::valarray<base_type> solutionval(std::stack* inditmentlist,int numof_indetermz,...)
     {
       std::vector<base_type> TemP_sol_vec;
       va_list varblist;
@@ -102,6 +103,7 @@ template<typename base_type>
       }
     return TemP_sol_vec;
   }
+  */
 /*
   constexpr auto operator()(auto...power,auto..cof){return polynomal(power...,auto...cof);}
   polynomal polynomal() {
