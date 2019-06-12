@@ -13,7 +13,7 @@
 #include "polynomial.h"
 
 namespace polyz{
- enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};}
+  enum colourznm{white,red,green,blue,yellow,cyan,magenta,transparent = -1};}
 
 
 using namespace polyz;
@@ -47,13 +47,12 @@ class curve_sf_dis : public sf::VertexArray
         {
             std::cout << "Enter_cuvre genrator\n";
 
-
             change_colour(base_colour);
 
              curve_line.setPrimitiveType(sf::LinesStrip);
              paramz_max= (float)size_line;
 
-             paramz_min = -1*(float)size_line/2;
+             paramz_min = (float)size_line/3;
              vertxcount = std::ceil((paramz_max - paramz_min) /interval_depth);
              curve_line.resize(vertxcount);
              std::cout <<"vertex count" << vertxcount << "parmx maxz" << paramz_max
@@ -94,7 +93,23 @@ template<typename functiontype,typename... curve_gen_parmz>
 
   //  template <typename bastype>
 
+  inline void genrate_curve(auto poly,double interval)
+  {
+    sf::Color next_colour= baseColour;
 
+
+    for (auto x = paramz_min; x < paramz_max ; x+=interval)
+       {
+          float temp_point_y= static_cast<float>(poly->solutionval(x));
+          //std::cout <<"currentyvale for curve: " << poly->solutionval(x) << '\n';
+          sf::Vector2f cur_point (temp_point_y,x);
+          sf::Vertex tempvrtx(cur_point);
+
+          tempvrtx.color = next_colour;
+          curve_line.append(tempvrtx);
+
+       }
+  }
   inline void genrate_curve (auto poly, auto parm_var,double interval)
   {
         sf::Color next_colour= baseColour;

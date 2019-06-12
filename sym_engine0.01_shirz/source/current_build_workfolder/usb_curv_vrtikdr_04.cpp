@@ -129,10 +129,19 @@ int main(int argc, char* argv[])
       polynomial<double> newpoly(2,p_6x_3,p_2x_1);
       polynomial<double>* prt_newpolyz = &newpoly;
 
+      int base_2[2]= {2,1};
+
+      p_nomi<double> x_2_cirx (_x,base_2,1.f);
+      p_nomi<double> y_2_cirx (_y,base_2,1.f);
+      polynomial<double> cicle1(2,x_2_cirx,y_2_cirx);
+      polynomial<double>* prt_cicle1 = &cicle1;
+
+
   //curve_sf_dis curve_type_ojk_A1(curve_base_parmz.curvesiz,curve_base_parmz.intvral,3);
 //  curve_sf_dis curve_type_ojk_A2(curve_base_parmz.curvesiz,curve_base_parmz.intvral,6);
 curve_sf_dis curve_type_ojk_A3( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,green);
 curve_sf_dis curve_type_ojk_A4( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,blue);
+curve_sf_dis curve_type_ojk_A5( prt_parm_curve1->curvesiz,prt_parm_curve1->intvral,red);
 
   while (sfmlwindow.isOpen())
     {     //mandory escape
@@ -195,7 +204,7 @@ curve_sf_dis curve_type_ojk_A4( prt_parm_curve1->curvesiz,prt_parm_curve1->intvr
                 }
               std::cout << curve_base_parmz.colourcycle << " is Selected," << '\n';
 
-              curve_type_ojk_A3.change_colour(curve_base_parmz.colourcycle);
+                curve_type_ojk_A3.change_colour(curve_base_parmz.colourcycle);
                 curve_type_ojk_A4.change_colour(curve_base_parmz.colourcycle);
               //vframe
             }
@@ -224,12 +233,13 @@ for(int i =0; i<500; i++)
 { randox++;
 
 }*/
- curve_type_ojk_A4.genrate_curve(curve_base_parmz.intvral,prt_parm_curve1->indepentvar, curve_othz_ptr);
- curve_type_ojk_A3.genrate_curve(prt_newpolyz,prt_parm_curve1->indepentvar,curve_base_parmz.intvral);
+ //curve_type_ojk_A4.genrate_curve(curve_base_parmz.intvral,prt_parm_curve1->indepentvar, curve_othz_ptr);
+ //curve_type_ojk_A3.genrate_curve(prt_newpolyz,prt_parm_curve1->indepentvar,curve_base_parmz.intvral);
 
+  curve_type_ojk_A5.genrate_curve(prt_cicle1,curve_base_parmz.intvral);
 
-
-      run_render(sfmlwindow,curve_type_ojk_A3.curve_line,curve_type_ojk_A4.curve_line);
+      //curve_type_ojk_A3.curve_line,curve_type_ojk_A4.curve_line
+      run_render(sfmlwindow,curve_type_ojk_A5.curve_line);
       //run_render(_2ndarycmdwindo,curve_type_ojk_A1.curve_line);
     //sfmlwindow.draw(curve_type_ojk_A1.curve_line);
   //  sfmlwindow.draw(curve_type_ojk_A2.curve_line);

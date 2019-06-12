@@ -53,21 +53,55 @@ template<typename base_type>
     base_type solutionval(auto in_var)
     {
       if(polnymstack.size()!=0)
-      { p_nomi<base_type> temp_poli = polnymstack.top();
+      {
+        p_nomi<base_type> temp_poli = polnymstack.top();
 
-          auto solution =temp_poli(in_var);
+        auto solution =temp_poli(in_var);
+
       for (int i=1; i<polnymstack.size(); i++ )
       {
-
         polnymstack.pop();
         temp_poli = polnymstack.top();
         solution =+temp_poli(in_var);
       }
+
       return solution;
 
       }
       return '\n';
-    }
+     }
+
+  std::valarray<base_type> solutionval(std:: inditmentlist,int numof_indetermz,...)
+    {
+      std::vector<base_type> TemP_sol_vec;
+      va_list varblist;
+      if(polnymstack.size()!=0)
+      {
+        for (int i=0; i<polnymstack.size(); i++ )
+        {
+         for (int j=0; j <numof_indetermz; j++ )
+         {
+           int current_degree;
+
+           va_start(varblist,num_polyz);
+
+           double ind_val =  va_arg(varblist,double);
+           p_nomi<base_type> temp_poli = polnymstack.top();
+
+           if(temp_poli.inter_name == inditmentlist->at(j))
+            {
+              auto solution =temp_poli(ind_val);
+              polnymstack.pop();
+            }
+            temp_poli = polnymstack.top();
+
+        solution =+temp_poli(in_var);
+        TemP_sol_vec.push_back(solution);
+      }
+      }
+      }
+    return TemP_sol_vec;
+  }
 /*
   constexpr auto operator()(auto...power,auto..cof){return polynomal(power...,auto...cof);}
   polynomal polynomal() {
