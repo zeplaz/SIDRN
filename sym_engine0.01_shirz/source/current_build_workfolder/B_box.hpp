@@ -5,7 +5,7 @@
 
 #include <math.h>
 #include <iostream>
-#include <memory>
+//#include <memory>
 
 
 #include "polynomial.h"
@@ -65,10 +65,12 @@ class box_functions : public  B_box
 
   public :
 
-  ~ box_functions()
+  ~box_functions()
   {
     delete[] ptr_drablefunc;
   }
+
+
 
   virtual void set_dimetions(size_t width, size_t hight)
   {
@@ -240,3 +242,74 @@ inline  void construct_poly(polynomial<base_type>* prt_poly, int base_colour, fl
 
 
 };
+
+
+static int next_box_id =0;
+
+class box_func_node
+{
+  private :
+  int id_box_F;
+  box_functions* ptr_f_box;
+  bool vaild;
+  bool update;
+
+public:
+  inline bool is_vaild(){return vaild;}
+  inline bool do_update(){return update;}
+  inline void set_update(bool in)
+  {update = in;}
+  inline void set_vaild(bool in)
+  {   vaild=in;  }
+
+  ~box_func_node()
+  {
+    delete[] ptr_f_box;
+  }
+/*
+
+template<typename functiontype>
+  inline void update_func(functiontype&& line_func)
+  {
+    if(do_update){
+
+      for (auto x = size_min; x<size_max; x+=interv)
+      {
+        float var = (float)x;
+          sf::Vector2f cur_point;
+          sf::Vector2f newtem_vec = line_func(x);
+          std::cout << "point atz:" << newtem_vec.x << " " <<  newtem_vec.y << '\n';
+            //float tempval= static_cast<float>(prt_poly->solutionval(var));
+        if(newtem_vec.x<0)
+          {newtem_vec.x=newtem_vec.x*-1.f;}
+
+        if(newtem_vec.x<max_solutionbounded)
+          {
+            if(invert)
+            {
+
+              cur_point.x=newtem_vec.y+offsetxy[1];
+              cur_point.y =newtem_vec.x+offsetxy[0];
+            }
+            else
+            { cur_point.x=newtem_vec.x+offsetxy[0];
+              cur_point.y= newtem_vec.y+offsetxy[1];
+            }
+
+            sf::Vertex tempvrtx(cur_point);
+            tempvrtx.color = curve_forBox.baseColour;
+            ptr_f_box->curve_forBox.curve_line.append(tempvrtx);
+          }
+         }
+       }
+     }
+*/
+     inline box_func_node* newbox_f_node(box_functions& ref_inbox)
+     {
+       ptr_f_box= &ref_inbox;
+       id_box_F =next_box_id;
+       next_box_id++;
+       return (this);
+     }
+
+    };
