@@ -30,18 +30,21 @@ int main(int argc, char* argv[])
 
   clockvec_pos[0] = start_new_clocksym->start_new_dbl_clocksym();
   clockvec_pos[1] = start_new_clocksym->start_new_u64_clocksym();
-  //start_new_clocksym->out_diffrence_double_now();
-  //start_new_clocksym->out_diffrence_u64_now();
 
   std::thread th(&threadFunc);
   th.join();
 
-  clockvec_pos[3] = start_new_clocksym-> start_new_u64_clocksym();
-  clockvec_pos[2] = start_new_clocksym->start_new_dbl_clocksym();
-
-  start_new_clocksym->out_diffrence_u64_now();
-  start_new_clocksym->out_diffrence_double_now();
-
+  clockvec_pos[2] = start_new_clocksym-> start_new_u64_clocksym();
+  clockvec_pos[3] = start_new_clocksym->start_new_dbl_clocksym();
+  //start_new_clocksym->out_diffrence_u64_now();
+  //start_new_clocksym->out_diffrence_double_now();
+  std::cout <<  "CLOCK!_1REGLZR:"
+            << start_new_clocksym->delta_framregulator_double(clockvec_pos[0])
+            << "<-fixorless"<< '\n'
+            << "clock2regul:"
+            << start_new_clocksym->delta_framregulator_double(clockvec_pos[3])
+            << "<-fixorless"
+            <<'\n'  <<'\n';
 
 return 0;
 }

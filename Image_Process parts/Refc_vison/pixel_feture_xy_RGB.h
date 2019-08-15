@@ -7,12 +7,15 @@
 //std libz
 #include <utility>
 #include <tuple>
+#include <math.h>
+#include <iostream>
 
 //localincluz
-#include "imagkjz_RGB.h"
+#include "RGB_pix_intzity.h"
+//#include "imagkjz_RGB.h"
 
 //declare used class
-  class imagkjz_RGB;
+//  class imagkjz_RGB;
 
 
   class pixel_feture_xy_RGB
@@ -29,7 +32,7 @@
 
     void pcopyer(pixel_feture_xy_RGB);
     void pmaual_feture_set(double,double,double,double,double);
-    void point_setter(imagkjz_RGB&,int,int);
+    void point_setter(RGB_pix_intzity*,int,int);
     void fetureaccumalor(pixel_feture_xy_RGB);
     void pointscaler(double);
 

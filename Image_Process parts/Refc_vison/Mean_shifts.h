@@ -9,6 +9,9 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <cstring>
+#include <stack>
+
 
 #include "imagkjz_RGB.h"
 #include "pixel_feture_xy_RGB.h"

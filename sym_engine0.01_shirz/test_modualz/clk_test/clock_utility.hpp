@@ -10,7 +10,8 @@
   #define steady 0U
   #define high_rez 1U
   #define sytm 2U
-
+  #define clk_dubl 3U
+  #define clk_u64 4U
 
 // settup of need glob defypez
   using u64_millis = std::chrono::duration<uint64_t, std::milli>;
@@ -42,13 +43,13 @@
   {
     private :
      typedef std::tuple<hr_clock*,t_point_hr_u64_mili> clk_prt_w_u64Start;
-     typedef std::tuple<hr_clock*,double>              clock_prt_wdoubleStart;
+     typedef std::tuple<hr_clock*,double,double>       clock_prt_wdoubleStart;
 
     private :
      static int posz_id_clck_dbl;
      static int posz_id_clck_u64;
 
-     std::chrono::duration<double, std::milli>  mili_duble_dur;
+     std::chrono::duration<double, std::chrono::milliseconds::period>  mili_duble_dur;
      std::chrono::duration<float, std::chrono::milliseconds::period> mili_float_dur;
 
      std::vector<clock_prt_wdoubleStart> clock_doublearray_vec;
@@ -85,6 +86,44 @@
           return posz_id_clck_u64;
         }
 
+        bool trigger_double()
+        {
+          //  using dbl_mili_sec = std::chrono::duration<double, std::chrono::milliseconds::period>;
+          //deltaTime = std::chrono::duration_cast<dbl_mili_sec>(prt_newdbl_clock->now() - ).count();
+          return true;
+        }
+
+        double delta_framregulator_double(int clk_pos)
+        {
+          double fix_double_40 = 40;
+
+           double difz = out_diffrence_double_now_wupdate(clk_pos);
+
+            if(fix_double_40<difz)
+              { std::cout << "correcttofix" <<'\n';
+               return fix_double_40;
+              }
+             else
+              {
+                std::cout << "lowerten" <<'\n';
+               return difz;
+              }
+        }
+
+    /*  framregulator_fixed(int clk_pos, uint8_t clk_type)
+       {
+         std::chrono::milliseconds fix_mili_40(40);
+
+        }
+    */
+        double make_double_now()
+        {
+          auto  current_new_time =  hr_clock::now();
+          auto   dur_in_milz     =  std::chrono::duration<double, std::milli>(current_new_time.time_since_epoch());
+
+          return dur_in_milz.count();
+        }
+
         int start_new_dbl_clocksym()
         {
           hr_clock* prt_newdbl_clock = new hr_clock();
@@ -93,83 +132,61 @@
           auto   dur_in_milz     =  std::chrono::duration<double, std::milli>(current_new_time.time_since_epoch());
           double dbl_current_time =  dur_in_milz.count();
 
-          clock_doublearray_vec.push_back(std::make_tuple(prt_newdbl_clock, dbl_current_time));
+          clock_doublearray_vec.push_back(std::make_tuple(prt_newdbl_clock, dbl_current_time,dbl_current_time));
           posz_id_clck_dbl++;
           return posz_id_clck_dbl;
         }
 
-        void out_diffrence_double_now()
+        double out_diffrence_double_now_wupdate(int clk_loc)
         {
-          for(size_t i =0; i < clock_doublearray_vec.size(); i++)
-          {
-             clock_prt_wdoubleStart* prt_cur =  & clock_doublearray_vec.at(i);
+              double tp_ckd_aginst;
+              clock_prt_wdoubleStart* prt_cur =  & clock_doublearray_vec.at(clk_loc);
               hr_clock*  prt_hi_res_clk = std::get<0>(*prt_cur);
+              tp_ckd_aginst = std::get<2>(*prt_cur);
 
-            // mili_duble_dur  dif =  (-prt_hi_res_clk->now())
-            std::cout << "-----OUT_CLOCKdoubleINFO------" << '\n'
-                      << "START DOUBLE:" << std::get<1>(*prt_cur) <<  '\n' << '\n';
+              double dif    = (make_double_now()-tp_ckd_aginst);
+                        //debug_VARB1
+                      std::cout << "-----OUT_CLOCKdoubleINFO------" << '\n'
+                      << "START DOUBLE:" << std::get<1>(*prt_cur) <<  '\n'
+                      << "DIFz: aucal" <<dif << '\n' << '\n';
 
-                        if(clock_doublearray_vec.size() >= 2)
-                        {
-                          if(i==0)
-                          {
-                            test_1 =std::get<1>(*prt_cur);
-                          }
-                          else
-                          {
-                            test_2 =std::get<1>(*prt_cur);
-                          }
-                          if(i>0)
-                          {
-                            double dif  =  test_1-test_2;
-                            std::cout << "DIFRENTdoublez: " << dif << '\n' <<'\n';
-                          }
+            std::get<2>(*prt_cur) = make_double_now();
+          return dif;
+         }
 
 
-                        }
+    void out_diffrence_u64_now()
+      {
+       for(size_t i =0; i < clock_u64array_vec.size(); i++)
+        {
+          clk_prt_w_u64Start* prt_cur = & clock_u64array_vec.at(i);
+          hr_clock*  prt_hi_res_clk = std::get<0>(*prt_cur);
+
+          if(clock_u64array_vec.size() >= 2)
+          {
+            std::cout << "-----OUT_CLKu64INFO------" << '\n';
+            if(i==0)
+             {
+              test_3 =std::get<1>(*prt_cur);
+             }
+             else
+             {
+              test_4 =std::get<1>(*prt_cur);
+             }
+
+             if(i>0)
+              {
+                u64_millis dif_dur=  u64_millis (test_4-test_3);
+                std::cout << "DIFRZ TIMEPOT TO DURAZK: " <<dif_dur.count()
+                << '\n' <<'\n';
+              }
+
+              }
+            }
           }
-        }
 
 
-        void out_diffrence_u64_now()
-          {
-           for(size_t i =0; i < clock_u64array_vec.size(); i++)
-            {
-              clk_prt_w_u64Start* prt_cur = & clock_u64array_vec.at(i);
-              hr_clock*  prt_hi_res_clk = std::get<0>(*prt_cur);
 
-
-                      //  << "START u64z:" << std::get<1>(*prt_cur) <<  '\n'
-
-                        if(clock_u64array_vec.size() >= 2)
-                        {  std::cout << "-----OUT_CLKu64INFO------" << '\n';
-                          if(i==0)
-                          {
-                            test_3 =std::get<1>(*prt_cur);
-                          }
-                          else
-                          {
-                            test_4 =std::get<1>(*prt_cur);
-                          }
-                          if(i>0)
-                          {
-                            u64_millis dif_dur=  u64_millis (test_3-test_4);
-                            std::cout << "DIFRZ TIMEPOT TO DURAZK: " <<dif_dur.count()
-                            << '\n' <<'\n';
-                          }
-
-                        }
-
-            }}
-
-
-        bool trigger_double()
-        {
-            using dbl_mili_sec = std::chrono::duration<double, std::chrono::milliseconds::period>;
-            //  clock_prt_wStart.at(0);
-            //deltaTime = std::chrono::duration_cast<dbl_mili_sec>(prt_newdbl_clock->now() - ).count();
-          return true;
-        }
 
     };
 
