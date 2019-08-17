@@ -70,6 +70,16 @@ foever..v e.r. s..ll.. olalwwa.z bellal P/l a;b;ida/";.l pprakak..t"A
 
 #ebdif
 
+#ifdef _sattle_rine
+
+the revilations of space, allow for the cougure, of poetnals, i dont quiet know
+the depth of _the spirt, that wants to waonder upon the follwy ground, but, i would say, best to become all else upon the life would, wish forwards, in a
+.. dectype*(.->*). over presitionsz, of the postion of cunning wont allow for the giving of the temorial mazuitre. .. a potnetal conflict in the evelasting.
+. startiling as it may me, the interchange of  space should hopefulyl allow for, a escape...().. . we,, should. forever be bound about, the star,ie're/ etile. blueshying.
+uat our. eye! alls.z.washa golding locking down.  agrasing. heps, of flur, ashaile!
+
+#endIF
+
 class hash_tablez
 {
   private :
