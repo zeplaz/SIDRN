@@ -93,7 +93,17 @@ class wrap_sdl_texture
   int getHeight()
     {return t_hight;}
 
-  SDL_Texture* scale_texture(SDL_Renderer* sdl_rednerz, int tar_width, int tar_hight)
+  SDL_Surface* get_active_surface()
+  {
+    return active_surface;
+  }
+
+  void set_sufrace_overide(SDL_Surface* suf_ovr)
+  {
+    active_surface = suf_ovr;
+  }
+  SDL_Texture* scale_texture(SDL_Renderer* sdl_rednerz, int tar_width,
+                             int tar_hight, SDL_Surface* rtr_scal_suf= nullptr )
   {
     SDL_Texture * scaled_texture = NULL;
     SDL_Rect sourceDimensions;
@@ -144,13 +154,16 @@ if (SDL_BlitScaled(prt_32bitBPPsurface, NULL, Scaler_surface, NULL) < 0) {
                      Scaler_surface = NULL;
                  }
 
-    SDL_FreeSurface(active_surface);
+    //SDL_FreeSurface(active_surface);
 
-    active_surface = Scaler_surface;
+    if(rtr_scal_suf != nullptr)
+    {
+      rtr_scal_suf = Scaler_surface;
+    }
     t_width =active_surface->w;
     t_hight =active_surface->h;
 
-     scaled_texture  = SDL_CreateTextureFromSurface(sdl_rednerz, active_surface);
+     scaled_texture  = SDL_CreateTextureFromSurface(sdl_rednerz, Scaler_surface);
      // pehrpa soption return by refrence scaller sufrace to put in new nexture
      //wrapper!!!
      SDL_FreeSurface(Scaler_surface);
@@ -298,7 +311,8 @@ if (SDL_BlitScaled(prt_32bitBPPsurface, NULL, Scaler_surface, NULL) < 0) {
     {
       private :
       int posx, posy;
-      std::vector<wrap_sdl_texture> Pane_texture_collection;
+      
+      //std::vector<wrap_sdl_texture> Pane_texture_collection;
 
     public:
       //	gButtonSpriteSheetTexture.render( mPosition.x, mPosition.y, &gSpriteClips[ mCurrentSprite ] );

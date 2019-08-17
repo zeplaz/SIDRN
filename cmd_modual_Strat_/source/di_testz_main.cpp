@@ -4,11 +4,16 @@
 #include <SDL.h>
 //#include <SDL/SDL_image.h>
 #include <SDL_image.h>
+#include <stdio.h>
+
 #include "Dialog.hpp"
 #include "path_rez.hpp"
 #include "image_layar_cmd.hpp"
 #include "cmd_managerz.hpp"
-#include <stdio.h>
+
+#include "UI_kontrolUNIT.hpp"
+//#include "cmd_buttonz.hpp"
+
 
 enum Button_Type{
 SDL_Pressed_Default,
@@ -83,6 +88,8 @@ int main(int argc, char **argv)
     bool sucezz = true;
     SDL_Event Prim_SDL_event;
 
+
+
     quit = !run_sdl();
 
     //quit != construct_main_window(sdl_window_main,sdl_render);
@@ -123,16 +130,16 @@ int main(int argc, char **argv)
 
     printf("#->SDLLOADED::mainwindow OPENz\n");
 
-    rez_path test_txtr1_path;
+
     rez_path test_txtr2_path;
 
-    char* pathcartexr01 = {"GUI/Confermz_buttonz_2DOWN.ppm"};
+
     char* pathcartexr02 = {"GUI/sample_01_UIv02.png"};
 
-    test_txtr1_path(pathcartexr01);
+
     test_txtr2_path(pathcartexr02);
 
-    wrap_sdl_texture test_texture01;
+
     wrap_sdl_texture test_texture02;
 
 
@@ -141,12 +148,13 @@ int main(int argc, char **argv)
       printf("nullprtzmain of render.");
     }
 
-    test_texture02.load_texture_file(test_txtr2_path,&sdl_render);
+    //test_texture02.load_texture_file(test_txtr2_path,&sdl_render);
+    confermz_buttonz test_conferm_button;
+    int con_x=100, con_y=200;
+    test_conferm_button.load_paks_button(&sdl_render);
+    test_conferm_button.setPosition(con_x,con_y);
+    test_conferm_button.set_size();
 
-    test_texture01.load_texture_file(test_txtr1_path,&sdl_render);
-
-
-    wrap_sdl_texture test_texture03(test_texture01.scale_texture(sdl_render,56,28),56,28);
 
     while(!quit)
     {
@@ -161,6 +169,8 @@ int main(int argc, char **argv)
         //control_loop.cycle();
         //control_loop.update();
 
+        test_conferm_button.sdl_handle_event(&Prim_SDL_event);
+
 
         //redering stuffz
       //  SDL_SetRenderDrawColor( sdl_render, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -173,7 +183,8 @@ int main(int argc, char **argv)
         int posx1=500, posy1=300;
         //test_texture01.render(sdl_render,posx,posy);
         //test_texture02.render(sdl_render,posx1,posy1);
-        test_texture03.render(sdl_render,10,500);
+        test_conferm_button.render(sdl_render);
+        //test_texture03.render(sdl_render,10,500);
         //outputtoscreenz
        SDL_RenderPresent(sdl_render);
 

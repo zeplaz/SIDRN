@@ -21,7 +21,7 @@ class rez_path
 
    for (size_t i =0; i< path_size;i++)
     {
-
+/*
      if(OS_win)
      {
       if(in_charzarry[i]=='\\')
@@ -29,6 +29,7 @@ class rez_path
         in_charzarry[i]=='/';
       }
      }
+     */
 
      for (int i =0; i<path_size; i++)
      {
