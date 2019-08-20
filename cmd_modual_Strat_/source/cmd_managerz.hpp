@@ -36,83 +36,143 @@ class Dialog_cmdz : public  dep_cmd
   virtual ~Dialog_cmdz() = default;
 };
 
-#ifDEf _igorPOUR_amie_Aiz
-
+/*
 class lookup_table_namez
   {
-    for (the problem of wealgleensizes,|| the dreamedzzz treaout the lightz.)
-    ;; turin,.s. agousz,.b lowiignz... ourw yaahzz. .. shounee..a sotueebvllakrha.a hovrringinz.
-    llishashigllasyelaz..z.z.al allai blbmeothingnsz...mmogus. cut showuldaa. dtramdmf,g,.. giving.a.sjjingz.z.z.z.
+    std::wstring
+  };
+*/
 
-
-    tvlalslvlaileilaourlahgihta..s.ss.s. vvaisllilel.. alalughtlladutoughtzz..tz;;
-    slooococowheuemamjhinghaif..a.ahguamns,..s.a.a ajehjsguestt a abtoughta./a/z;z;^^*&7 cov..bmaoght,emeyrz
-
-    hueea;a;zzaiaala.a, belzz.vol.z. vfover..a.allkkk.. sookk the gaze,, vrepaigins,,a waye.. tourkiet, a prefecture upon  the gravled suit.
-
-    splating.. the hight. hills.z.z juakapurew would yeislz'0)8l. shviign down. thgown.z. ive. strilepd down thos pathegs., qaquncetxzs would
-    wince, and ai shall.,  hivieirng down.. the gowns of dwawn,, blurkle... shaverlll deviles be twisting your oake,
-
-    but , the times.s wont. covbcles. bellow the dewsing,., vifgurr..z.z.z. x){}
-    class forget..{{'; pverturezs. the timez.. and shall.. brun.. virtore, be layed,. upon the graves. of our  shune.. light. we lwiel.dd downb Confermz_buttonz_2HOVERthe s termouial./. figure. a a waays,. tosahker,.. the dwawn
-
-
-    dl'luguht,s,s, ahaving.. ever,. beene. givin willooing sun,. wie want to down.. aour. own,., fetueequ;'e'/
-     the}likjkk jsushimgnl. wikll.. lfivofrgfigure. reands upon the dust a shall. call.  blessh.. abut.. the }
-
-};
-foever..v e.r. s..ll.. olalwwa.z bellal P/l a;b;ida/";.l pprakak..t"A
-<template class type_hashed>ma,al *^l,. lightl. $^a.. seht, abl;;%.. oove.r.;; wee,.. shaalla. ong.lls aloiomn the adoawnwe.Z.z doa./!
-
-,.ikeo.v"00over//6darte/z/z aird/z..z i'-p9y
-
-};
-
-#ebdif
-
-#ifdef _sattle_rine
-
-the revilations of space, allow for the cougure, of poetnals, i dont quiet know
-the depth of _the spirt, that wants to waonder upon the follwy ground, but, i would say, best to become all else upon the life would, wish forwards, in a
-.. dectype*(.->*). over presitionsz, of the postion of cunning wont allow for the giving of the temorial mazuitre. .. a potnetal conflict in the evelasting.
-. startiling as it may me, the interchange of  space should hopefulyl allow for, a escape...().. . we,, should. forever be bound about, the star,ie're/ etile. blueshying.
-uat our. eye! alls.z.washa golding locking down.  agrasing. heps, of flur, ashaile!
-
-#endIF
-
+template<class type_hashed>
 class hash_tablez
 {
   private :
   std::hash<std::wstring> hasherz;
   std::unordered_map<size_t,type_hashed*> map_hash_table;
+  typename std::unordered_map<size_t,type_hashed*>::iterator map_table_itr = map_hash_table.begin();
 
+  //
   public :
 
+  //template<class type_hashed>
   void add_entry_by_name(std::wstring in_name ,type_hashed* value_prt)
   {
+    map_hash_table.insert(std::make_pair(hasherz(in_name),value_prt));
+  }
 
-    std::make_pair(hasherz(in_name),value_prt)
+  void add_enty_by_hashed(size_t in_hashedval,type_hashed* value_prt)
+  {
+    map_hash_table.insert(std::make_pair(in_hashedval,value_prt));
+  }
+
+  void add_entry_auto(auto in_name, type_hashed* value_prt)
+  {
+    map_hash_table.insert(std::make_pair(hasherz(in_name),value_prt));
+  }
+
+  size_t hashed_val_return(int type_in,auto intohash)
+  {
+    switch (type_in)
+    {
+      case WSTRING_INZ :
+      {
+          return hasherz(intohash);
+          break;
+      }
+      case CHARZ_INZ :
+      {
+        return hasherz(intohash);
+        break;
+      }
+    }
+
+  }
+
+  type_hashed* return_hashed_entity(int ID_entity)
+  {
+    //  std::unordered_map<>::iterator map_table_itr
+    // = map_hash_table.begin();
+    map_table_itr = map_hash_table.find(ID_entity);
+    if(map_table_itr == map_hash_table.end())
+    {
+      printf("invailedID or texture been destoyed.");
+      return nullptr;
+    }
+    else
+    {
+      type_hashed* tmpr_prt;
+      tmpr_prt= map_table_itr->second;
+      return tmpr_prt;
+    }
+  }
+
+  void destory_entry(int in_id)
+  {
+    type_hashed* tmpr_prt;
+    tmpr_prt = return_hashed_entity(in_id);
+
+    delete[] tmpr_prt;
+    map_hash_table.erase(in_id);
   }
 
 };
 
 
-class textture_cmd : public  dep_cmd
+class texture_cmd : public  dep_cmd
 {
   private :
 
-
-  std::touple<uint32_t,wrap_sdl_texture>
+  hash_tablez<wrap_sdl_texture>* prt_to_hashtable;
+  //std::touple<uint32_t,wrap_sdl_texture>
 
   public :
-  textture_cmd(dep_cmd* ast_cmd) : dep_cmd(ast_cmd)
-  {}
-  virtual ~textture_cmd() = default;
-
-  void add_name_hasher(std::wstring in_string)
+  texture_cmd(dep_cmd* ast_cmd) : dep_cmd(ast_cmd)
   {
-    uint32_t hashed_int = textture_hasher(in_string);
+    prt_to_hashtable  = nullptr;
+  }
 
+  virtual ~texture_cmd() = default;
+
+  bool registar_with_hashtable(hash_tablez<wrap_sdl_texture>* intable)
+  {
+    prt_to_hashtable =intable;
+  }
+
+  void add_name_hasher(std::wstring in_string,wrap_sdl_texture* intexture)
+  {
+    if(prt_to_hashtable !=nullptr)
+    {
+      //uint32_t hashed_int = prt_to_hashtable(in_string);
+      prt_to_hashtable->add_entry_auto(in_string,intexture);
+    }
+  }
+
+  void destory_texture(int id_texture)
+  {
+    prt_to_hashtable->destory_entry(id_texture);
+  }
+
+  //template<class type>
+  void create_texture_resorce(int type_mode,auto inval,SDL_Renderer** sdl_rednerz)
+  {
+    char* path_tx;
+    rez_path in_path;
+    switch (type_mode)
+    {
+      case MANUAL_ENTER :
+
+      break;
+      case CHARZ_INZ :
+      {
+       in_path(inval);
+       wrap_sdl_texture* new_texture = new wrap_sdl_texture();
+       new_texture->load_texture_file(inval,sdl_rednerz);
+      }
+      break;
+      case STRING_INZ:
+
+      break;
+    }
   }
 };
 
@@ -123,7 +183,7 @@ class Asset_manager  : public  dep_cmd
   {}
   virtual ~Asset_manager() = default;
 
-  void add_textture(int te_id, rez_path path);
+  //void add_textture(int te_id, rez_path path);
 
   //get_textture(int te_id);
 };

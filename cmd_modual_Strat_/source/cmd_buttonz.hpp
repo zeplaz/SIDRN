@@ -1,4 +1,6 @@
 
+#pragma once
+
 struct resource_Pathz_Button_pak
 {
   rez_path button_res_path_OFF;
@@ -38,13 +40,14 @@ class base_button
   int b_hight,b_width;
 
   public :
-  base_button();
+  base_button(){};
   virtual ~base_button() = default;
   //virtual void set_position(int x, int y) = 0;
   virtual void sdl_handle_event(SDL_Event* sdl_event) = 0;
   virtual void render(SDL_Renderer*) = 0;
   virtual void set_size(int x, int y) = 0;
- };
+  virtual void setPosition(int x, int y) =0;
+  };
 
 
 

@@ -18,12 +18,13 @@
     int			m_Clicks = 0;
     //SDL_Timer	m_DoubleClickTimer = (500);//500ms for 2 clicks for now...
     bool focuz;
+    friend class UI_department;
   };
 
 
   class UI_department
   {
-    freind class UI_kontrlz_modual;
+
     private :
 
     UI_kontrlz_modual* ktrl_modual_focuz = nullptr;
@@ -64,9 +65,10 @@ class tabz_base
   {
     if(!depth ==0)
     {
-      create_id_tab();
+      create_primary_tab();
     }
-    }
+
+   }
 
 /*
   void create_id_tab()
@@ -112,7 +114,7 @@ class tabz_base
     public :
     virtual bool is_mouse_on()
      {
-      if(focuz = false)
+      if(focuz == false)
       {return false;}
      }
 /*
@@ -135,22 +137,32 @@ class tabz_base
       posy=y;
     }
 
-    virtual bool add_button()
+    virtual void add_button(int type_button)
     {
-      bool succezz = true;
-      base_button* prt_button = new base_button();
+      //bool succezz = true;
+      switch (type_button)
+      {
+        case BUTTON_TYPE_CNFMZ :
+        {
+          sdl_button* prt_button = new confermz_buttonz();
 
-      butten_z->set_posz();
+          prt_button->setPosition(sdl_postion.x,sdl_postion.y);
 
-      butten_z.push_back(prt_button);
+          butten_z.push_back(prt_button);
+          break;
+        }
 
+      }
 
+    }
+      /*
       if(!button_texture.load_texture_file())
       {
         printf("##@# fail--buttenimage invalid fileloadz:chk_pathz\n");
         succezz = false;
       }
      }
+     */
 
     virtual void tab_event_scan(SDL_Event* sdl_event)
     {

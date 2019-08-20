@@ -12,7 +12,7 @@
 #include "cmd_managerz.hpp"
 
 #include "UI_kontrolUNIT.hpp"
-//#include "cmd_buttonz.hpp"
+#include "cmd_buttonz.hpp"
 
 
 enum Button_Type{
@@ -131,16 +131,12 @@ int main(int argc, char **argv)
     printf("#->SDLLOADED::mainwindow OPENz\n");
 
 
-    rez_path test_txtr2_path;
+    //dep_cmd asset_cmd_mgmt;
 
 
-    char* pathcartexr02 = {"GUI/sample_01_UIv02.png"};
-
-
-    test_txtr2_path(pathcartexr02);
-
-
-    wrap_sdl_texture test_texture02;
+    rez_path test_rez_path_UI;
+    char* char_raw_test_UI = {"GUI/sample_01_UIv02.png"};
+    test_rez_path_UI(char_raw_test_UI);
 
 
     if (sdl_render == nullptr)
@@ -148,12 +144,27 @@ int main(int argc, char **argv)
       printf("nullprtzmain of render.");
     }
 
+
+    //wrap_sdl_texture test_texture02;
+
+
     //test_texture02.load_texture_file(test_txtr2_path,&sdl_render);
-    confermz_buttonz test_conferm_button;
-    int con_x=100, con_y=200;
-    test_conferm_button.load_paks_button(&sdl_render);
-    test_conferm_button.setPosition(con_x,con_y);
-    test_conferm_button.set_size();
+    //confermz_buttonz test_conferm_button;
+
+    int con_x= 100, con_y= 200;
+
+    //test_conferm_button.load_paks_button(&sdl_render);
+    //test_conferm_button.setPosition(con_x,con_y);
+    //test_conferm_button.set_size();
+
+    texture_cmd texture_asset_mgmt(&texture_asset_mgmt);
+
+    hash_tablez<wrap_sdl_texture> texture_h_table;
+
+    texture_asset_mgmt.registar_with_hashtable(&texture_h_table);
+    //texture_h_table.  &test_texture02,
+
+    texture_asset_mgmt.create_texture_resorce(&sdl_render);
 
 
     while(!quit)
