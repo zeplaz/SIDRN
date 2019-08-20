@@ -59,6 +59,7 @@ class wrap_sdl_texture
     SDL_Texture* sdl_texture;
     int t_width, t_hight;
     SDL_Surface* active_surface;
+    size_t hashed_val;
 
   public :
    wrap_sdl_texture() : sdl_texture(NULL),t_width(0),t_hight(0){}
@@ -74,7 +75,11 @@ class wrap_sdl_texture
     SDL_FreeSurface(active_surface);
     destory_texture();
   };
-
+  void set_id(size_t in_ID)
+  {
+    hashed_val= in_ID;
+  }
+  
   void destory_texture()
   {
     if(sdl_texture!=NULL);
@@ -311,7 +316,7 @@ if (SDL_BlitScaled(prt_32bitBPPsurface, NULL, Scaler_surface, NULL) < 0) {
     {
       private :
       int posx, posy;
-      
+
       //std::vector<wrap_sdl_texture> Pane_texture_collection;
 
     public:

@@ -2,16 +2,20 @@
 
 //`sdl2-config --cflags --libs`
 #include <SDL.h>
-//#include <SDL/SDL_image.h>
 #include <SDL_image.h>
+//#include <SDL/SDL_image.h>
+
 #include <stdio.h>
+#include <codecvt>
+#include <locale>
 
 #include "Dialog.hpp"
 #include "path_rez.hpp"
 #include "image_layar_cmd.hpp"
-#include "cmd_managerz.hpp"
 
+#include "cmd_managerz.hpp"
 #include "UI_kontrolUNIT.hpp"
+
 #include "cmd_buttonz.hpp"
 
 
@@ -134,9 +138,9 @@ int main(int argc, char **argv)
     //dep_cmd asset_cmd_mgmt;
 
 
-    rez_path test_rez_path_UI;
-    char* char_raw_test_UI = {"GUI/sample_01_UIv02.png"};
-    test_rez_path_UI(char_raw_test_UI);
+  //  rez_path test_rez_path_UI;
+    //char* char_raw_test_UI = {"GUI/sample_01_UIv02.png"};
+    //test_rez_path_UI(char_raw_test_UI);
 
 
     if (sdl_render == nullptr)
@@ -161,12 +165,19 @@ int main(int argc, char **argv)
 
     hash_tablez<wrap_sdl_texture> texture_h_table;
 
+    printf("inal1\n");
     texture_asset_mgmt.registar_with_hashtable(&texture_h_table);
     //texture_h_table.  &test_texture02,
+    std::string st_samp("cofermz_buttonz");
+    std::wstring sample_name = std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(st_samp);
 
-    texture_asset_mgmt.create_texture_resorce(&sdl_render);
+    char* path_char_sample = {"GUI/Confermz_buttonz_2DOWN.ppm"};
 
+    printf("inal2\n");
+    size_t sample_id = texture_asset_mgmt.create_texture_resorce(CHARZ_INZ,path_char_sample,sample_name,&sdl_render);
 
+    printf("##SAMP_ID: %i sampz_namewz: %s",sample_id, sample_name);
+/*
     while(!quit)
     {
       //printf("loopz");
@@ -176,11 +187,11 @@ int main(int argc, char **argv)
         {
           quit = true;
         }
-
+        printf("loopz");
         //control_loop.cycle();
         //control_loop.update();
 
-        test_conferm_button.sdl_handle_event(&Prim_SDL_event);
+        //test_conferm_button.sdl_handle_event(&Prim_SDL_event);
 
 
         //redering stuffz
@@ -194,7 +205,7 @@ int main(int argc, char **argv)
         int posx1=500, posy1=300;
         //test_texture01.render(sdl_render,posx,posy);
         //test_texture02.render(sdl_render,posx1,posy1);
-        test_conferm_button.render(sdl_render);
+        //test_conferm_button.render(sdl_render);
         //test_texture03.render(sdl_render,10,500);
         //outputtoscreenz
        SDL_RenderPresent(sdl_render);
@@ -202,6 +213,7 @@ int main(int argc, char **argv)
 
       }
     }
+    */
     shutdownz(sdl_window_main,sdl_render);
 
 

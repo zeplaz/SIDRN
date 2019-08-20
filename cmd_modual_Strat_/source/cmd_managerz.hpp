@@ -147,33 +147,51 @@ class texture_cmd : public  dep_cmd
     }
   }
 
+  void add_texture_via_prehashdval()
+  {
+
+  }
+
   void destory_texture(int id_texture)
   {
     prt_to_hashtable->destory_entry(id_texture);
   }
 
   //template<class type>
-  void create_texture_resorce(int type_mode,auto inval,SDL_Renderer** sdl_rednerz)
+  size_t create_texture_resorce(int type_mode,auto inval,std::wstring name, SDL_Renderer** sdl_rednerz)
   {
     char* path_tx;
     rez_path in_path;
+    size_t temp_id= NULL;
+
     switch (type_mode)
     {
-      case MANUAL_ENTER :
+    //  case MANUAL_ENTER :
 
-      break;
+    //  break;
       case CHARZ_INZ :
       {
+       printf("##BEgin_texture_creationz");
        in_path(inval);
        wrap_sdl_texture* new_texture = new wrap_sdl_texture();
-       new_texture->load_texture_file(inval,sdl_rednerz);
-      }
-      break;
-      case STRING_INZ:
+       new_texture->load_texture_file(in_path,sdl_rednerz);
+       temp_id = prt_to_hashtable->hashed_val_return(WSTRING_INZ,name);
+       prt_to_hashtable->add_enty_by_hashed(temp_id,new_texture);
 
-      break;
+       printf("#->compleate charz_inname loadtexture");
+       break;
+      }
     }
+
+  //  case STRING_INZ:
+
+    //  break;
+
+    printf("newID %i##\n",temp_id);
+    return temp_id;
+
   }
+
 };
 
 class Asset_manager  : public  dep_cmd
