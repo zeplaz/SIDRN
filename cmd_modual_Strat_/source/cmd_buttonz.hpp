@@ -47,6 +47,7 @@ class base_button
   virtual void render(SDL_Renderer*) = 0;
   virtual void set_size(int x, int y) = 0;
   virtual void setPosition(int x, int y) =0;
+  virtual void set_texture_via_mgmt() = 0;
   };
 
 

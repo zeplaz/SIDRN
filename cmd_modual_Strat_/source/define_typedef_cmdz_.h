@@ -1,4 +1,9 @@
+
+#pragma once
+
 //definez and typedefz
+#include <valarray>
+
 
 //notez:
 template<auto n> // C++17 auto parameter declaration
@@ -7,7 +12,7 @@ auto f() -> std::pair<decltype(n), decltype(n)> // auto can't deduce from brace-
     return {n, n};
 }
 
-#pragma once
+
 //genreal definez
 #define IMAGE 1
 #define LOGFILE 2
@@ -40,10 +45,26 @@ typedef  char DI_typeCHAR;
 typedef int dimetion_2[2];
 
 
+typedef std::valarray<int> vector2d_int = {0,0};
+typedef std::valarray<float> vector2d_float = {0.f,0.f};
+typedef std::valarray<double> vector2d_int = {0.f,0.f};
+
 enum button_graphic_statez
 {
   BUTTON_MOUSE_OFF = 0,
   BUTTON_MOUSE_HOVER = 1,
   BUTTON_MOUSE_DOWN = 2,
   BUTTON_MOUSE_POST_DOWN = 3
+};
+
+enum class Mousez_buttonz
+  {
+   none, left, right, middle
+  };
+
+enum class active_mouse_ktrl
+{
+  off =-1,
+  mouse_relase = 0,
+  down =1
 };

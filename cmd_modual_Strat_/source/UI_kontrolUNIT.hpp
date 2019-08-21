@@ -2,6 +2,8 @@
 
 #include "define_typedef_cmdz_.h"
 #include "cmd_buttonz.hpp"
+
+
   struct timrz
   {
     unsigned int chk_interval =1;
@@ -11,6 +13,7 @@
   class UI_kontrlz_modual
   {
     protected :
+    UI_department* UI_bureau;
     bool		mouse_iz_over = false;
     bool		mouse_down = false;
     bool		mouse_motion = false;
@@ -19,13 +22,18 @@
     //SDL_Timer	m_DoubleClickTimer = (500);//500ms for 2 clicks for now...
     bool focuz;
     friend class UI_department;
-  };
 
+    public :
+
+
+
+  };
 
   class UI_department
   {
 
     private :
+    friend class UI_kontrlz_modual;
 
     UI_kontrlz_modual* ktrl_modual_focuz = nullptr;
 
@@ -38,152 +46,53 @@
       ktrlz-> focuz = true;
     }
 
-  };
-
-
-
-
-class tabz_base
-{
-
-  protected :
-  int tab_id;
-  int width, hight;
-  int posx,posy;
-  bool focuz;
-  int depth;
-  tabz_base* parent_prt = nullptr;
-  //bool is_mouse_on();
-  std::vector<base_button*> butten_z;
-  std::vector<tabz_base*> sub_tabz;
-
-  static int next_tab_id;
-
-  public :
-  //virtual void
-  tabz_base()
-  {
-    if(!depth ==0)
-    {
-      create_primary_tab();
-    }
-
-   }
-
-/*
-  void create_id_tab()
-  {
-    assert ((val>=next_tag_id)&& "<di_tag::set_id: broken ID>");
-    tab_id = val;
-    next_tab_id=tab_id+1;
-  }
-  */
-
-  virtual ~tabz_base() = default;
-
-  virtual void create_primary_tab()
-  {
-
-  }
-
-  virtual void set_size(int w,int h)
-  {
-    width = w;
-    hight = h;
-  }
-
-  virtual void set_posz(int x, int y)
-  {
-    posy = y;
-    posx = x;
-  }
-
-  virtual void set_focus()
-  {
-    focuz = true;
-  }
-
-};
-
-
-  class sdl_tabz : public tabz_base
-  {
-    protected :
-    SDL_Point sdl_postion;
+    UI_department(const UI_department &copy) = delete;
+    UI_department& operator = (const UI_department &copy) = delete;
 
     public :
-    virtual bool is_mouse_on()
-     {
-      if(focuz == false)
-      {return false;}
-     }
-/*
-      for (int tabN=0; tabN<sub_tabz.size(); tabN++)
-      {
-          sub_tabz.at(tabN)
-      }
+      std::vector<UI_kontrlz_modual*> UI_ktl_modual_vec;
 
-      for(int i=0; i<butten_z.size();i++)
-      {
-
-      }
-    }
-*/
-    virtual void set_posz(int x, int y) override
+    ~UI_department()
     {
-      sdl_postion.x =x;
-      posx=x;
-      sdl_postion.y = y;
-      posy=y;
-    }
-
-    virtual void add_button(int type_button)
-    {
-      //bool succezz = true;
-      switch (type_button)
-      {
-        case BUTTON_TYPE_CNFMZ :
+      for(size_t i =0; i< UI_ktl_modual_vec.size(); i++)
         {
-          sdl_button* prt_button = new confermz_buttonz();
-
-          prt_button->setPosition(sdl_postion.x,sdl_postion.y);
-
-          butten_z.push_back(prt_button);
-          break;
+          UI_kontrlz_modual* temp_ptr;
+          temp_ptr = UI_ktl_modual_vec[i];
+          delete[] temp_ptr;
         }
-
-      }
-
     }
-      /*
-      if(!button_texture.load_texture_file())
-      {
-        printf("##@# fail--buttenimage invalid fileloadz:chk_pathz\n");
-        succezz = false;
-      }
-     }
-     */
 
-    virtual void tab_event_scan(SDL_Event* sdl_event)
+    void desroy_ktl(int loc)
     {
-      for (std::vector<base_button*>::iterator it = butten_z.begin() ; it != butten_z.end(); ++it)
-      { base_button* prt_button;
-        prt_button = *it;
-        prt_button->sdl_handle_event(sdl_event);
-      }
-    }
-/*
-    virtual void tab_render()
-    {
-      for (std::vector<base_button*>::iterator it = butten_z.begin(); it != butten_z.end(); ++it)
+      if(loc< UI_ktl_modual_vec.size())
       {
-        base_button* prt_button;
-        prt_button = *it;
-        prt_button->render();
+        UI_kontrlz_modual* temp_ptr;
+        temp_ptr = UI_ktl_modual_vec[loc];
+        delete[] temp_ptr;
+      }
+      else {
+        printf("contoler out of boundz %i not exist\n", loc );
       }
     }
-    */
 
-    virtual void shut_tab();
+    template<class kntl_unit>
+    kntl_unit* create_UIcontroler()
+    {
+      kntl_unit* k_u = new kntl_unit;
+      k_u->UI_bureau=this;
+
+      return k_u;
+    }
+  };
+
+  class mouse_krlz
+  {
+    public :
+    active_mouse_ktrl left;
+    active_mouse_ktrl right;
+    active_mouse_ktrl middle;
+
+    vector2d_int loc_mouse;
+    vector2d_double mouse_wheel;
 
   };

@@ -8,6 +8,8 @@
 #include <array>
 
 #include "define_typedef_cmdz_.h"
+#include "UI_kontrolUNIT.hpp"
+#include "cmd_managerz.hpp"
 
 //#define cmdzdi
 //emum cmdzdi {};

@@ -79,7 +79,7 @@ class wrap_sdl_texture
   {
     hashed_val= in_ID;
   }
-  
+
   void destory_texture()
   {
     if(sdl_texture!=NULL);
@@ -310,26 +310,6 @@ if (SDL_BlitScaled(prt_32bitBPPsurface, NULL, Scaler_surface, NULL) < 0) {
      	SDL_RenderCopyEx( prt_renderz, sdl_texture, box_space, &renderQuad, angle, center, flip );
      }
    };
-
-
-    class pane
-    {
-      private :
-      int posx, posy;
-
-      //std::vector<wrap_sdl_texture> Pane_texture_collection;
-
-    public:
-      //	gButtonSpriteSheetTexture.render( mPosition.x, mPosition.y, &gSpriteClips[ mCurrentSprite ] );
-
-      void render()
-      {
-        //Pane_texture_collection.
-      //  render(posx,posy,)
-      }
-
-    };
-
 
 /*
 USEFUL FUCTIONZ TO KNOW IN SDL>
