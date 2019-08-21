@@ -1,5 +1,17 @@
 
 
+/*
+this doesnt realyl do much im using it as a workspace to unit test the
+gui parts im building up,. complie at current with
+
+g++ -std=c++17  -Wall -Wextra -pedantic   di_testz_main.cpp `sdl2-config --cflags --libs` -lSDL2_image
+.
+i've kept eveying in the hpp for the moment as its easyer for me, to see eveying,
+but will reorgize soon. just want to untable some logic and objects and
+still have to get all the mouse trasging correct, and some assent mangers fixedup
+
+*/
+
 //`sdl2-config --cflags --libs`
 #include <SDL.h>
 #include <SDL_image.h>
