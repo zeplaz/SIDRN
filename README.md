@@ -3,6 +3,9 @@
 	
 ###### Top LEVEL view to working space of current Projects. _Zepalz {Matthew Edmund Duffy && orgburo} if you'r looking for the core code go right to sym_engine0.01_shirz_/source however i advice you to check out the top level of sym_engine0.01_shirz_/readME.md 
 
+##### TO SKIP TO CURRENT ACTIVE DRECTORY NOV16z
+#### SIDRN/sym_engine0.01_shirz/source/razerz/
+
 
 #### |ROOT_DIR;
 ###### The lose files, are more for intrest. active reserch, or little bits of colour! file stucture as follows
