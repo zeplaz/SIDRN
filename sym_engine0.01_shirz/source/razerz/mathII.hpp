@@ -236,6 +236,12 @@ namespace mathz
 
   };
 
+template<typename Type>
+Type Dot_vec_3d(vector3_vala<Type>& v1,vector3_vala<Type>& v2)
+{
+  return v1.dot(v2);
+}
+
 
 
 

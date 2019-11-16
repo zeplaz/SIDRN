@@ -18,5 +18,5 @@ void main()
 	gl_Position = model_to_projection_mat*vertex_position_model;
 	normal_world =vec3(model_to_world_matrix*vec4(normal_world,0));
 	vertex_pos_world = vec3(model_to_world_matrix*vertex_position_model);
-	model_to_world_matrix = vertex_colour;
+	vertex_to_frag_colour = vertex_colour;
 }

@@ -21,6 +21,66 @@
 static const int MAIN_SCREEN_WIDTH = 1200;
 static const int MAIN_SCREEN_HIGHT = 800;
 
+template<typename Enum>
+struct EnableBitMaskOperators
+{
+      static const bool enable = false;
+};
+
+template<typename Enum>
+typename std::enable_if<EnableBitMaskOperators<Enum>::enable, Enum>::type
+operator |(Enum lhs, Enum rhs)
+{
+    using underlying = typename std::underlying_type<Enum>::type;
+    return static_cast<Enum> (
+        static_cast<underlying>(lhs) |
+        static_cast<underlying>(rhs)
+    );
+};
+
+template<typename Enum>
+typename std::enable_if<EnableBitMaskOperators<Enum>::enable, Enum>::type&
+operator |=(Enum &org,Enum rhs)
+{
+    using underlying = typename std::underlying_type<Enum>::type;
+    return org =static_cast<Enum> (static_cast<underlying>(org) |  static_cast<underlying>(rhs));
+
+};
+
+template<typename Enum>
+typename std::enable_if<EnableBitMaskOperators<Enum>::enable, Enum>::type
+operator ~(Enum rhs)
+{
+    using underlying = typename std::underlying_type<Enum>::type;
+    return  static_cast<Enum> (~static_cast<underlying>(rhs));
+};
+
+template<typename Enum>
+typename std::enable_if<EnableBitMaskOperators<Enum>::enable, Enum>::type
+operator &(Enum lhs,Enum rhs)
+{
+    using underlying = typename std::underlying_type<Enum>::type;
+    return  static_cast<Enum> (static_cast<underlying>(lhs)& static_cast<underlying>(rhs));
+};
+
+enum class shader_type : unsigned char {
+     SHADER_NULL         = 0x00,
+     COMPUTE_SHADER      = 0x02,
+     VERTEX_SHADER       = 0x04,
+     FRAGMENT_SHADER     = 0x08,
+     TESS_CONTROL_SHADER = 0x10,
+     TESS_EVAL_SHADER    = 0x20,
+     GEOMETRY_SHADER     = 0x40
+
+};
+
+template<>
+struct EnableBitMaskOperators<shader_type>
+{
+    static const bool enable = true;
+};
+
+
 enum class Format {
     Format_Grayscale = 1, /**< one channel: grayscale */
     Format_GrayscaleAlpha = 2, /**< two channels: grayscale and alpha */
@@ -34,11 +94,6 @@ enum class Camera_Movement {
     BACKWARD,
     LEFT,
     RIGHT
-};
-
-enum class shader_type : unsigned char {
-     VERTEX_SHADER= 0x40,
-     FRAGMENT_SHADER =0x80
 };
 
 enum class render_mode{
@@ -66,49 +121,8 @@ constexpr unsigned char ATTRBUT_DYNAMIC_DRAW{0b0000'0010};
 constexpr unsigned char ATTRBUT_STATIC      {0b0000'0100};
 constexpr unsigned char ATTRBUT_STREAM      {0b0000'1000};
 
-
-
   GLuint load_texture_GL(const GLchar* text_path);
   unsigned int load_skybox_GL(std::vector<std::string> face_paths);
-
-class gl_shader
-{
-  private :
-  std::string shader_code_vertex;
-  std::string shader_code_fragment;
-  shader_type s_type;
-  public :
-  GLuint program_ID = 0;
-  GLuint shader_pos;
-  GLuint shader_colour;
-
-  GLuint vertex_shader_ID;
-  GLuint frag_shader_ID;
-
-  void create_shader(shader_type shad_type);
-  void get_shader_code(const std::string &path,shader_type type);
-  void load_shader_complie();
-  void  set_attrabutes(GLuint&gl_prgm);
-
-  inline void use_shader()
-  {
-    glUseProgram(program_ID);
-  }
-
-  inline void get_strd_shader_code(std::string in_path,shader_type type)
-  {
-   if(type ==shader_type::VERTEX_SHADER)
-    {
-      shader_code_vertex = in_path;
-    }
-
-   else if(type ==shader_type::FRAGMENT_SHADER)
-     {
-       shader_code_fragment = in_path;
-     }
-     s_type= type;
-  }
-};
 
 /*
 static char* read_shader_file(const char* file_name)
@@ -132,6 +146,12 @@ class view_lenz
   mathz::vector3_vala<float> Right;
   mathz::vector3_vala<float> WorldUp;
 
+  glm::vec3 lenz_pos = glm::vec3(0.0f,0.0f,3.0f);
+  glm::vec3 lenz_target =  glm::vec3(0.0f,0.0f,0.0f);
+  glm::vec3 lenz_up = glm::vec3(0.0f,1.0f,0.0f);
+  glm::vec3 lenz_front = glm::vec3(0.0f,0.0f,-1.0f);
+  glm::mat4 view = glm::mat4(1.0f);
+
   float MovementSpeed;
   float Yaw;
   float Pitch;
@@ -141,6 +161,31 @@ class view_lenz
   float near_plane;
   float far_plane;
   float view_aspec_ratio;
+
+  glm::vec3 get_lenz_reverse_drection()
+  {
+    return glm::normalize(lenz_pos-lenz_target);
+  }
+
+  glm::vec3 lenz_right()
+  {
+    return glm::normalize(glm::cross(lenz_up,get_lenz_reverse_drection()));
+  }
+
+  glm::vec3 get_lenz_up()
+  {
+    return glm::cross(get_lenz_reverse_drection(),lenz_right());
+  }
+
+  void set_view_basic()
+  {
+    view = glm::lookAt(lenz_right(),get_lenz_up(),get_lenz_reverse_drection());
+  }
+
+  void set_view_movement()
+  {
+    view = glm::lookAt(lenz_pos,lenz_pos+lenz_front,lenz_up);
+  }
 
   void normalize_anglez()
   {
@@ -164,9 +209,10 @@ class view_lenz
   void Process_keyboard(Camera_Movement direction_move, float delta_time);
 
   view_lenz(mathz::vector3_vala<float> position = mathz::vector3_vala<float>(0.0f, 0.0f, 0.0f),
-          mathz::vector3_vala<float> up = mathz::vector3_vala<float>(0.0f, 1.0f, 0.0f), float yaw = YAW,
-          float pitch = PITCH) : Front(mathz::vector3_vala<float>(0.0f, 0.0f, -1.0f)),
-         MovementSpeed(SPEED), Zoom(ZOOM)
+            mathz::vector3_vala<float> up = mathz::vector3_vala<float>(0.0f, 1.0f, 0.0f),
+            float yaw = YAW,float pitch = PITCH)
+            : Front(mathz::vector3_vala<float>(0.0f, 0.0f, -1.0f)),
+              MovementSpeed(SPEED), Zoom(ZOOM)
       {
           Position = position;
           WorldUp = up;
@@ -179,9 +225,24 @@ class view_lenz
          view_aspec_ratio=(float)MAIN_SCREEN_WIDTH/(float)MAIN_SCREEN_HIGHT;
        }
 
+    void camera_transform(const mathz::vector3_vala<float>& Target,const mathz::vector3_vala<float>& Up)
+    {
+      mathz::vector3_vala<float> targ_n = Target;
+      targ_n.normalize();
+      mathz::vector3_vala<float> up = Up;
+      up.normalize();
+      mathz::vector3_vala<float> vec = targ_n.cross(up);
+      glm::mat4 lenz_mat;
+      lenz_mat[0][0] = up[0];     lenz_mat[0][1]=up[1];       lenz_mat[0][2] = up[2];     lenz_mat[0][3] = 0.0f;
+      lenz_mat[1][0] = vec[0];    lenz_mat[1][1] = vec[1];    lenz_mat[1][2] = vec[2];    lenz_mat[1][3] = 0.0f;
+      lenz_mat[2][0] = targ_n[0]; lenz_mat[2][1] = targ_n[1]; lenz_mat[2][2] = targ_n[2]; lenz_mat[2][3] = 0.0f;
+      lenz_mat[3][0] = 0.0f;      lenz_mat[3][1] = 0.0f;      lenz_mat[3][2] = 0.0f;      lenz_mat[3][3] = 1.0f;
+    }
+
   glm::mat4 Get_view_eulrz()
     {
-        return glm::lookAt(get_position_glm(), get_position_glm() + get_front_glm(), get_up_glm());
+        return glm::lookAt(get_position_glm(), get_position_glm() +
+                           get_front_glm(), get_up_glm());
     }
   void faceing_position(glm::vec3 posz)
   {
@@ -190,6 +251,7 @@ class view_lenz
     Yaw   = glm::radians(atan2f(-direction.x,-direction.z));
     normalize_anglez();
   }
+
   void set_postion();
 
   glm::vec3 get_position_glm()
@@ -215,7 +277,7 @@ class view_lenz
 
   glm::mat4 return_orientation() const
   {
-    glm::mat4 orientation;
+      glm::mat4 orientation;
       orientation = glm::rotate(orientation, glm::radians(Pitch), glm::vec3(1,0,0));
       orientation = glm::rotate(orientation, glm::radians(Yaw), glm::vec3(0,1,0));
     return orientation;

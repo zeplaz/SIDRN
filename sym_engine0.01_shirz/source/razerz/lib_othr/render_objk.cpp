@@ -1,5 +1,5 @@
 //render_objk.cpp
-#include "render_objk.hpp"
+#include "render_objk_cmd.hpp"
 
 auto get_buf_oset = [](f_sp_tuple& fetu_tup)
 {
@@ -25,7 +25,7 @@ void draw_able_gl::settup_Vertex_array_Objeck(GLuint shader_pos,GLuint shader_co
     glVertexAttribPointer(shader_pos,3,GL_FLOAT,GL_FALSE,0,0);
     glVertexAttribPointer(shader_colour,4,GL_FLOAT,GL_FALSE,0,BUFFER_OFFSET((get_buf_oset(in_fetu_tuple))*3*sizeof(GLfloat)));
     ptr_buffer_index_ID =buffer_in_array;
-    index_Vr_buf_ob = *vao_array;
+  //  index_Vr_buf_ob = *vao_array;
   }
 }
 

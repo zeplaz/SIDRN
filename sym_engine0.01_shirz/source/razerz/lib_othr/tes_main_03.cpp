@@ -210,7 +210,7 @@ if(!glfw_window)
 
   //inliaze some objects and lens
   view_lenz prim_view_lens;
-  
+
 
 
 
@@ -256,6 +256,7 @@ if(!glfw_window)
   {
     glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     shader_01.use_shader();
+
 
     //gl_objk_02.render_elementz_indcatez();
     //gl_objk_02.clear_bufferz(shader_01);
