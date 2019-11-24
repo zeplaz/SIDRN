@@ -5,9 +5,9 @@
 
 #include "gl_lib_z.hpp"
 
-#define STBI_FAILURE_USERMSG
+/*#define STBI_FAILURE_USERMSG
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "stb_image.h"*/
 
   void view_lenz::Process_keyboard(Camera_Movement direction_move, float delta_time)
       {
@@ -35,7 +35,7 @@
           break;
         }
       }
-
+/*
   GLuint Texture_gl::load_bitmap_to_GL()
     {
       _originalWidth = (GLfloat)bitmap.width;
@@ -60,7 +60,7 @@
      }
 
 
-    void Texture_gl::load_bitmap_to_texture(std::string& text_path)
+    void Texture_gl::load_bitmap_to_texture(std::string text_path)
     {
       int width, height, channels;
       bitmap.buffer_pixelz = stbi_load(text_path.c_str(),
@@ -77,14 +77,14 @@ GLuint load_texture_GL(const GLchar* text_path)
   GLuint gl_texture;
   glGenTextures(1, &gl_texture);
 
-  int h,w;
+  int h,w, n;
   unsigned char* raw_image;
 
   //load_bitmap_to_texture()
   //glBindTexture(GL_TEXTURE_2D, gl_texture);
-  raw_image = stbi_load(text_path, &w, &h, 0, 4);
+  raw_image = stbi_load(text_path, &w, &h, &n, 4);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA8, GL_UNSIGNED_BYTE, raw_image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 8, GL_RGBA8, GL_UNSIGNED_BYTE, raw_image);
   stbi_image_free(raw_image);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -128,7 +128,8 @@ unsigned int load_skybox_GL(std::vector<std::string> face_paths)
 
     std::cout <<"->##TEXTTURE CUDE::" <<textureID << '\n';
     return textureID;
-}
+}*/
+
 
 
 //sample shape

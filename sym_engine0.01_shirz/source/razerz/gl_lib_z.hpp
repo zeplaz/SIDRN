@@ -18,9 +18,20 @@
 
 #include "colour.hpp"
 //#include "mathII.hpp"
+
+
+/*
+*ENUMZ and other major defines, and marcos
+*/
+
 static const int MAIN_SCREEN_WIDTH = 1200;
 static const int MAIN_SCREEN_HIGHT = 800;
 
+//macros
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+
+//setup bitmaskable veratic Enums
 template<typename Enum>
 struct EnableBitMaskOperators
 {
@@ -63,6 +74,8 @@ operator &(Enum lhs,Enum rhs)
     return  static_cast<Enum> (static_cast<underlying>(lhs)& static_cast<underlying>(rhs));
 };
 
+//enums useing bitmask functionality NOTE: require the template<> to activate bitmask
+
 enum class shader_type : unsigned char {
      SHADER_NULL         = 0x00,
      COMPUTE_SHADER      = 0x02,
@@ -74,6 +87,7 @@ enum class shader_type : unsigned char {
 
 };
 
+
 template<>
 struct EnableBitMaskOperators<shader_type>
 {
@@ -81,6 +95,7 @@ struct EnableBitMaskOperators<shader_type>
 };
 
 
+// class enum listings.
 enum class Format {
     Format_Grayscale = 1, /**< one channel: grayscale */
     Format_GrayscaleAlpha = 2, /**< two channels: grayscale and alpha */
@@ -88,6 +103,25 @@ enum class Format {
     Format_RGBA = 4, /**< four channels: red, green, blue, alpha */
     Format_RGBA8 = 5
 };
+enum  WarpMode : GLint{
+  CLAMP_E = GL_CLAMP_TO_EDGE,
+  MIRROR = GL_MIRRORED_REPEAT,
+  REPEAT = GL_REPEAT,
+  CLAMP_B = GL_CLAMP_TO_BORDER
+};
+
+enum class Filter{
+  LINEAR,
+  NEAREST,
+  MIPMAP
+
+};
+
+enum class render_mode{
+      WIREFRAME,
+      FILL
+};
+
 
 enum class Camera_Movement {
     FORWARD,
@@ -96,10 +130,15 @@ enum class Camera_Movement {
     RIGHT
 };
 
-enum class render_mode{
-      WIREFRAME,
-      FILL
-};
+//constants
+
+constexpr unsigned char ATTRBUT_DYNAMIC_DRAW{0b0000'0010};
+constexpr unsigned char ATTRBUT_STATIC      {0b0000'0100};
+constexpr unsigned char ATTRBUT_STREAM      {0b0000'1000};
+
+constexpr unsigned char NULL_FLAG         {0b0000'0000};
+constexpr unsigned char STATE_ACTIVE      {0b0000'0010};
+constexpr unsigned char STATE_CULL        {0b0000'0100};
 
 const float YAW         = -90.0f;
 const float PITCH       =  0.0f;
@@ -107,38 +146,11 @@ const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.1f;
 const float ZOOM        =  45.0f;
 const float MAX_V_ANGLE = 88.0f;
-
-//typedefzforeasz
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
-const uint32_t positionAttributeIndex = 0, colorAttributeIndex = 1;
-
-// Create variables for storing the ID of our VAO and VBO
-//const int ATTRBUT_DYNAMIC_DRAW 0x0010;
-//const int ATTRBUT_STATIC 0x0020;
-constexpr unsigned char ATTRBUT_DYNAMIC_DRAW{0b0000'0010};
-constexpr unsigned char ATTRBUT_STATIC      {0b0000'0100};
-constexpr unsigned char ATTRBUT_STREAM      {0b0000'1000};
-
-  GLuint load_texture_GL(const GLchar* text_path);
-  unsigned int load_skybox_GL(std::vector<std::string> face_paths);
-
-/*
-static char* read_shader_file(const char* file_name)
-{
-  FILE* fp = fopen(file_name,"r");
-  fseek(fp,0,SEEK_END);
-  long file_len =ftell(fp);
-  fseek(fp,0,SEEK_SET);
-  char* contents = new char[file_len+1];
-  fread(contents,1,file_len,fp);
-  contents[file_len] = '\0';
-  fclose(fp);
-}*/
-
+//view lenz currently not wokring.
 class view_lenz
 {
+
+
   private :
   mathz::vector3_vala<float> Position;
   mathz::vector3_vala<float> Front;
@@ -312,36 +324,4 @@ class view_lenz
                                             view_aspec_ratio, near_plane, far_plane);
    return projection;
   }
-};
-
-typedef struct Texture_gl
-    {
-        BitMap bitmap;
-        GLint minMagFiler = GL_LINEAR;
-        GLint wrapMode = GL_CLAMP_TO_EDGE;
-        Format formate;
-
-        GLuint _object;
-        GLfloat _originalWidth;
-        GLfloat _originalHeight;
-
-        static GLenum TextureFormatForBitmapFormat(Format formate)
-        {
-          switch (formate)
-           {
-              case Format::Format_Grayscale: return GL_LUMINANCE;
-              case Format::Format_GrayscaleAlpha: return GL_LUMINANCE_ALPHA;
-              case Format::Format_RGB: return GL_RGB;
-              case Format::Format_RGBA: return GL_RGBA;
-              case Format::Format_RGBA8: return GL_RGBA8;
-              default: throw std::runtime_error("Unrecognised Bitmap::Format");
-          }
-        }
-        Texture_gl()
-        {
-          formate =  Format::Format_RGBA8;
-        }
-
-        void load_bitmap_to_texture(std::string& text_path);
-        GLuint load_bitmap_to_GL();
 };

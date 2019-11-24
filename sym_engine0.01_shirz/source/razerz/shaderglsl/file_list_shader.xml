@@ -71,3 +71,16 @@ fragment
 shaderglsl/frag_shader_baseA.glsl
 </file_root>
 </shader_glsl>
+
+
+<shader_glsl>
+<INDEX>
+[6]
+</INDEX>
+<SHADER_TYPE>
+vertex
+</SHADER_TYPE>
+<file_root>
+shaderglsl/vertex_shader_baseB.glsl
+</file_root>
+</shader_glsl>

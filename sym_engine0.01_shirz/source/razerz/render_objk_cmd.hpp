@@ -16,19 +16,14 @@ typedef std::tuple<unsigned char,int,int,int,GLfloat*,GLfloat*> f_sp_tuple;
 
 //#define OBJK_STATE_ACTIVE 0x0002
 //#define OBJK_STATE_CULL  0x0004
-constexpr unsigned char NULL_FLAG         {0b0000'0000};
-constexpr unsigned char STATE_ACTIVE      {0b0000'0010};
-constexpr unsigned char STATE_CULL        {0b0000'0100};
+
 
 //constexpr unsigned char POLLY_ATTR_       {0b0000'1000};
 //constexpr unsigned char POLLY_ATTR_       {0b0001'0000};
 
 //constexpr unsigned char ATTRBUT_STREAM      {0b0000'1000};
 
-class metrealz_gl
-{
 
-};
 
 typedef struct poly_3d_base_type
 {
@@ -137,9 +132,6 @@ class render_gl
 
 
 
-
-
-
 class Basic_vertex_array_buffer
 
 {
@@ -188,7 +180,7 @@ void   set_Verx_buf(const void* data,int size)
   }
 };
 
-
+/*
 class lightz_gl
 {
   private :
@@ -225,4 +217,4 @@ class lightz_gl
     glUniform3fv(light_pos_uniform_ID,1,&light_pos_world3Depth[0]);
 
   }
-};
+};*/
