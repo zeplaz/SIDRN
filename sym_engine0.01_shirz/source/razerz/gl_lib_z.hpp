@@ -117,9 +117,17 @@ enum class Filter{
 
 };
 
+enum Poly_face : GLint {
+  FRONT = GL_FRONT,
+  FANDB = GL_FRONT_AND_BACK,
+  BACK =  GL_BACK
+
+};
+
 enum class render_mode{
       WIREFRAME,
-      FILL
+      FILL,
+      POINT
 };
 
 

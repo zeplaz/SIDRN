@@ -110,6 +110,15 @@ for (size_t i =0; i<in_shaderz.size();i++)
   /*
   working DATA for current test.
   */
+    model_ajustment test_ajustship;
+    model_ajustment test_ajustship2;
+
+    model_ajustment ship_2_orgin;
+    ship_2_orgin.posz_ajust.x=0.9f;
+    ship_2_orgin.posz_ajust.y=0.5f;
+    ship_2_orgin.posz_ajust.z= -0.1f;
+    ship_2_orgin.scale_ajust = glm::vec3(0.1f);
+    ship_2_orgin.rotation_ajust.y = 120.f;
 
     /*
      *BUFFERZ MGMT CMDZ
@@ -127,6 +136,12 @@ for (size_t i =0; i<in_shaderz.size();i++)
   mesh test_mesh;
   test_mesh.init(&wp2,ship_res_textA2);
   test_mesh.bindmesh_buf();
+
+  mesh test_mesh2;
+
+  test_mesh2.init(&wp2,ship_res_textA2);
+  test_mesh2.bindmesh_buf();
+  test_mesh2.set_mesh_model_origin(ship_2_orgin);
 
   glm::vec3 lpos(1.2f,1.0f,2.0f);
   glm::vec3 lcol(0.6f,0.2f,0.8f);
@@ -174,16 +189,6 @@ ship_test_texture.set_Tex_paramz();
   //shader_3.set_glm_mat4("projection",projection);
   float lenz_radius = 10.0f;
   //initbase controzfactoz
-  glm::vec3 posz_base(0.f);
-  glm::vec3 rotation_base(0.f);
-  glm::vec3 scale_base(0.2f);
-
-  glm::mat4 base_model_matrix(1.0f);
-  base_model_matrix = glm::translate(base_model_matrix, posz_base);
-  base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
-  base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
-  base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
-  base_model_matrix = glm::scale(base_model_matrix,scale_base);
 
   /*
   * UNIFORM SETTUPzzz.
@@ -192,8 +197,8 @@ ship_test_texture.set_Tex_paramz();
   //itunformz!
   GLint frame_buf_width,frame_buf_hight;
   shader_3.use_shader();
-  glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"model_matrix"),
-                                1,GL_FALSE,glm::value_ptr(base_model_matrix));
+  //glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"model_matrix"),
+        //                        1,GL_FALSE,glm::value_ptr(base_model_matrix));
 
   glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"projection"),
                                 1,GL_FALSE,glm::value_ptr(projection));
@@ -210,6 +215,8 @@ ship_test_texture.set_Tex_paramz();
  /*
  Mainloopz!
  */
+
+  //test_mesh2.update_mesh_model(ship_2_orgin);
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
   while(!glfwWindowShouldClose(glfw_window))
@@ -237,28 +244,18 @@ ship_test_texture.set_Tex_paramz();
     glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"projection"),
                                            1,GL_FALSE,glm::value_ptr(projection));
 
-    //do movmentz and tranformz on models
-    rotation_base.y +=0.08f;
-    rotation_base.z -=0.01f;
 
-    //loadchanges into model matrix
-    base_model_matrix =glm::mat4(1.f);
-    base_model_matrix = glm::translate(base_model_matrix, posz_base);
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
-    base_model_matrix = glm::scale(base_model_matrix,scale_base);
-
-    //set the model matrix
-    glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"model_matrix"),
-                                  1,GL_FALSE,glm::value_ptr(base_model_matrix));
-
+    test_ajustship.rotation_ajust.y =0.09f;
+    test_ajustship2.posz_ajust.x=-0.001f;
+  //  test_ajustship2.rotation_ajust.y=-0.01f;
+    //test_ajustship2.posz_ajust.x = -0.08f;
+    test_mesh.update_mesh_model(test_ajustship);
+    test_mesh2.update_mesh_model(test_ajustship2);
 
       glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
       //gl_run_render(glfw_window,shader_prt_vec,encaple_vaoz);
       test_mesh.draw(&shader_3);
-
-
+      test_mesh2.draw(&shader_3);
       glfwSwapBuffers(glfw_window);
       //[postopz]
       //and poll glfw

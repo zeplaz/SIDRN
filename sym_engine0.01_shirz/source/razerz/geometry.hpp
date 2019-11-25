@@ -16,6 +16,12 @@ typedef struct vertex_type
 		return memcmp((void*)this, (void*)&that, sizeof(vertex_type))>0;}
 } mesh_vertex;
 
+typedef struct model_ajustment_type
+{
+  glm::vec3 posz_ajust;
+  glm::vec3 rotation_ajust;
+  glm::vec3 scale_ajust;
+}model_ajustment;
 
 typedef struct Texture_gl
     {
@@ -87,56 +93,31 @@ typedef struct Texture_gl
             wrapMode_S =mode;
           }
         }
-        void set_min_Mag_Filter(Filter filt,char min_mag)
-        {
-          switch (filt)
-          {
-            case Filter::LINEAR :
-            {
-             if(min_mag == 'i')
-             minFiler = GL_LINEAR;
-             if(min_mag == 'a')
-             magFiler = GL_LINEAR;
-             break;
-            }
-            case Filter::NEAREST :
-            {
-              if(min_mag == 'i')
-              minFiler = GL_NEAREST;
-              if(min_mag == 'a')
-              magFiler = GL_NEAREST;
-              break;
-            }
-            case Filter::MIPMAP :
-            {
-              if(min_mag == 'i')
-              minFiler = GL_MIPMAP;
-              if(min_mag == 'a')
-              magFiler = GL_MIPMAP;
-              break;
-            }
+        void set_min_Mag_Filter(Filter filt,char min_mag);
 
-            default : throw std::runtime_error("Unrecognised Bitmap::Filter");
-          }
-        }
 };
 
 class mesh
 {
+
+  private :
+  glm::vec3 posz_base;
+  glm::vec3 rotation_base;
+  glm::vec3 scale_base;
+  glm::mat4 base_model_matrix;
+
+  unsigned int VAO_mesh, buff_mesh, EBO;
+  unsigned int vertex_buf, uv_buf, normal_buf,element_buf;
+  std::string res_path;
+
   public :
   std::vector<mesh_vertex> m_vertices;
-
   std::vector<unsigned int> m_indices;
   std::vector<Texture_gl> m_textures;
 
-  std::vector<glm::vec3> indexed_vertices;
-	std::vector<glm::vec2> indexed_uvs;
-	std::vector<glm::vec3> indexed_normals;
-
-
-
   void init(wavefornt_parser2* wp, std::string res_path);
 
+  void model_init();
 
   void pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
                         std::vector< glm::vec2>&in_tc)
@@ -172,6 +153,9 @@ class mesh
   void draw(gl_shader_t* shader)
   {
     shader->use_shader();
+
+    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
+                                  1,GL_FALSE,glm::value_ptr(base_model_matrix));
     glBindVertexArray(VAO_mesh);
     glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
   }
@@ -186,18 +170,61 @@ class mesh
     return m_indices.size();
   }
 
-  private :
-  unsigned int VAO_mesh, buff_mesh, EBO;
-  unsigned int vertex_buf, uv_buf, normal_buf,element_buf;
-  std::string res_path;
-  void setup_mesh_4buf();
-  void setup_mesh_packed();
+  void set_render_mode(render_mode new_mode, Poly_face face)
+  {
+
+       if(new_mode==render_mode::WIREFRAME)
+         glPolygonMode(face,GL_LINE);
+
+       if(new_mode==render_mode::FILL)
+         glPolygonMode(face,GL_FILL);
+
+       if(new_mode==render_mode::POINT)
+        glPolygonMode(face,GL_POINT);
+  }
+
+  void update_mesh_model(model_ajustment ajust_in)
+  {
+    rotation_base.x +=ajust_in.rotation_ajust.x;
+    rotation_base.y +=ajust_in.rotation_ajust.y;
+    rotation_base.z +=ajust_in.rotation_ajust.z;
+    posz_base.x     +=ajust_in.posz_ajust.x;
+    posz_base.y     +=ajust_in.posz_ajust.y;
+    posz_base.z     +=ajust_in.posz_ajust.z;
+    scale_base.x    +=ajust_in.scale_ajust.x;
+    scale_base.y    +=ajust_in.scale_ajust.y;
+    scale_base.z    +=ajust_in.scale_ajust.z;
+
+    base_model_matrix = glm::mat4(1.f);
+    base_model_matrix = glm::translate(base_model_matrix, posz_base);
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
+    base_model_matrix = glm::scale(base_model_matrix,scale_base);
+
+  }
+
+  void set_mesh_model_origin(model_ajustment intial_model)
+  {
+    rotation_base.x =intial_model.rotation_ajust.x;
+    rotation_base.y =intial_model.rotation_ajust.y;
+    rotation_base.z =intial_model.rotation_ajust.z;
+    posz_base.x     =intial_model.posz_ajust.x;
+    posz_base.y     =intial_model.posz_ajust.y;
+    posz_base.z     =intial_model.posz_ajust.z;
+    scale_base.x    =intial_model.scale_ajust.x;
+    scale_base.y    =intial_model.scale_ajust.y;
+    scale_base.z    =intial_model.scale_ajust.z;
+
+    base_model_matrix =glm::mat4(1.f);
+    base_model_matrix = glm::translate(base_model_matrix, posz_base);
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
+    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
+    base_model_matrix = glm::scale(base_model_matrix,scale_base);
+  }
+
 };
-
-
-
-
-
 
 
 
@@ -213,22 +240,3 @@ class gl_lightz
     this->light_colour =lc;
   }
 };
-
-bool get_sim_vertex_index(mesh_vertex& mv_pack, std::map<mesh_vertex,unsigned int>& vertex_outindex,
-                          unsigned int &result);
-
-void index_VBO_packed (std::vector<mesh_vertex> in_vec_vertex,
-                std::vector<unsigned int> & out_indices,
-                std::vector<glm::vec3> & out_vertices,
-                std::vector<glm::vec2> & out_uvs,
-                std::vector<glm::vec3> & out_normals);
-
-
-void index_VBO(std::vector<glm::vec3> & in_vertices,
-               std::vector<glm::vec2> & in_uvs,
-               std::vector<glm::vec3> & in_normals,
-               std::vector<unsigned int> & out_indices,
-               std::vector<glm::vec3> & out_vertices,
-               std::vector<glm::vec2> & out_uvs,
-               std::vector<glm::vec3> & out_normals
-);
