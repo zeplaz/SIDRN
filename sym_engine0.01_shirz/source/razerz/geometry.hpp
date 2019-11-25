@@ -61,14 +61,20 @@ typedef struct Texture_gl
           formate =  Format::Format_RGB;
           glGenTextures(1,&texture_ID);
         }
+
+        void activate_andbind()
+        {
+          glActiveTexture(GL_TEXTURE0+texture_indexUnit);
+          glBindTexture(GL_TEXTURE_2D,texture_ID);
+        }
         void set_texture_sampler_uniform(gl_shader_t* s_in)
         {
-          glBindTexture(GL_TEXTURE_2D,texture_ID);
           glUniform1i(glGetUniformLocation(s_in->program_ID, "active_texture_sampler"), 0);
         }
 
         void set_Tex_paramz()
         {
+          glBindTexture(GL_TEXTURE_2D,texture_ID);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFiler);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFiler);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode_S); //GL_REPEAT//GL_CLAMP_TO_EDGE//GL_CLAMP_TO_BORDER//GL_MIRRORED_REPEAT
@@ -97,6 +103,16 @@ typedef struct Texture_gl
 
 };
 
+struct texture_paramz_pak
+{
+  WarpMode wm_s;
+  WarpMode wm_t;
+  Filter mag;
+  Filter min;
+  std::string path;
+  int channels;
+
+};
 class mesh
 {
 
@@ -118,6 +134,19 @@ class mesh
   void init(wavefornt_parser2* wp, std::string res_path);
 
   void model_init();
+
+  void texture_setup(texture_paramz_pak in_text_pak)
+  {
+    Texture_gl new_texture;
+    new_texture.set_texture_ST(in_text_pak.wm_s,'s');
+    new_texture.set_texture_ST(in_text_pak.wm_t,'t');
+    new_texture.set_min_Mag_Filter(in_text_pak.mag,'i');
+    new_texture.set_min_Mag_Filter(in_text_pak.min,'a');
+    new_texture.load_texture(in_text_pak.path,in_text_pak.channels);
+    new_texture.init_texture();
+    new_texture.set_Tex_paramz();
+    m_textures.push_back(new_texture);
+  }
 
   void pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
                         std::vector< glm::vec2>&in_tc)
@@ -156,6 +185,12 @@ class mesh
 
     glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
                                   1,GL_FALSE,glm::value_ptr(base_model_matrix));
+    for(size_t i=0; i<m_textures.size();i++)
+    {
+      Texture_gl* text_ptr = &m_textures[i];
+      text_ptr->activate_andbind();
+      text_ptr->set_texture_sampler_uniform(shader);
+    }
     glBindVertexArray(VAO_mesh);
     glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
   }

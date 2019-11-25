@@ -123,8 +123,8 @@ for (size_t i =0; i<in_shaderz.size();i++)
     /*
      *BUFFERZ MGMT CMDZ
     */
-    std::vector<GLuint> buffarry_obk_vec_01;
-    std::vector<std::vector<GLuint>> encaple_vaoz;
+    //std::vector<GLuint> buffarry_obk_vec_01;
+  //  std::vector<std::vector<GLuint>> encaple_vaoz;
     //encaple_vaoz.push_back(buffarry_obk_vec_01);
 
   /*
@@ -133,15 +133,16 @@ for (size_t i =0; i<in_shaderz.size();i++)
   wavefornt_parser2 wp2;
 
   std::string ship_res_textA2 = {"data_extrn/boat_Base_2.obj"};
+
   mesh test_mesh;
   test_mesh.init(&wp2,ship_res_textA2);
   test_mesh.bindmesh_buf();
 
   mesh test_mesh2;
-
   test_mesh2.init(&wp2,ship_res_textA2);
   test_mesh2.bindmesh_buf();
   test_mesh2.set_mesh_model_origin(ship_2_orgin);
+
 
   glm::vec3 lpos(1.2f,1.0f,2.0f);
   glm::vec3 lcol(0.6f,0.2f,0.8f);
@@ -153,17 +154,17 @@ for (size_t i =0; i<in_shaderz.size();i++)
   texture setuptest_move to mesh
   */
 
-  Texture_gl ship_test_texture;
-  ship_test_texture.set_texture_ST(WarpMode::REPEAT,'s');
-  ship_test_texture.set_texture_ST(WarpMode::REPEAT,'t');
-  ship_test_texture.set_min_Mag_Filter(Filter::LINEAR,'i');
-  ship_test_texture.set_min_Mag_Filter(Filter::LINEAR,'a');
-  ship_test_texture.load_texture("data_extrn/ship_base_A03.bmp",3);
-  ship_test_texture.init_texture();
+  texture_paramz_pak ship_tex_A2_parmz;
+  ship_tex_A2_parmz.wm_s    = WarpMode::REPEAT;
+  ship_tex_A2_parmz.wm_t    = WarpMode::REPEAT;
+  ship_tex_A2_parmz.mag     = Filter::LINEAR;
+  ship_tex_A2_parmz.min     = Filter::LINEAR;
+  ship_tex_A2_parmz.path    = "data_extrn/ship_base_A03.bmp";
+  ship_tex_A2_parmz.channels= 3;
 
-  //texturez to shader
-ship_test_texture.set_texture_sampler_uniform(&shader_3);
-ship_test_texture.set_Tex_paramz();
+
+  test_mesh.texture_setup(ship_tex_A2_parmz);
+  test_mesh2.texture_setup(ship_tex_A2_parmz);
 
   /*
   lenz and other last min setupz or orgz.
@@ -197,8 +198,6 @@ ship_test_texture.set_Tex_paramz();
   //itunformz!
   GLint frame_buf_width,frame_buf_hight;
   shader_3.use_shader();
-  //glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"model_matrix"),
-        //                        1,GL_FALSE,glm::value_ptr(base_model_matrix));
 
   glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"projection"),
                                 1,GL_FALSE,glm::value_ptr(projection));
@@ -212,11 +211,11 @@ ship_test_texture.set_Tex_paramz();
 
  glEnable(GL_DEPTH_TEST);
  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
  /*
  Mainloopz!
  */
 
-  //test_mesh2.update_mesh_model(ship_2_orgin);
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
   while(!glfwWindowShouldClose(glfw_window))
@@ -257,6 +256,7 @@ ship_test_texture.set_Tex_paramz();
       test_mesh.draw(&shader_3);
       test_mesh2.draw(&shader_3);
       glfwSwapBuffers(glfw_window);
+
       //[postopz]
       //and poll glfw
       glfwPollEvents();
