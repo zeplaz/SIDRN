@@ -6,15 +6,7 @@
 
 class wavefornt_parser2;
 
-typedef struct vertex_type
-{
-  glm::vec3 v_position;
-  glm::vec3 v_normal;
-  glm::vec2 v_textcord;
 
-  bool operator<(const vertex_type that) const{
-		return memcmp((void*)this, (void*)&that, sizeof(vertex_type))>0;}
-} mesh_vertex;
 
 typedef struct model_ajustment_type
 {
@@ -23,9 +15,21 @@ typedef struct model_ajustment_type
   glm::vec3 scale_ajust;
 }model_ajustment;
 
-typedef struct Texture_gl
+struct texture_paramz_pak
+{
+  WarpMode wm_s;
+  WarpMode wm_t;
+  Filter mag;
+  Filter min;
+  std::string path;
+  int channels;
+  std::string unform_name;
+  M_Tex_Flag text_type_flag;
+  int tex_unit_index;
+};
+
+ struct Texture_gl
     {
-        BitMap bitmap;
         GLuint texture_ID;
         int texture_indexUnit = 0;
         unsigned char* image;
@@ -37,13 +41,11 @@ typedef struct Texture_gl
         GLint wrapMode_S = GL_CLAMP_TO_EDGE;
         GLint wrapMode_T = GL_CLAMP_TO_EDGE;
 
-        Format formate;
+        Format formate_internal;
+        Format formate_external;
 
-        GLuint _object;
-        GLfloat _originalWidth;
-        GLfloat _originalHeight;
 
-        GLenum return_TextureFormat()
+        GLenum return_TextureFormat(Format formate)
         {
           switch (formate)
            {
@@ -52,28 +54,32 @@ typedef struct Texture_gl
               case Format::Format_RGB: return GL_RGB;
               case Format::Format_RGBA: return GL_RGBA;
               case Format::Format_RGBA8: return GL_RGBA8;
+              case Format::Format_RGB8: return GL_RGB8;
               default: throw std::runtime_error("Unrecognised Bitmap::Format");
           }
         }
 
         Texture_gl()
         {
-          formate =  Format::Format_RGB;
+          formate_external =  Format::Format_RGB;
+          formate_internal =  Format::Format_RGB8;
           glGenTextures(1,&texture_ID);
         }
 
-        void activate_andbind()
+        void activate()
         {
           glActiveTexture(GL_TEXTURE0+texture_indexUnit);
-          glBindTexture(GL_TEXTURE_2D,texture_ID);
         }
-        void set_texture_sampler_uniform(gl_shader_t* s_in)
+
+        void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name)
         {
-          glUniform1i(glGetUniformLocation(s_in->program_ID, "active_texture_sampler"), 0);
+          glBindTexture(GL_TEXTURE_2D,texture_ID);
+          glUniform1i(glGetUniformLocation(s_in->program_ID, uniform_name.c_str()), 0);
         }
 
         void set_Tex_paramz()
         {
+          activate();
           glBindTexture(GL_TEXTURE_2D,texture_ID);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFiler);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFiler);
@@ -87,7 +93,7 @@ typedef struct Texture_gl
           texture_indexUnit +=index;
         }
 
-        void load_texture(std::string path,int force_channel);
+        void load_texture(std::string path,int force_channel,int text_unitindex);
 
         void set_texture_ST(WarpMode mode, char st)
         {
@@ -103,19 +109,11 @@ typedef struct Texture_gl
 
 };
 
-struct texture_paramz_pak
-{
-  WarpMode wm_s;
-  WarpMode wm_t;
-  Filter mag;
-  Filter min;
-  std::string path;
-  int channels;
+/*typedef struct parsed_paket_type;
+typedef struct vertex_type*/
 
-};
 class mesh
 {
-
   private :
   glm::vec3 posz_base;
   glm::vec3 rotation_base;
@@ -126,74 +124,96 @@ class mesh
   unsigned int vertex_buf, uv_buf, normal_buf,element_buf;
   std::string res_path;
 
+  M_Tex_Flag tex_flagz     = M_Tex_Flag::TEXTYR_NULL;
+  M_Model_Flag Model_flagz = M_Model_Flag::MODEL_NULL;
+
   public :
-  std::vector<mesh_vertex> m_vertices;
-  std::vector<unsigned int> m_indices;
-  std::vector<Texture_gl> m_textures;
+/*
+  template<typename... Args>
+   void flag_ORer(Args &&... flag_pack)//static
+  {
+       //unsigned char arg_array[]=  {((void) flag_ORer(std::forward<Args>(flag_pack)), ...)};
+      int dummyflag_array[] = { ( (void) set_tex_flags(std::forward<Args>(flag_pack)),0) ... };
+       std::cout <<  "size of dummy araybytz" << sizeof(dummyflag_array) <<'\n';
+       std::cout <<  "data of dummy araybytz" << dummyflag_array[0] <<'\n';
+  }*/
+
+
+  std::shared_ptr<std::vector<mesh_vertex>> m_vertices;
+  std::shared_ptr<std::vector<unsigned int>> m_v_indices;
+  std::array<Texture_gl,3> m_texture_array;
+  std::array<std::string,3> m_tex_uniform_array;
+
+  void set_tex_flags(M_Tex_Flag t_flag)
+  {
+    std::cout <<"flagsetter texture set::" << (int)t_flag <<'\n';
+    tex_flagz  |=t_flag;
+    std::cout << "current texture flagz::" << (int)tex_flagz <<'\n';
+  }
 
   void init(wavefornt_parser2* wp, std::string res_path);
+  void init(std::pair<std::shared_ptr<std::vector<mesh_vertex>>,std::shared_ptr<std::vector<unsigned int>>> in_vertx_data,M_Model_Flag mm_flag )
+  {
+    m_vertices =in_vertx_data.first;
+    m_v_indices = in_vertx_data.second;
+    Model_flagz |=mm_flag;
+    posz_base    =glm::vec3(0.f);
+    rotation_base=glm::vec3(0.f);
+    scale_base   =glm::vec3(0.2f);
+    model_init();
+  }
+/*  void init(std::pair<std::vector<mesh_vertex>*,std::vector<unsigned int>*> in_vertx_data,M_Model_Flag mm_flag)
+  {
+    //m_vertices =in_vertx_data.first;
+  //  m_v_indices = in_vertx_data.second;
+    Model_flagz |=mm_flag;
+    posz_base    =glm::vec3(0.f);
+    rotation_base=glm::vec3(0.f);
+    scale_base   =glm::vec3(0.2f);
 
+    model_init();
+  }*/
   void model_init();
 
   void texture_setup(texture_paramz_pak in_text_pak)
   {
     Texture_gl new_texture;
+    set_tex_flags(in_text_pak.text_type_flag);
     new_texture.set_texture_ST(in_text_pak.wm_s,'s');
     new_texture.set_texture_ST(in_text_pak.wm_t,'t');
     new_texture.set_min_Mag_Filter(in_text_pak.mag,'i');
     new_texture.set_min_Mag_Filter(in_text_pak.min,'a');
-    new_texture.load_texture(in_text_pak.path,in_text_pak.channels);
+    new_texture.load_texture(in_text_pak.path,in_text_pak.channels,in_text_pak.tex_unit_index);
     new_texture.init_texture();
     new_texture.set_Tex_paramz();
-    m_textures.push_back(new_texture);
+    if(in_text_pak.text_type_flag ==M_Tex_Flag::TEXTYR_BASIC)
+    {
+      m_texture_array[0]    = new_texture;
+      m_tex_uniform_array[0]= in_text_pak.unform_name;
+    }
+    else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_NORMAL)
+    {
+      m_texture_array[1]      = new_texture;
+      m_tex_uniform_array[1]=in_text_pak.unform_name;
+    }
+    else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_SPEKTURAL)
+    {
+      m_texture_array[2]    = new_texture;
+      m_tex_uniform_array[2]=  in_text_pak.unform_name;
+    }
+
   }
+
+  void pack_mesh_vertex(parsed_paket_type* par_pak);
+
 
   void pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
-                        std::vector< glm::vec2>&in_tc)
-  {
-    for(size_t i = 0; i<in_v.size(); i++ )
-    {
-      mesh_vertex temp_mv;
-      temp_mv.v_position = in_v[i];
-      temp_mv.v_normal = in_n[i];
-      temp_mv.v_textcord = in_tc[i];
-      m_vertices.push_back(temp_mv);
-    }
-  }
+                        std::vector< glm::vec2>&in_tc);
 
-  void bindmesh_buf()
-  {
-    glGenVertexArrays(1, &VAO_mesh);
-    glGenBuffers(1,&buff_mesh);
-    glBindVertexArray(VAO_mesh);
-    glBindBuffer(GL_ARRAY_BUFFER, buff_mesh);
+  void bindmesh_buf();
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mesh_vertex)*m_vertices.size(),
-                 0,GL_STATIC_DRAW);
+  void draw(gl_shader_t* shader);
 
-   glBufferSubData(GL_ARRAY_BUFFER,0,m_vertices.size() * sizeof(mesh_vertex),&m_vertices[0]);
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,sizeof(mesh_vertex), 0);
-   glEnableVertexAttribArray(0);
-   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,sizeof(mesh_vertex),BUFFER_OFFSET(sizeof(glm::vec3)+sizeof(glm::vec3)));
-   glEnableVertexAttribArray(2);
-   //glBufferSubData(GL_ARRAY_BUFFER,vertices.size() * sizeof(glm::vec3),uvs.size() *sizeof(glm::vec2),&uvs[0]);
-  }
-
-  void draw(gl_shader_t* shader)
-  {
-    shader->use_shader();
-
-    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
-                                  1,GL_FALSE,glm::value_ptr(base_model_matrix));
-    for(size_t i=0; i<m_textures.size();i++)
-    {
-      Texture_gl* text_ptr = &m_textures[i];
-      text_ptr->activate_andbind();
-      text_ptr->set_texture_sampler_uniform(shader);
-    }
-    glBindVertexArray(VAO_mesh);
-    glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
-  }
 
   unsigned int return_elment_buf()
   {
@@ -202,7 +222,7 @@ class mesh
 
   size_t return_num_indices()
   {
-    return m_indices.size();
+    return m_v_indices->size();
   }
 
   void set_render_mode(render_mode new_mode, Poly_face face)
@@ -218,49 +238,12 @@ class mesh
         glPolygonMode(face,GL_POINT);
   }
 
-  void update_mesh_model(model_ajustment ajust_in)
-  {
-    rotation_base.x +=ajust_in.rotation_ajust.x;
-    rotation_base.y +=ajust_in.rotation_ajust.y;
-    rotation_base.z +=ajust_in.rotation_ajust.z;
-    posz_base.x     +=ajust_in.posz_ajust.x;
-    posz_base.y     +=ajust_in.posz_ajust.y;
-    posz_base.z     +=ajust_in.posz_ajust.z;
-    scale_base.x    +=ajust_in.scale_ajust.x;
-    scale_base.y    +=ajust_in.scale_ajust.y;
-    scale_base.z    +=ajust_in.scale_ajust.z;
+  void update_mesh_model(model_ajustment ajust_in);
 
-    base_model_matrix = glm::mat4(1.f);
-    base_model_matrix = glm::translate(base_model_matrix, posz_base);
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
-    base_model_matrix = glm::scale(base_model_matrix,scale_base);
+  void set_mesh_model_origin(model_ajustment intial_model);
 
-  }
-
-  void set_mesh_model_origin(model_ajustment intial_model)
-  {
-    rotation_base.x =intial_model.rotation_ajust.x;
-    rotation_base.y =intial_model.rotation_ajust.y;
-    rotation_base.z =intial_model.rotation_ajust.z;
-    posz_base.x     =intial_model.posz_ajust.x;
-    posz_base.y     =intial_model.posz_ajust.y;
-    posz_base.z     =intial_model.posz_ajust.z;
-    scale_base.x    =intial_model.scale_ajust.x;
-    scale_base.y    =intial_model.scale_ajust.y;
-    scale_base.z    =intial_model.scale_ajust.z;
-
-    base_model_matrix =glm::mat4(1.f);
-    base_model_matrix = glm::translate(base_model_matrix, posz_base);
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.x),glm::vec3(1.f,0.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.y),glm::vec3(0.f,1.f,0.f));
-    base_model_matrix = glm::rotate(base_model_matrix,glm::radians(rotation_base.z),glm::vec3(1.f,0.f,1.f));
-    base_model_matrix = glm::scale(base_model_matrix,scale_base);
-  }
 
 };
-
 
 
 class gl_lightz

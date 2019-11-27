@@ -1,4 +1,18 @@
 
+//from colour.hpp
+
+
+
+
+
+
+
+
+
+
+
+
+
 void mesh::setup_mesh_4buf()
 {
   glGenVertexArrays(1,&VAO_mesh);

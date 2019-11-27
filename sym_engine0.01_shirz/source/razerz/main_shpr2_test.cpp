@@ -1,54 +1,20 @@
-#include "geometry.hpp"
-#include "pre_comb_objz.hpp"
 #include "render_objk_cmd.hpp"
+#include "opengl_utilityz.hpp"
+#include "lenz.hpp"
 
-void process_input_glfw(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+float delta_time = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
 
-}
+void process_input_glfw(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+float lastX = MAIN_SCREEN_WIDTH / 2.0f;
+float lastY = MAIN_SCREEN_HIGHT / 2.0f;
+  bool firstMouse = true;
 
-}
+view_lenz prim_lenz;
 
-void gl_run_render(GLFWwindow* glfwwindow, std::vector<gl_shader_t*>& in_shaderz,
-                   std::vector<std::vector<GLuint>>& vetex_array_objkz)
-{
-  //std::cout <<"\n ###nummof shaders to process" << in_shaderz.size() << "  num of objket packagez::" << vetex_array_objkz.size() << '\n' << '\n';
-float timeValue = glfwGetTime();
-float sin_green = sin(timeValue);
-float colour_angluretime = pow((sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue)),2);
-float sin_tsnz = sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue);
-
-for (size_t i =0; i<in_shaderz.size();i++)
-{
-  in_shaderz.at(i)->use_shader();
-  int vertexColorLocation = glGetUniformLocation(in_shaderz.at(i)->program_ID, "ourColor");
-  //std::cout << "vertex_colour_unform at::" << vertexColorLocation << "  Progamid::"
-        //    << in_shaderz.at(i)->program_ID << "ourColor" << '\n';
-  std::vector<GLuint> vao_vec  =  vetex_array_objkz.at(i);
-  glUniform4f(vertexColorLocation, sin_tsnz, sin_green, colour_angluretime, 1.f);
-
-  for(size_t k=0; k<vao_vec.size();k++)
-  {
-   //std::cout << "binding:voa:" << vao_vec.at(k) << '\n';
-   if(k==1)
-   {
-     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-   }
-   else {
-      glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
-   }
-   glBindVertexArray(vao_vec.at(k));
-  // glDrawArrays(GL_TRIANGLES, 0, 12*3);
-  }
-  }
-  }
 /*
 * MAIN!
 */
@@ -57,35 +23,23 @@ for (size_t i =0; i<in_shaderz.size();i++)
   /*
   GLM AND OPENGL AND GLFW inailzaiton
   */
+    int errocode;
+    GLFWwindow* glfw_window;
 
-    GLFWwindow * glfw_window;
-    glewExperimental = GL_TRUE;
-    //launch gluitInit
-    if (!glfwInit())
-  {
-    std::cout << "flfwinit faild :()\n";
-    return -1;
-  }
+    std::cout << "launching Main Window\n";
+    errocode = opengl_context_settup();
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-  std::cout << "launching Main Window\n";
 
-  glfw_window = glfwCreateWindow(MAIN_SCREEN_WIDTH,MAIN_SCREEN_HIGHT,"cmdz_toolGlfz",NULL,NULL);
-  if(!glfw_window)
-  {
-    glfwTerminate();
-    std::cout <<"windowfailureload\n";
-    return -3;
-  }
+    std::cout << "openglcontexcode::"<< errocode;
 
-  glfwMakeContextCurrent(glfw_window);
-  glfwSetFramebufferSizeCallback(glfw_window, framebuffer_size_callback);
+    glfw_window = glfwCreateWindow(MAIN_SCREEN_WIDTH,MAIN_SCREEN_HIGHT,"cmdz_toolGlfz",NULL,NULL);
+    glfwSetCursorPosCallback(glfw_window, mouse_callback);
+    glfwSetScrollCallback(glfw_window, scroll_callback);
 
-  GLenum glewErr = glewInit();
-  std::cout << "glew_code::" << glewErr <<'\n' <<'\n';
-  glViewport( 0, 0, MAIN_SCREEN_WIDTH, MAIN_SCREEN_HIGHT );
+// tell GLFW to capture our mouse
+  glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    errocode = run_opengl_setup(glfw_window);
+    std::cout << "openglsetupcode::"<< errocode;
 
   /*
   * SHADER SETUPZ
@@ -113,37 +67,52 @@ for (size_t i =0; i<in_shaderz.size();i++)
     model_ajustment test_ajustship;
     model_ajustment test_ajustship2;
 
+    test_ajustship.rotation_ajust = glm::vec3(0.f);
+    test_ajustship.posz_ajust  = glm::vec3(0.f);
+    test_ajustship.scale_ajust = glm::vec3(0.f);
+    test_ajustship2.rotation_ajust = glm::vec3(0.f);
+    test_ajustship2.posz_ajust  = glm::vec3(0.f);
+    test_ajustship2.scale_ajust = glm::vec3(0.f);
+
+
     model_ajustment ship_2_orgin;
+
     ship_2_orgin.posz_ajust.x=0.9f;
     ship_2_orgin.posz_ajust.y=0.5f;
     ship_2_orgin.posz_ajust.z= -0.1f;
+
     ship_2_orgin.scale_ajust = glm::vec3(0.1f);
     ship_2_orgin.rotation_ajust.y = 120.f;
+    ship_2_orgin.rotation_ajust.x = 0.f;
+    ship_2_orgin.rotation_ajust.z = 0.f;
 
     /*
      *BUFFERZ MGMT CMDZ
     */
-    //std::vector<GLuint> buffarry_obk_vec_01;
-  //  std::vector<std::vector<GLuint>> encaple_vaoz;
-    //encaple_vaoz.push_back(buffarry_obk_vec_01);
 
   /*
-  *meshsettup and gemomenty_lighting
+  *meshsettup
   */
+  std::cout <<"setupmeshz \n";
   wavefornt_parser2 wp2;
 
   std::string ship_res_textA2 = {"data_extrn/boat_Base_2.obj"};
+  std::pair<std::shared_ptr<std::vector<mesh_vertex>>,std::shared_ptr<std::vector<unsigned int>>> test_mesh_vec  = wp2.read_file(ship_res_textA2);
 
   mesh test_mesh;
-  test_mesh.init(&wp2,ship_res_textA2);
+
+  test_mesh.init(test_mesh_vec,M_Model_Flag::MODEL_UNIFORM);
   test_mesh.bindmesh_buf();
 
   mesh test_mesh2;
-  test_mesh2.init(&wp2,ship_res_textA2);
+  test_mesh2.init(test_mesh_vec,M_Model_Flag::MODEL_UNIFORM);
   test_mesh2.bindmesh_buf();
   test_mesh2.set_mesh_model_origin(ship_2_orgin);
 
 
+ /*
+* gemomenty_lighting
+*/
   glm::vec3 lpos(1.2f,1.0f,2.0f);
   glm::vec3 lcol(0.6f,0.2f,0.8f);
 
@@ -154,39 +123,49 @@ for (size_t i =0; i<in_shaderz.size();i++)
   texture setuptest_move to mesh
   */
 
-  texture_paramz_pak ship_tex_A2_parmz;
-  ship_tex_A2_parmz.wm_s    = WarpMode::REPEAT;
-  ship_tex_A2_parmz.wm_t    = WarpMode::REPEAT;
-  ship_tex_A2_parmz.mag     = Filter::LINEAR;
-  ship_tex_A2_parmz.min     = Filter::LINEAR;
-  ship_tex_A2_parmz.path    = "data_extrn/ship_base_A03.bmp";
-  ship_tex_A2_parmz.channels= 3;
+  std::cout << "load texturez\n";
 
+  texture_paramz_pak ship_tex_A3_parmz;
+  ship_tex_A3_parmz.wm_s    = WarpMode::REPEAT;
+  ship_tex_A3_parmz.wm_t    = WarpMode::REPEAT;
+  ship_tex_A3_parmz.mag     = Filter::LINEAR;
+  ship_tex_A3_parmz.min     = Filter::LINEAR;
+  ship_tex_A3_parmz.path    = "data_extrn/ship_base_A03.bmp";
+  ship_tex_A3_parmz.channels= 3;
+  ship_tex_A3_parmz.unform_name = "active_texture_sampler";
+  ship_tex_A3_parmz.tex_unit_index = 0;
+  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_BASIC;
 
-  test_mesh.texture_setup(ship_tex_A2_parmz);
-  test_mesh2.texture_setup(ship_tex_A2_parmz);
+  test_mesh.texture_setup(ship_tex_A3_parmz);
+  test_mesh2.texture_setup(ship_tex_A3_parmz);
 
   /*
   lenz and other last min setupz or orgz.
   */
 
-  view_lenz vl_01;
+  std::cout << "load_lenz\n";
+
+//  view_lenz vl_01;
 
   glm::vec3 world_up(0.f,1.f,0.f);
   glm::vec3 lenz_front(0.f,0.f,-1.f);
   glm::vec3 lenz_pos(0.f,0.f,1.f);
 
   glm::mat4 view_matrix(1.f);
-  view_matrix = glm::lookAt(lenz_pos,lenz_pos+lenz_front,world_up);
+  //view_matrix = glm::lookAt(lenz_pos,lenz_pos+lenz_front,world_up);
+  glm::mat4 Projection(1.f);
+
 
   float fov= 90.f;
   float near_plane = 0.1f;
   float far_plane = 1000.f;
 
-  glm::mat4 projection(1.f);
-  glm::perspective(glm::radians(fov),(float)MAIN_SCREEN_WIDTH /
-                                     (float)MAIN_SCREEN_HIGHT,near_plane,far_plane);
 
+
+  // Projection =  glm::perspective(glm::radians(fov),(float)MAIN_SCREEN_WIDTH /
+    //                                 (float)MAIN_SCREEN_HIGHT,near_plane,far_plane);
+  view_matrix =  prim_lenz.return_lenz_view();
+  Projection  = prim_lenz.lenz_projection();
   //shader_3.set_glm_mat4("projection",projection);
   float lenz_radius = 10.0f;
   //initbase controzfactoz
@@ -198,12 +177,17 @@ for (size_t i =0; i<in_shaderz.size();i++)
   //itunformz!
   GLint frame_buf_width,frame_buf_hight;
   shader_3.use_shader();
+  glm::mat4  view_projection =glm::mat4(1.f);
+  view_projection = Projection*view_matrix;
 
+  glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"view_projection"),
+                                1,GL_FALSE,glm::value_ptr(view_projection));
+                                /*
   glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"projection"),
                                 1,GL_FALSE,glm::value_ptr(projection));
 
   glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"view"),
-                                1,GL_FALSE,glm::value_ptr(view_matrix));
+                                1,GL_FALSE,glm::value_ptr(view_matrix));*/
 
 /*
 * GOBAL OPEN GL ENABLEZ
@@ -215,15 +199,15 @@ for (size_t i =0; i<in_shaderz.size();i++)
  /*
  Mainloopz!
  */
-
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
   while(!glfwWindowShouldClose(glfw_window))
   {
-
     //process keyz
+    float currentFrame = glfwGetTime();
+    delta_time = currentFrame - lastFrame;
+    lastFrame = currentFrame;
     process_input_glfw(glfw_window);
-
 
     /*
     BEGIN RENDER CYCLE! OHHH
@@ -236,12 +220,22 @@ for (size_t i =0; i<in_shaderz.size();i++)
     //set projectionz
     glfwGetFramebufferSize(glfw_window,&frame_buf_width,&frame_buf_hight);
 
-    projection = glm::mat4(1.f);
-    projection =glm::perspective(glm::radians(fov),(float)frame_buf_width /
-                                      (float)frame_buf_hight,near_plane,far_plane);
+    view_matrix =  prim_lenz.return_lenz_view();
+    Projection  = prim_lenz.lenz_projection();
 
+  /*  Projection = glm::mat4(1.f);
+    Projection = glm::perspective(glm::radians(fov),(float)frame_buf_width /
+                                      (float)frame_buf_hight,near_plane,far_plane);
+    view_projection =glm::mat4(1.f);*/
+    view_projection = glm::mat4(1.f);
+    view_projection = Projection*view_matrix;
+
+    glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"view_projection"),
+                                           1,GL_FALSE,glm::value_ptr(view_projection));
+                                /*
     glUniformMatrix4fv(glGetUniformLocation(shader_3.program_ID,"projection"),
-                                           1,GL_FALSE,glm::value_ptr(projection));
+                                           1,GL_FALSE,glm::value_ptr(Projection));*/
+//
 
 
     test_ajustship.rotation_ajust.y =0.09f;
@@ -251,7 +245,7 @@ for (size_t i =0; i<in_shaderz.size();i++)
     test_mesh.update_mesh_model(test_ajustship);
     test_mesh2.update_mesh_model(test_ajustship2);
 
-      glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+      //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
       //gl_run_render(glfw_window,shader_prt_vec,encaple_vaoz);
       test_mesh.draw(&shader_3);
       test_mesh2.draw(&shader_3);
@@ -260,6 +254,11 @@ for (size_t i =0; i<in_shaderz.size();i++)
       //[postopz]
       //and poll glfw
       glfwPollEvents();
+      if(screen_beenresized ==true)
+      {
+        prim_lenz.update_aspec_ratio();
+        screen_beenresized = false;
+      }
 
     }//endmain loop
 /*
@@ -267,4 +266,51 @@ for (size_t i =0; i<in_shaderz.size();i++)
 */
 
   return 0;
+      }
+
+
+      void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+      {
+        if(firstMouse)
+        {
+          lastX = xpos;
+          lastY= ypos;
+          firstMouse = false;
+        }
+        float xoffset = xpos- lastX;
+        float yoffset = lastY-ypos;
+        lastX=xpos;
+        lastY=ypos;
+        prim_lenz.process_mouse(xoffset,yoffset);
+      }
+      void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+      {
+        prim_lenz.process_scroll(yoffset);
+      }
+
+      void process_input_glfw(GLFWwindow* window)
+      {
+          if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+              glfwSetWindowShouldClose(window, true);
+
+      //  float lenz_speed = 2.5*delta_time;
+
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+          prim_lenz.lenz_move(delta_time,'w');
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+          prim_lenz.lenz_move(delta_time,'s');
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+          prim_lenz.lenz_move(delta_time,'a');
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+          prim_lenz.lenz_move(delta_time,'d');
+        }
       }

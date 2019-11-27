@@ -15,7 +15,7 @@ typedef std::tuple<unsigned int,
            shader_type,std::string> shader_tuple_type;
 
 static std::vector<shader_tuple_type*> shader_tuple_vec;
-//static std::map<int,shader_tuple_type*>shader_tuple_map;
+
 
 int run_parse();
 shader_tuple_type* return_new_shader_tuple();
