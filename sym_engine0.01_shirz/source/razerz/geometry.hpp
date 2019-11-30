@@ -3,6 +3,7 @@
 #include "gl_lib_z.hpp"
 #include "shader_parser.hpp"
 #include "geometry_parser.hpp"
+#include "lenz.hpp"
 
 class wavefornt_parser2;
 
@@ -28,6 +29,20 @@ struct texture_paramz_pak
   int tex_unit_index;
 };
 
+
+class gl_lightz
+{
+  public :
+  glm::vec3 light_pos;
+  glm::vec3 light_colour;
+
+  void set_light(glm::vec3 lp, glm::vec3 lc)
+  {
+    this->light_pos    =lp;
+    this->light_colour =lc;
+  }
+};
+
  struct Texture_gl
     {
         GLuint texture_ID;
@@ -43,21 +58,12 @@ struct texture_paramz_pak
 
         Format formate_internal;
         Format formate_external;
+        bool used_vglLoader = false;
 
 
-        GLenum return_TextureFormat(Format formate)
-        {
-          switch (formate)
-           {
-              case Format::Format_Grayscale: return GL_LUMINANCE;
-              case Format::Format_GrayscaleAlpha: return GL_LUMINANCE_ALPHA;
-              case Format::Format_RGB: return GL_RGB;
-              case Format::Format_RGBA: return GL_RGBA;
-              case Format::Format_RGBA8: return GL_RGBA8;
-              case Format::Format_RGB8: return GL_RGB8;
-              default: throw std::runtime_error("Unrecognised Bitmap::Format");
-          }
-        }
+        void init_texture();
+
+        GLenum return_TextureFormat(Format formate);
 
         Texture_gl()
         {
@@ -66,12 +72,12 @@ struct texture_paramz_pak
           glGenTextures(1,&texture_ID);
         }
 
-        void activate()
+        inline void activate()
         {
           glActiveTexture(GL_TEXTURE0+texture_indexUnit);
         }
 
-        void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name)
+        inline void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name)
         {
           glBindTexture(GL_TEXTURE_2D,texture_ID);
           glUniform1i(glGetUniformLocation(s_in->program_ID, uniform_name.c_str()), 0);
@@ -86,14 +92,22 @@ struct texture_paramz_pak
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode_S); //GL_REPEAT//GL_CLAMP_TO_EDGE//GL_CLAMP_TO_BORDER//GL_MIRRORED_REPEAT
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode_T);
         }
-        void init_texture();
 
-        void  set_texture_unit_index(int index)
+
+        inline void  set_texture_unit_index(int index)
         {
           texture_indexUnit +=index;
         }
 
         void load_texture(std::string path,int force_channel,int text_unitindex);
+
+        void set_min_Mag_Filter(Filter filt,char min_mag);
+
+        void load_texture(std::string path)
+        {
+          //vglLoadTexture(path.c_str(),texture_ID,&vglimage);
+          used_vglLoader = true;
+        }
 
         void set_texture_ST(WarpMode mode, char st)
         {
@@ -105,12 +119,7 @@ struct texture_paramz_pak
             wrapMode_S =mode;
           }
         }
-        void set_min_Mag_Filter(Filter filt,char min_mag);
-
 };
-
-/*typedef struct parsed_paket_type;
-typedef struct vertex_type*/
 
 class mesh
 {
@@ -119,6 +128,7 @@ class mesh
   glm::vec3 rotation_base;
   glm::vec3 scale_base;
   glm::mat4 base_model_matrix;
+  glm::mat4 m_v_p;
 
   unsigned int VAO_mesh, buff_mesh, EBO;
   unsigned int vertex_buf, uv_buf, normal_buf,element_buf;
@@ -127,24 +137,26 @@ class mesh
   M_Tex_Flag tex_flagz     = M_Tex_Flag::TEXTYR_NULL;
   M_Model_Flag Model_flagz = M_Model_Flag::MODEL_NULL;
 
-  public :
-/*
-  template<typename... Args>
-   void flag_ORer(Args &&... flag_pack)//static
-  {
-       //unsigned char arg_array[]=  {((void) flag_ORer(std::forward<Args>(flag_pack)), ...)};
-      int dummyflag_array[] = { ( (void) set_tex_flags(std::forward<Args>(flag_pack)),0) ... };
-       std::cout <<  "size of dummy araybytz" << sizeof(dummyflag_array) <<'\n';
-       std::cout <<  "data of dummy araybytz" << dummyflag_array[0] <<'\n';
-  }*/
+  bool cal_lightz= false;
 
+  public :
 
   std::shared_ptr<std::vector<mesh_vertex>> m_vertices;
   std::shared_ptr<std::vector<unsigned int>> m_v_indices;
   std::array<Texture_gl,3> m_texture_array;
   std::array<std::string,3> m_tex_uniform_array;
 
-  void set_tex_flags(M_Tex_Flag t_flag)
+  void bindmesh_buf();
+
+  void draw(gl_shader_t* shader,view_lenz* active_lenz);
+
+  void model_init();
+
+  void update_mesh_model(model_ajustment ajust_in);
+
+  void set_mesh_model_origin(model_ajustment intial_model);
+
+  inline void set_tex_flags(M_Tex_Flag t_flag)
   {
     std::cout <<"flagsetter texture set::" << (int)t_flag <<'\n';
     tex_flagz  |=t_flag;
@@ -152,7 +164,9 @@ class mesh
   }
 
   void init(wavefornt_parser2* wp, std::string res_path);
-  void init(std::pair<std::shared_ptr<std::vector<mesh_vertex>>,std::shared_ptr<std::vector<unsigned int>>> in_vertx_data,M_Model_Flag mm_flag )
+  void init(std::pair<std::shared_ptr<std::vector<mesh_vertex>>,
+            std::shared_ptr<std::vector<unsigned int>>> in_vertx_data,
+            M_Model_Flag mm_flag,bool is_avec_lightz)
   {
     m_vertices =in_vertx_data.first;
     m_v_indices = in_vertx_data.second;
@@ -160,101 +174,58 @@ class mesh
     posz_base    =glm::vec3(0.f);
     rotation_base=glm::vec3(0.f);
     scale_base   =glm::vec3(0.2f);
+    cal_lightz = is_avec_lightz;
     model_init();
   }
-/*  void init(std::pair<std::vector<mesh_vertex>*,std::vector<unsigned int>*> in_vertx_data,M_Model_Flag mm_flag)
-  {
-    //m_vertices =in_vertx_data.first;
-  //  m_v_indices = in_vertx_data.second;
-    Model_flagz |=mm_flag;
-    posz_base    =glm::vec3(0.f);
-    rotation_base=glm::vec3(0.f);
-    scale_base   =glm::vec3(0.2f);
 
-    model_init();
-  }*/
-  void model_init();
-
-  void texture_setup(texture_paramz_pak in_text_pak)
-  {
-    Texture_gl new_texture;
-    set_tex_flags(in_text_pak.text_type_flag);
-    new_texture.set_texture_ST(in_text_pak.wm_s,'s');
-    new_texture.set_texture_ST(in_text_pak.wm_t,'t');
-    new_texture.set_min_Mag_Filter(in_text_pak.mag,'i');
-    new_texture.set_min_Mag_Filter(in_text_pak.min,'a');
-    new_texture.load_texture(in_text_pak.path,in_text_pak.channels,in_text_pak.tex_unit_index);
-    new_texture.init_texture();
-    new_texture.set_Tex_paramz();
-    if(in_text_pak.text_type_flag ==M_Tex_Flag::TEXTYR_BASIC)
-    {
-      m_texture_array[0]    = new_texture;
-      m_tex_uniform_array[0]= in_text_pak.unform_name;
-    }
-    else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_NORMAL)
-    {
-      m_texture_array[1]      = new_texture;
-      m_tex_uniform_array[1]=in_text_pak.unform_name;
-    }
-    else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_SPEKTURAL)
-    {
-      m_texture_array[2]    = new_texture;
-      m_tex_uniform_array[2]=  in_text_pak.unform_name;
-    }
-
-  }
+  void texture_setup(texture_paramz_pak in_text_pak);
 
   void pack_mesh_vertex(parsed_paket_type* par_pak);
-
 
   void pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
                         std::vector< glm::vec2>&in_tc);
 
-  void bindmesh_buf();
-
-  void draw(gl_shader_t* shader);
-
-
-  unsigned int return_elment_buf()
+  inline unsigned int return_elment_buf()
   {
     return element_buf;
   }
 
-  size_t return_num_indices()
+  inline size_t return_num_indices()
   {
     return m_v_indices->size();
   }
 
-  void set_render_mode(render_mode new_mode, Poly_face face)
+  inline void set_render_mode(P_Render_STYZ new_mode, Poly_face face)
   {
 
-       if(new_mode==render_mode::WIREFRAME)
+       if(new_mode==P_Render_STYZ::WIREFRAME)
          glPolygonMode(face,GL_LINE);
 
-       if(new_mode==render_mode::FILL)
+       if(new_mode==P_Render_STYZ::FILL)
          glPolygonMode(face,GL_FILL);
 
-       if(new_mode==render_mode::POINT)
+       if(new_mode==P_Render_STYZ::POINT)
         glPolygonMode(face,GL_POINT);
   }
 
-  void update_mesh_model(model_ajustment ajust_in);
+    /*
+      template<typename... Args>
+       void flag_ORer(Args &&... flag_pack)//static
+      {
+           //unsigned char arg_array[]=  {((void) flag_ORer(std::forward<Args>(flag_pack)), ...)};
+          int dummyflag_array[] = { ( (void) set_tex_flags(std::forward<Args>(flag_pack)),0) ... };
+           std::cout <<  "size of dummy araybytz" << sizeof(dummyflag_array) <<'\n';
+           std::cout <<  "data of dummy araybytz" << dummyflag_array[0] <<'\n';
+      }*/
+  /*  void init(std::pair<std::vector<mesh_vertex>*,std::vector<unsigned int>*> in_vertx_data,M_Model_Flag mm_flag)
+    {
+      //m_vertices =in_vertx_data.first;
+    //  m_v_indices = in_vertx_data.second;
+      Model_flagz |=mm_flag;
+      posz_base    =glm::vec3(0.f);
+      rotation_base=glm::vec3(0.f);
+      scale_base   =glm::vec3(0.2f);
 
-  void set_mesh_model_origin(model_ajustment intial_model);
-
-
-};
-
-
-class gl_lightz
-{
-  public :
-  glm::vec3 light_pos;
-  glm::vec3 light_colour;
-
-  void set_light(glm::vec3 lp, glm::vec3 lc)
-  {
-    this->light_pos    =lp;
-    this->light_colour =lc;
-  }
+      model_init();
+    }*/
 };

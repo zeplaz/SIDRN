@@ -3,34 +3,7 @@
 #include "gl_lib_z.hpp"
 
 
-/*
 
-void view_lenz::Process_keyboard(Camera_Movement direction_move, float delta_time)
-    {
-      float velocity = MovementSpeed*delta_time;
-
-      switch(direction_move)
-      {
-        case Camera_Movement::FORWARD :
-        std::cout << Position;
-        Position +=Front*velocity;
-
-        std::cout << "Velocity::" <<velocity<< "newPOs" << Position << "front"<<Front <<'\n';
-        break;
-
-        case  Camera_Movement::BACKWARD :
-        Position -=Front*velocity;
-        break;
-
-        case  Camera_Movement::LEFT :
-        Position -=Right*velocity;
-        break;
-
-        case  Camera_Movement::RIGHT :
-        Position =Right*velocity;
-        break;
-      }
-    }*/
 
 class view_lenz
 {
@@ -60,21 +33,6 @@ class view_lenz
   {
     return glm::normalize(lenz_pos-lenz_target);
   }
-
-  /*glm::vec3 lenz_right()
-  {
-    return glm::normalize(glm::cross(lenz_up,get_lenz_reverse_drection()));
-  }
-
-  glm::vec3 get_lenz_up()
-  {
-    return glm::cross(get_lenz_reverse_drection(),lenz_right());
-  }
-
-  /*void set_view_basic()
-  {
-    view = glm::lookAt(lenz_right(),get_lenz_up(),get_lenz_reverse_drection());
-  }*/
 
   void set_view_movement()
   {
@@ -232,4 +190,50 @@ class view_lenz
                                             view_aspec_ratio, near_plane, far_plane);
    return Projection;
   }
+
+
+    /*glm::vec3 lenz_right()
+    {
+      return glm::normalize(glm::cross(lenz_up,get_lenz_reverse_drection()));
+    }
+
+    glm::vec3 get_lenz_up()
+    {
+      return glm::cross(get_lenz_reverse_drection(),lenz_right());
+    }
+
+    /*void set_view_basic()
+    {
+      view = glm::lookAt(lenz_right(),get_lenz_up(),get_lenz_reverse_drection());
+    }*/
 };
+
+
+/*
+
+void view_lenz::Process_keyboard(Camera_Movement direction_move, float delta_time)
+    {
+      float velocity = MovementSpeed*delta_time;
+
+      switch(direction_move)
+      {
+        case Camera_Movement::FORWARD :
+        std::cout << Position;
+        Position +=Front*velocity;
+
+        std::cout << "Velocity::" <<velocity<< "newPOs" << Position << "front"<<Front <<'\n';
+        break;
+
+        case  Camera_Movement::BACKWARD :
+        Position -=Front*velocity;
+        break;
+
+        case  Camera_Movement::LEFT :
+        Position -=Right*velocity;
+        break;
+
+        case  Camera_Movement::RIGHT :
+        Position =Right*velocity;
+        break;
+      }
+    }*/

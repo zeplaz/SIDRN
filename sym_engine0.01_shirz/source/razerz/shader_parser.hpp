@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <unordered_map>
 
 #include "gl_lib_z.hpp"
 
@@ -33,12 +34,34 @@ class gl_shader_t
   public :
   GLuint program_ID = 0;
   int Global_shader_ID = 0;
+  std::unordered_map<std::string,GLuint> uniform_loc_map;
+  //const_iterator
 
+  void shutdown()
+  {
+    glDeleteShader(program_ID);
+  }
   void set_glm_mat4(const std::string &name,const glm::mat4 &mat) const
   {
      glUniformMatrix4fv(glGetUniformLocation(program_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
   }
 
+  void add_uniform(std::string name,GLuint uniform_loc)
+  {
+    uniform_loc_map.insert(std::make_pair(name,uniform_loc));
+  }
+  GLuint return_uniform(std::string name)
+  {
+    auto shearcher = uniform_loc_map.find(name);
+    if(shearcher!=uniform_loc_map.end())
+    {
+      return shearcher->second;
+    }
+    else{
+      std::cerr <<"funtimez uniform not found goina cazedoom!";
+      return 254;
+    }
+  }
   void create_link_program(std::vector<int>& to_attach_shaders)
   {
     program_ID = glCreateProgram();

@@ -30,6 +30,13 @@ static const int MAIN_SCREEN_HIGHT = 1200;
 
 //setup bitmaskable veratic Enums
 //note check better veratdic template oprator sharing
+template<typename E>
+constexpr auto to_integral(E e) -> typename std::underlying_type<E>::type
+{
+   return static_cast<typename std::underlying_type<E>::type>(e);
+}
+
+
 template<typename Enum>
 struct EnableBitMaskOperators
 {
@@ -143,6 +150,20 @@ enum WP_obj_tuple_feture
   INDEX_NUM,PAIR_NAME,VERTEX_VEC_DATA, FACE_VEC_DATA
 };
 
+enum SHDtype_index : uint8_t
+{
+  SHD_BASIC_VERTEX =6,
+  SHD_BASIC_FRAG = 5,
+  SHD_LIGHTA1_VERTEX = 7,
+  SHD_LIGHTA1_FRAG = 8
+};
+
+enum Lighting : bool
+{
+  HAS_LIGHTS = true,
+  NO_LIGHT = false
+};
+
 enum PLY_obj_tuple_feturez
 {
   VERTEXZ3D,NORMALZ3D,TEXTUCORD2D
@@ -169,11 +190,12 @@ enum Poly_face : GLint {
 
 };
 
-enum class render_mode{
-      WIREFRAME,
-      FILL,
-      POINT
+enum class P_Render_STYZ : GLint  {
+      WIREFRAME =GL_LINE,
+      FILL = GL_FILL ,
+      POINT = GL_POINTS
 };
+typedef std::underlying_type<P_Render_STYZ>::type P_R_STYZ_utype;
 
 
 enum class Camera_Movement {

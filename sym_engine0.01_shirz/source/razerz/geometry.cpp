@@ -3,7 +3,7 @@
 
 #define STBI_FAILURE_USERMSG
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "3rdparty/stb_image.h"
 
 
 std::ostream& operator << (std::ostream &out, const M_Tex_Flag &f)
@@ -12,6 +12,20 @@ std::ostream& operator << (std::ostream &out, const M_Tex_Flag &f)
     flag  =(unsigned char) f;
     out << flag <<'\n';
     return out;
+}
+
+GLenum Texture_gl::return_TextureFormat(Format formate)
+{
+  switch (formate)
+   {
+      case Format::Format_Grayscale: return GL_LUMINANCE;
+      case Format::Format_GrayscaleAlpha: return GL_LUMINANCE_ALPHA;
+      case Format::Format_RGB: return GL_RGB;
+      case Format::Format_RGBA: return GL_RGBA;
+      case Format::Format_RGBA8: return GL_RGBA8;
+      case Format::Format_RGB8: return GL_RGB8;
+      default: throw std::runtime_error("Unrecognised Bitmap::Format");
+  }
 }
 
   void mesh::pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
@@ -27,17 +41,37 @@ std::ostream& operator << (std::ostream &out, const M_Tex_Flag &f)
     }
   }
 
-  void mesh::draw(gl_shader_t* shader)
+  void mesh::draw(gl_shader_t* shader,view_lenz* active_lenz)
   {
     shader->use_shader();
     glBindVertexArray(VAO_mesh);
 
     //model drawing
+    if(cal_lightz == true)
+    {
+
+      glm::mat4 model_view = base_model_matrix*active_lenz->return_lenz_view();
+      //glm::mat3 normal_matrix = glm::transpose(glm::inverse(model_view.xyz));
+      glm::mat3 normal_matrix = glm::inverse(glm::mat3(model_view));
+      m_v_p = glm::mat4(1.f);
+      m_v_p = model_view*active_lenz->lenz_projection();
+      glUniformMatrix3fv(shader->return_uniform("normal_matrix"),1,GL_TRUE,glm::value_ptr(normal_matrix));
+      glUniformMatrix4fv(shader->return_uniform("model_view"),1,GL_FALSE,glm::value_ptr(model_view));
+      glUniformMatrix4fv(shader->return_uniform("model_proj_View"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    }
+    else
+    {
+      m_v_p = glm::mat4(1.f);
+      m_v_p = active_lenz->return_lenz_view()*active_lenz->lenz_projection();
+      glUniformMatrix4fv(shader->return_uniform("model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    }
+
+/*
     if(Model_flagz==M_Model_Flag::MODEL_UNIFORM)
     {
       glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
                                   1,GL_FALSE,glm::value_ptr(base_model_matrix));
-    }
+    }*/
 
     // texture drawing
     if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
@@ -103,10 +137,7 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
 
   void mesh::update_mesh_model(model_ajustment ajust_in)
   {
-
-
-    
-    rotation_base.x +=ajust_in.rotation_ajust.x;
+   rotation_base.x +=ajust_in.rotation_ajust.x;
     rotation_base.y +=ajust_in.rotation_ajust.y;
     rotation_base.z +=ajust_in.rotation_ajust.z;
     posz_base.x     +=ajust_in.posz_ajust.x;
@@ -158,32 +189,6 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
     glBufferData(GL_ARRAY_BUFFER, sizeof(mesh_vertex)*m_vertices->size(),
                  &m_vertices->front(),GL_STATIC_DRAW);
 
-                //std::vector<mesh_vertex> meshv = *m_vertices;
-                /*
-                std::cout << "size of meshvertz" << m_vertices->size() <<'\n';
-                for(size_t i = 0; i<m_vertices->size(); i++)
-                {
-                  std::cout << "vdata::" << m_vertices->at(i) <<'\n';
-                }
-                std::cout << "enddata \n \n";
-                std::vector<glm::vec3> pos_vec;
-                std::vector<glm::vec3> vnormz;
-                std::vector<glm::vec2> tex_vec;
-
-                  for(size_t i = 0; i<m_vertices->size(); i++)
-                  {   mesh_vertex* mv_ptr = & m_vertices->at(i);
-                      pos_vec.push_back(mv_ptr->v_position);
-                      vnormz.push_back(mv_ptr->v_normal);
-                      tex_vec.push_back(mv_ptr->v_textcord);
-                  }*/
-/*
-   glBufferSubData(GL_ARRAY_BUFFER,0,m_vertices->size() * sizeof(glm::vec3),&pos_vec.front());
-   glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)
-                  ,m_vertices->size() * sizeof(glm::vec3),&vnormz.front());
-
-   glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)+m_vertices->size() * sizeof(glm::vec3)
-                  ,m_vertices->size() * sizeof(glm::vec2),&tex_vec.front());*/
-
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,sizeof(mesh_vertex), 0);
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,sizeof(mesh_vertex),BUFFER_OFFSET(sizeof(glm::vec3)));
@@ -192,7 +197,31 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
    glEnableVertexAttribArray(2);
 
    glBindVertexArray(0);
+   //std::vector<mesh_vertex> meshv = *m_vertices;
+   /*
+   std::cout << "size of meshvertz" << m_vertices->size() <<'\n';
+   for(size_t i = 0; i<m_vertices->size(); i++)
+   {
+     std::cout << "vdata::" << m_vertices->at(i) <<'\n';
+   }
+   std::cout << "enddata \n \n";
+   std::vector<glm::vec3> pos_vec;
+   std::vector<glm::vec3> vnormz;
+   std::vector<glm::vec2> tex_vec;
 
+     for(size_t i = 0; i<m_vertices->size(); i++)
+     {   mesh_vertex* mv_ptr = & m_vertices->at(i);
+         pos_vec.push_back(mv_ptr->v_position);
+         vnormz.push_back(mv_ptr->v_normal);
+         tex_vec.push_back(mv_ptr->v_textcord);
+     }*/
+ /*
+ glBufferSubData(GL_ARRAY_BUFFER,0,m_vertices->size() * sizeof(glm::vec3),&pos_vec.front());
+ glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)
+     ,m_vertices->size() * sizeof(glm::vec3),&vnormz.front());
+
+ glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)+m_vertices->size() * sizeof(glm::vec3)
+     ,m_vertices->size() * sizeof(glm::vec2),&tex_vec.front());*/
   }
 
     void Texture_gl::init_texture()
@@ -242,6 +271,37 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
 
           default : throw std::runtime_error("Unrecognised Bitmap::Filter");
         }
+      }
+
+      void mesh::texture_setup(texture_paramz_pak in_text_pak)
+      {
+        Texture_gl new_texture;
+        set_tex_flags(in_text_pak.text_type_flag);
+        new_texture.set_texture_ST(in_text_pak.wm_s,'s');
+        new_texture.set_texture_ST(in_text_pak.wm_t,'t');
+        new_texture.set_min_Mag_Filter(in_text_pak.mag,'i');
+        new_texture.set_min_Mag_Filter(in_text_pak.min,'a');
+
+        new_texture.load_texture(in_text_pak.path,in_text_pak.channels,in_text_pak.tex_unit_index);
+        new_texture.init_texture();
+      //  new_texture.load_texture(in_text_pak.path);
+        new_texture.set_Tex_paramz();
+        if(in_text_pak.text_type_flag ==M_Tex_Flag::TEXTYR_BASIC)
+        {
+          m_texture_array[0]    = new_texture;
+          m_tex_uniform_array[0]= in_text_pak.unform_name;
+        }
+        else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_NORMAL)
+        {
+          m_texture_array[1]      = new_texture;
+          m_tex_uniform_array[1]=in_text_pak.unform_name;
+        }
+        else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_SPEKTURAL)
+        {
+          m_texture_array[2]    = new_texture;
+          m_tex_uniform_array[2]=  in_text_pak.unform_name;
+        }
+
       }
 
 
