@@ -22,8 +22,8 @@
 *ENUMZ and other major defines, and marcos
 */
 
-static const int MAIN_SCREEN_WIDTH = 1600;
-static const int MAIN_SCREEN_HIGHT = 1200;
+static const int MAIN_SCREEN_WIDTH = 1000;
+static const int MAIN_SCREEN_HIGHT = 800;
 
 //macros
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -152,7 +152,8 @@ enum WP_obj_tuple_feture
 
 enum SHDtype_index : uint8_t
 {
-  SHD_BASIC_VERTEX =6,
+  SHD_BASICA02_VERTEX =6,
+  SHD_BASICA01_VERTEX =4,
   SHD_BASIC_FRAG = 5,
   SHD_LIGHTA1_VERTEX = 7,
   SHD_LIGHTA1_FRAG = 8

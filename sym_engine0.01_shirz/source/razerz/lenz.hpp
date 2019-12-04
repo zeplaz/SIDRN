@@ -62,11 +62,12 @@ class view_lenz
     view_aspec_ratio=(float)MAIN_SCREEN_WIDTH/(float)MAIN_SCREEN_HIGHT;
     update_lenz();
   }
-  void update_aspec_ratio()
+  void update_aspec_ratio(GLint frame_buf_width,GLint frame_buf_hight)
   {
     float* viewport;
-    glGetFloatv(GL_VIEWPORT,viewport);
-    view_aspec_ratio=viewport[0]/viewport[1];
+    //glGetFloatv(GL_VIEWPORT,viewport);
+    //view_aspec_ratio=viewport[0]/viewport[1];
+    view_aspec_ratio =(float)frame_buf_width/(float)frame_buf_hight;
   }
 
   void process_mouse(float xoff, float yoff)

@@ -28,15 +28,11 @@ class obj_cmder
   {
 
 
-
-
-
     //std::cout <<"\n ###nummof shaders to process" << in_shaderz.size() << "  num of objket packagez::" << vetex_array_objkz.size() << '\n' << '\n';
   float timeValue = glfwGetTime();
   float sin_green = sin(timeValue);
   float colour_angluretime = pow((sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue)),2);
   float sin_tsnz = sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue);
-
 
   for (size_t i =0; i<in_shaderz.size();i++)
   {

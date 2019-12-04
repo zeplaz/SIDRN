@@ -155,8 +155,8 @@ GLint flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
   shader_3.test_flags();
   std::vector<shader_tuple_type*>*  shader_TV_ptr = return_ptr_shader_TV();
 
-  shader_3.setup_shader_code(shader_TV_ptr->at(6));
-  shader_3.setup_shader_code(shader_TV_ptr->at(5));
+  shader_3.setup_shader_code(shader_TV_ptr->at(0));
+  shader_3.setup_shader_code(shader_TV_ptr->at(1));
   std::vector<int> base_shader_idz;
   base_shader_idz.push_back(6);
   base_shader_idz.push_back(5);

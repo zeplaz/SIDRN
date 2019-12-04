@@ -40,38 +40,158 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
       m_vertices->push_back(temp_mv);
     }
   }
+  void mesh::pass_meterial_data(gl_shader_t* shader)
+  {
+    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.emission"),1,glm::value_ptr(meterial.emission));
+    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.ambient_reflect") ,1,glm::value_ptr(meterial.ambient_reflect));
+    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.diffuse_reflect") ,1,glm::value_ptr(meterial.diffuse_reflect));
+    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.specular_reflect"),1,glm::value_ptr(meterial.specular_reflect));
+    glUniform1f (glGetUniformLocation(shader->program_ID,"meterial.shininess")       ,meterial.shininess);
+  }
 
   void mesh::draw(gl_shader_t* shader,view_lenz* active_lenz)
   {
     shader->use_shader();
     glBindVertexArray(VAO_mesh);
 
+    glm::mat4 active_projection(1.f);
+    glm::mat4 active_view(1.f);
+    active_projection = active_lenz->lenz_projection();
+    active_view       = active_lenz->return_lenz_view();
+
+    glm::mat4 view_projection(1.f);
+    view_projection = active_projection*active_view;
+    m_v_p = glm::mat4(1.f);
+    m_v_p = view_projection*base_model_matrix;
+
+    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    //glUniformMatrix4fv(shader->return_uniform("model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    // texture drawing
+    if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
+    { //std::cout <<"only basic texutre" << '\n';
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+      //std::cout<<"number of veriz to draw::" << m_vertices->size() << '\n';
+      glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
+  }
+
+
+  void mesh::draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)
+  {
+    shader->use_shader();
+    glBindVertexArray(VAO_mesh);
+
+    glm::mat4 proj_view(1.f);
     //model drawing
     if(cal_lightz == true)
     {
+       glm::mat4 model_view(1.f);
+       glm::mat3 normal_matrix(1.f);
+       m_v_p = glm::mat4(1.f);
 
-      glm::mat4 model_view = base_model_matrix*active_lenz->return_lenz_view();
+       model_view = view*base_model_matrix;
       //glm::mat3 normal_matrix = glm::transpose(glm::inverse(model_view.xyz));
-      glm::mat3 normal_matrix = glm::inverse(glm::mat3(model_view));
-      m_v_p = glm::mat4(1.f);
-      m_v_p = model_view*active_lenz->lenz_projection();
+      normal_matrix = glm::inverse(glm::mat3(model_view));
+
+      proj_view = proj*view;
+
+      m_v_p = proj_view*base_model_matrix;
+
       glUniformMatrix3fv(shader->return_uniform("normal_matrix"),1,GL_TRUE,glm::value_ptr(normal_matrix));
       glUniformMatrix4fv(shader->return_uniform("model_view"),1,GL_FALSE,glm::value_ptr(model_view));
       glUniformMatrix4fv(shader->return_uniform("model_proj_View"),1,GL_FALSE,glm::value_ptr(m_v_p));
+
+      pass_meterial_data(shader);
     }
+
     else
     {
       m_v_p = glm::mat4(1.f);
-      m_v_p = active_lenz->return_lenz_view()*active_lenz->lenz_projection();
-      glUniformMatrix4fv(shader->return_uniform("model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+      proj_view = proj*view;
+
+      m_v_p = proj_view*base_model_matrix;
+      glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
     }
 
-/*
+    // texture drawing
+    if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
+    { //std::cout <<"only basic texutre" << '\n';
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
+    //glBindVertexArray(0);
+  }
+
+  void mesh::draw(gl_shader_t* shader)
+  {
+    shader->use_shader();
+    glBindVertexArray(VAO_mesh);
+
+    //model drawing
     if(Model_flagz==M_Model_Flag::MODEL_UNIFORM)
     {
       glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
                                   1,GL_FALSE,glm::value_ptr(base_model_matrix));
-    }*/
+    }
 
     // texture drawing
     if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
@@ -294,14 +414,13 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
         else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_NORMAL)
         {
           m_texture_array[1]      = new_texture;
-          m_tex_uniform_array[1]=in_text_pak.unform_name;
+          m_tex_uniform_array[1]  =in_text_pak.unform_name;
         }
         else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_SPEKTURAL)
         {
           m_texture_array[2]    = new_texture;
           m_tex_uniform_array[2]=  in_text_pak.unform_name;
         }
-
       }
 
 

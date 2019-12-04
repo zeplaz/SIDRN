@@ -7,8 +7,6 @@
 
 class wavefornt_parser2;
 
-
-
 typedef struct model_ajustment_type
 {
   glm::vec3 posz_ajust;
@@ -30,19 +28,6 @@ struct texture_paramz_pak
 };
 
 
-class gl_lightz
-{
-  public :
-  glm::vec3 light_pos;
-  glm::vec3 light_colour;
-
-  void set_light(glm::vec3 lp, glm::vec3 lc)
-  {
-    this->light_pos    =lp;
-    this->light_colour =lc;
-  }
-};
-
  struct Texture_gl
     {
         GLuint texture_ID;
@@ -60,7 +45,7 @@ class gl_lightz
         Format formate_external;
         bool used_vglLoader = false;
 
-
+        GLuint  TBO_Buffer_Handle;
         void init_texture();
 
         GLenum return_TextureFormat(Format formate);
@@ -92,8 +77,16 @@ class gl_lightz
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode_S); //GL_REPEAT//GL_CLAMP_TO_EDGE//GL_CLAMP_TO_BORDER//GL_MIRRORED_REPEAT
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode_T);
         }
+/*
+        void texture_buf_obj(size_t total_size,)
+        {
+           glGenBuffers(1, &TBO_Buffer_Handle);
+           glBindBuffer(GL_TEXTURE_BUFFER, TBO_Buffer_Handle);
+           glBufferData( GL_TEXTURE_BUFFER, total_size, NULL, GL_STATIC_DRAW );
 
-
+           glBindTexture(GL_TEXTURE_BUFFER,)
+        }
+*/
         inline void  set_texture_unit_index(int index)
         {
           texture_indexUnit +=index;
@@ -121,6 +114,20 @@ class gl_lightz
         }
 };
 
+struct Meterialz
+{
+    glm::vec3 emission;
+    glm::vec3 ambient_reflect;
+    glm::vec3 diffuse_reflect;
+    glm::vec3 specular_reflect;
+    float shininess;
+    //GLint diffuse_texture;
+    //GLint spekular_texture;
+
+    //func
+    //void send_data_toshader(gl_shader_t* in_program);
+  };
+
 class mesh
 {
   private :
@@ -129,6 +136,8 @@ class mesh
   glm::vec3 scale_base;
   glm::mat4 base_model_matrix;
   glm::mat4 m_v_p;
+
+  Meterialz meterial;
 
   unsigned int VAO_mesh, buff_mesh, EBO;
   unsigned int vertex_buf, uv_buf, normal_buf,element_buf;
@@ -149,6 +158,8 @@ class mesh
   void bindmesh_buf();
 
   void draw(gl_shader_t* shader,view_lenz* active_lenz);
+  void  draw(gl_shader_t* shader);
+  void draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj);
 
   void model_init();
 
@@ -164,6 +175,7 @@ class mesh
   }
 
   void init(wavefornt_parser2* wp, std::string res_path);
+
   void init(std::pair<std::shared_ptr<std::vector<mesh_vertex>>,
             std::shared_ptr<std::vector<unsigned int>>> in_vertx_data,
             M_Model_Flag mm_flag,bool is_avec_lightz)
@@ -184,6 +196,21 @@ class mesh
 
   void pack_mesh_vertex(std::vector<glm::vec3>&in_v,std::vector< glm::vec3>&in_n,
                         std::vector< glm::vec2>&in_tc);
+
+  void pass_meterial_data(gl_shader_t* shader);
+  void set_meterial(glm::vec3 emis, glm::vec3 amb_ref, glm::vec3 diff_ref,
+                    glm::vec3 spektral_reflect, float shinyz)
+  {
+    meterial.emission=emis;
+    meterial.ambient_reflect=amb_ref;
+    meterial.diffuse_reflect=diff_ref;
+    meterial.specular_reflect=spektral_reflect;
+    meterial.shininess=shinyz;
+
+  //  GLint diffuse_texture;
+  //  GLint spekular_texture;
+
+  }
 
   inline unsigned int return_elment_buf()
   {
