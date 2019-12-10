@@ -10,14 +10,25 @@
 #define L_POINT 5
 #define L_SPOT 6
 
+enum class Scene_Mesh_RDR{
+  LIGHT_PROG01_SCENE01,
+  BASIC_SHADER_SCENE01
+};
+
+enum class Scene_LIST
+{
+  SCENE_01
+};
+
 
 struct Phong_reflection
 {
   //ambient light
   glm::vec3 ambient;
+  glm::vec3 spot_cone_drection;
 
 //directiona light
-  float drectional_srength;
+float drectional_srength;
 
 //Point light
 float const_attenuation;
@@ -25,7 +36,7 @@ float quadr_attenuation;
 float linear_attenuation;
 
 //spot light
-  glm::vec3 spot_cone_drection;
+
   float spot_cos_cutoff;
   float spot_exponent;
 
@@ -36,25 +47,26 @@ float linear_attenuation;
 struct light_propertyz
 {
   bool is_enabled;
-  int  Light_type;
-
   glm::vec3 position;
   glm::vec3 intensity;
 
   Phong_reflection phong_light;
+  int  Light_type;
 };
 
 
-class gl_lightz
+class gl_lightzctl
 {
   public :
   std::vector<light_propertyz> light_list;
 
-  void test_size()
+  size_t test_size()
   {
     std::cout << "lightpropy struct size::" << sizeof(light_propertyz)
     << "\n is multiof vec4:" << sizeof(light_propertyz)/sizeof(glm::vec4) <<'\n';
-  }
+
+    return sizeof(light_propertyz);
+    }
 
   void set_ambient(glm::vec3 amb)
   {
@@ -120,16 +132,12 @@ class gl_lightz
   }
 };
 
-enum class Scene_Mesh_RDR{
-  LIGHT_SHADER_SCENE01,
-  BASIC_SHADER_SCENE01
-};
 
 class scene{
 
   private :
   std::unordered_map<Scene_Mesh_RDR,gl_shader_t*> shader_map;
-  std::unordered_map<Scene_Mesh_RDR,gl_lightz> light_crt_map;
+  std::unordered_map<Scene_Mesh_RDR,gl_lightzctl> light_crt_map;
   std::unordered_map<Scene_Mesh_RDR,view_lenz*> lenz_map;
 
   std::multimap<Scene_Mesh_RDR,mesh*> mesh_multi_map;
@@ -137,16 +145,60 @@ class scene{
   typedef std::multimap<Scene_Mesh_RDR, mesh*>::iterator MMAPIterator;
   typedef std::unordered_map<Scene_Mesh_RDR,gl_shader_t*>::const_iterator SHAD_Iter;
   typedef std::unordered_map<Scene_Mesh_RDR,view_lenz*>::const_iterator LENZ_Iter;
-  typedef std::unordered_map<Scene_Mesh_RDR,gl_lightz>::iterator LIGHT_Iter;
+  typedef std::unordered_map<Scene_Mesh_RDR,gl_lightzctl>::iterator LIGHT_Iter;
 
   public :
 
+  offset_table of_table;
+  GLuint lightA1_buffer_ID;
+  GLuint prsiz_lightA1_buffer_ID;
+
+  gl_lightzctl* reutrn_prt_scene_lightcrl(Scene_Mesh_RDR at_scene)
+  {
+    LIGHT_Iter li_it = light_crt_map.find (at_scene);
+   if ( li_it == light_crt_map.end())
+   {
+     std::cerr <<"#!!ligth_arrgment not foundz\n";
+   }
+   else
+   {
+     return   &li_it->second;
+  }
+  }
+
+  void light_data_size(Scene_Mesh_RDR at_scene,size_t& out_num_lightz,size_t& out_data_size)
+  {
+
+    size_t total_lightsize=0;
+
+  LIGHT_Iter li_it = light_crt_map.find (at_scene);
+   if ( li_it == light_crt_map.end())
+   {
+     std::cerr <<"#!!ligth_arrgment not foundz\n";
+   }
+   else
+   {
+    gl_lightzctl* light_scene_ptr=   &li_it->second;
+    out_num_lightz = light_scene_ptr->light_list.size();
+    for(size_t i =0; i<out_num_lightz;i++)
+    {
+      total_lightsize+=sizeof(light_scene_ptr->light_list.at(i));
+    }
+    out_data_size =total_lightsize;
+    //light_scene_ptr->update_lightz();
+    //light_scene_ptr->pass_datato_shader(current_shader);
+  }
+
+    std::cout << "\n ################# \n totalsize_lightz::" << total_lightsize <<'\n'
+    << "numlightz" << out_num_lightz <<'\n' <<"is a multiof 4:"<< (total_lightsize/out_num_lightz)/4 <<'\n';
+
+  }
   void insert_shader(Scene_Mesh_RDR scene,gl_shader_t* in_shdr)
   {
     shader_map.insert(std::make_pair(scene,in_shdr));
   }
 
-  void insert_light_ctler(Scene_Mesh_RDR scene,gl_lightz in_light)
+  void insert_light_ctler(Scene_Mesh_RDR scene,gl_lightzctl in_light)
   {
     light_crt_map.insert(std::make_pair(scene,in_light));
   }
@@ -161,6 +213,25 @@ class scene{
     mesh_multi_map.insert(std::make_pair(scene,in_mesh));
   }
 
+
+  void lightsetup()
+  {
+
+    size_t abentoffiset = of_table.l_offset.l_amb;
+    size_t light_num;
+    size_t light_data_size;
+    this->light_data_size(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,light_num,light_data_size);
+    gl_lightzctl* light_ctrler =  this->reutrn_prt_scene_lightcrl(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01);
+
+
+
+    glCreateBuffers(1, &lightA1_buffer_ID);
+    glCreateBuffers(1, &prsiz_lightA1_buffer_ID);
+    glNamedBufferStorage(lightA1_buffer_ID, light_data_size, light_ctrler->light_list.data(),GL_MAP_UNSYNCHRONIZED_BIT| GL_MAP_WRITE_BIT);
+    //glNamedBufferStorage(prsiz_lightA1_buffer_ID, light_data_size, light_ctrler->light_list.data(),GL_MAP_UNSYNCHRONIZED_BIT|GL_DYNAMIC_STORAGE_BIT |GL_MAP_WRITE_BIT|GL_MAP_COHERENT_BIT|GL_MAP_PERSISTENT_BIT);
+        //
+
+  }
 
 void draw_scene(Scene_Mesh_RDR to_draw_scene)
 {
@@ -200,7 +271,14 @@ if(Scene_Mesh_RDR::BASIC_SHADER_SCENE01 !=to_draw_scene)
  }
  else
  {
-  gl_lightz* light_scene_ptr=   &li_it->second;
+  gl_lightzctl* light_scene_ptr=   &li_it->second;
+  //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, prsiz_lightA1_buffer_ID);
+  float timeValue = glfwGetTime();
+  float sin_green = sin(timeValue);
+  float colour_angluretime = pow((sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue)),2);
+  float sin_tsnz = sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue);
+  glm::vec3 ambenshift =glm::vec3(colour_angluretime,sin_green,sin_tsnz);
+  //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
   //light_scene_ptr->update_lightz();
   //light_scene_ptr->pass_datato_shader(current_shader);
 }}

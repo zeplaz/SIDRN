@@ -63,7 +63,7 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     view_projection = active_projection*active_view;
     m_v_p = glm::mat4(1.f);
     m_v_p = view_projection*base_model_matrix;
-
+    pass_meterial_data(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
     //glUniformMatrix4fv(shader->return_uniform("model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
     // texture drawing
@@ -103,6 +103,8 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
       //std::cout<<"number of veriz to draw::" << m_vertices->size() << '\n';
       glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
   }
+
+
 
 
   void mesh::draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)

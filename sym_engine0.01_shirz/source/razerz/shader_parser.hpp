@@ -62,7 +62,7 @@ class gl_shader_t
       return 254;
     }
   }
-  void create_link_program(std::vector<int>& to_attach_shaders)
+  bool create_link_program(std::vector<int>& to_attach_shaders)
   {
     program_ID = glCreateProgram();
     std::cout <<"shader# in to link" << to_attach_shaders.size() <<'\n';
@@ -89,7 +89,9 @@ class gl_shader_t
            {
                glGetProgramInfoLog(program_ID, 1024, NULL, infoLog);
                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: "  << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+               return false;
            }
+           return true;
   }
 
   inline void use_shader()
