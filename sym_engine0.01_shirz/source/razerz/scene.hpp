@@ -2,30 +2,14 @@
 #pragma once
 
 #include "geometry.hpp"
-
-#define L_AMBIENT 1
-#define L_DIFFUSE 2
-#define L_SPEKLER 3
-#define L_DRECTION 4
-#define L_POINT 5
-#define L_SPOT 6
-
-enum class Scene_Mesh_RDR{
-  LIGHT_PROG01_SCENE01,
-  BASIC_SHADER_SCENE01
-};
-
-enum class Scene_LIST
-{
-  SCENE_01
-};
+#include "pre_comb_objz.hpp"
 
 
 struct Phong_reflection
 {
   //ambient light
-  glm::vec3 ambient;
-  glm::vec3 spot_cone_drection;
+  glm::vec4 ambient;
+  glm::vec4 spot_cone_drection;
 
 //directiona light
 float drectional_srength;
@@ -46,9 +30,10 @@ float linear_attenuation;
 
 struct light_propertyz
 {
+  glm::vec4 position;
+  glm::vec4 intensity;
+
   bool is_enabled;
-  glm::vec3 position;
-  glm::vec3 intensity;
 
   Phong_reflection phong_light;
   int  Light_type;
@@ -68,7 +53,7 @@ class gl_lightzctl
     return sizeof(light_propertyz);
     }
 
-  void set_ambient(glm::vec3 amb)
+  void set_ambient(glm::vec4 amb)
   {
     light_propertyz light_proper;
     light_proper.is_enabled = true;
@@ -79,7 +64,7 @@ class gl_lightzctl
     light_list.push_back(light_proper);
   }
 
-  void set_light_diffuse(glm::vec3 lpos,glm::vec3 intezy,
+  void set_light_diffuse(glm::vec4 lpos,glm::vec4 intezy,
                           float d_strgth)
   {
     light_propertyz light_proper;
@@ -93,8 +78,8 @@ class gl_lightzctl
     light_list.push_back(light_proper);
   }
 
-  void set_light_point(std::array<float,3> attenuation,glm::vec3 lpos,
-    glm::vec3 intezy,float strenth)
+  void set_light_point(std::array<float,3> attenuation,glm::vec4 lpos,
+    glm::vec4 intezy,float strenth)
   {
     light_propertyz light_proper;
     light_proper.is_enabled = true;
@@ -110,7 +95,7 @@ class gl_lightzctl
     light_list.push_back(light_proper);
   }
 
-  void set_light_spot(std::array<float,3> annut,glm::vec3 lpos, glm::vec3 intezy,glm::vec3 cone_dir,
+  void set_light_spot(std::array<float,3> annut,glm::vec4 lpos, glm::vec4 intezy,glm::vec4 cone_dir,
                         float cos_cutoff,float exp,float catten)
   {
     light_propertyz light_proper;
@@ -277,7 +262,7 @@ if(Scene_Mesh_RDR::BASIC_SHADER_SCENE01 !=to_draw_scene)
   float sin_green = sin(timeValue);
   float colour_angluretime = pow((sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue)),2);
   float sin_tsnz = sin(timeValue)*sin(timeValue)/tan(timeValue)*tan(timeValue);
-  glm::vec3 ambenshift =glm::vec3(colour_angluretime,sin_green,sin_tsnz);
+  glm::vec4 ambenshift =glm::vec4(colour_angluretime,sin_green,sin_tsnz,1);
   //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
   //light_scene_ptr->update_lightz();
   //light_scene_ptr->pass_datato_shader(current_shader);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "gl_lib_z.hpp"
 #include "shader_parser.hpp"
 #include "geometry_parser.hpp"
 #include "lenz.hpp"
@@ -62,10 +61,10 @@ struct texture_paramz_pak
           glActiveTexture(GL_TEXTURE0+texture_indexUnit);
         }
 
-        inline void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name)
+        inline void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name,int unit)
         {
           glBindTexture(GL_TEXTURE_2D,texture_ID);
-          glUniform1i(glGetUniformLocation(s_in->program_ID, uniform_name.c_str()), 0);
+          glUniform1i(glGetUniformLocation(s_in->program_ID, uniform_name.c_str()), unit);
         }
 
         void set_Tex_paramz()
@@ -121,6 +120,7 @@ struct Meterialz
     glm::vec3 diffuse_reflect;
     glm::vec3 specular_reflect;
     float shininess;
+    bool is_normalmap=false;
     //GLint diffuse_texture;
     //GLint spekular_texture;
 

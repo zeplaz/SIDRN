@@ -42,11 +42,12 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
   }
   void mesh::pass_meterial_data(gl_shader_t* shader)
   {
-    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.emission"),1,glm::value_ptr(meterial.emission));
+    glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.emission")        ,1,glm::value_ptr(meterial.emission));
     glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.ambient_reflect") ,1,glm::value_ptr(meterial.ambient_reflect));
     glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.diffuse_reflect") ,1,glm::value_ptr(meterial.diffuse_reflect));
     glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.specular_reflect"),1,glm::value_ptr(meterial.specular_reflect));
     glUniform1f (glGetUniformLocation(shader->program_ID,"meterial.shininess")       ,meterial.shininess);
+    glUniform1i (glGetUniformLocation(shader->program_ID,"meterial.is_normalmap")    ,meterial.is_normalmap);
   }
 
   void mesh::draw(gl_shader_t* shader,view_lenz* active_lenz)
@@ -70,35 +71,35 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
     { //std::cout <<"only basic texutre" << '\n';
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
 
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
 
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
       //std::cout<<"number of veriz to draw::" << m_vertices->size() << '\n';
       glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
@@ -127,7 +128,7 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
       proj_view = proj*view;
 
       m_v_p = proj_view*base_model_matrix;
-
+      glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model"),1,GL_FALSE,glm::value_ptr(base_model_matrix));
       glUniformMatrix3fv(shader->return_uniform("normal_matrix"),1,GL_TRUE,glm::value_ptr(normal_matrix));
       glUniformMatrix4fv(shader->return_uniform("model_view"),1,GL_FALSE,glm::value_ptr(model_view));
       glUniformMatrix4fv(shader->return_uniform("model_proj_View"),1,GL_FALSE,glm::value_ptr(m_v_p));
@@ -148,35 +149,35 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
     { //std::cout <<"only basic texutre" << '\n';
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
 
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
 
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
@@ -199,35 +200,35 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
     { //std::cout <<"only basic texutre" << '\n';
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
 
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
     }
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
       m_texture_array[1].activate();
-      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
 
     else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
             == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
     {
       m_texture_array[0].activate();
-      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0]);
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[1].texture_indexUnit);
       m_texture_array[2].activate();
-      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[1]);
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
     }
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
@@ -358,7 +359,9 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
 
     void Texture_gl::load_texture(std::string path,int force_channel,int text_unitindex)
     {
+      std::cout <<"stbi_begin\n";
       image = stbi_load(path.c_str(),&width,&height,&n,force_channel);
+      std::cout <<"stbi_loadcompleate\n";
       set_texture_unit_index(text_unitindex);
     }
 
@@ -395,8 +398,15 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
         }
       }
 
+      void calc_tanget_space(glm::vec3 pos, glm::vec3& tangent,glm::vec3& bytanget)
+      {
+        glm::vec3 edge1= pos;
+      }
+
       void mesh::texture_setup(texture_paramz_pak in_text_pak)
       {
+        std::cout << "##begin_textureLoad \n";
+
         Texture_gl new_texture;
         set_tex_flags(in_text_pak.text_type_flag);
         new_texture.set_texture_ST(in_text_pak.wm_s,'s');
@@ -405,9 +415,12 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
         new_texture.set_min_Mag_Filter(in_text_pak.min,'a');
 
         new_texture.load_texture(in_text_pak.path,in_text_pak.channels,in_text_pak.tex_unit_index);
+          std::cout << "##loadtexture_compleate \n";
         new_texture.init_texture();
+          std::cout << "##init texture \n";
       //  new_texture.load_texture(in_text_pak.path);
         new_texture.set_Tex_paramz();
+        std::cout << "##set_Tex pramz finished \n \n";
         if(in_text_pak.text_type_flag ==M_Tex_Flag::TEXTYR_BASIC)
         {
           m_texture_array[0]    = new_texture;
@@ -417,6 +430,7 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
         {
           m_texture_array[1]      = new_texture;
           m_tex_uniform_array[1]  =in_text_pak.unform_name;
+          meterial.is_normalmap = true;
         }
         else if(in_text_pak.text_type_flag==M_Tex_Flag::TEXTYR_SPEKTURAL)
         {

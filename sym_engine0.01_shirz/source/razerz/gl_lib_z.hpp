@@ -18,8 +18,10 @@
 
 #include "mathII.hpp"
 
+
 /*
-*ENUMZ and other major defines, and marcos
+* file contains the headers need for opengl and glfw
+* as well as most of the defines, enums, and other fixed consts.
 */
 
 static const int MAIN_SCREEN_WIDTH = 1000;
@@ -28,6 +30,21 @@ static const int MAIN_SCREEN_HIGHT = 800;
 //macros
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
+
+/*
+*definez
+*/
+
+#define L_AMBIENT 1
+#define L_DIFFUSE 2
+#define L_SPEKLER 3
+#define L_DRECTION 4
+#define L_POINT 5
+#define L_SPOT 6
+
+/*
+* BITMASK ENUMZ template work
+*/
 //setup bitmaskable veratic Enums
 //note check better veratdic template oprator sharing
 template<typename E>
@@ -79,7 +96,10 @@ operator &(Enum lhs,Enum rhs)
     return  static_cast<Enum> (static_cast<underlying>(lhs)& static_cast<underlying>(rhs));
 };
 
-//enums useing bitmask functionality NOTE: require the template<> to activate bitmask
+/*
+*ENUMZ  USILTZEING BITMASKz functionality
+*NOTE: require the template<> to activate bitmask
+*/
 
 enum class shader_type : unsigned char {
      SHADER_NULL         = 0x00,
@@ -135,7 +155,21 @@ auto as_integer(Enumeration const value)
 }
 
 
-// class enum listings.
+/*
+* class enum  and normal enumz listings.
+*/
+
+enum class Scene_Mesh_RDR{
+  LIGHT_PROG01_SCENE01,
+  BASIC_SHADER_SCENE01
+};
+
+enum class Scene_LIST
+{
+  SCENE_01
+};
+
+
 enum class Format {
     Format_Grayscale = 1, /**< one channel: grayscale */
     Format_GrayscaleAlpha = 2, /**< two channels: grayscale and alpha */
@@ -206,7 +240,10 @@ enum class Camera_Movement {
     RIGHT
 };
 
-//constants
+
+/*
+*CONSTANTZ
+*/
 
 constexpr unsigned char ATTRBUT_DYNAMIC_DRAW{0b0000'0010};
 constexpr unsigned char ATTRBUT_STATIC      {0b0000'0100};

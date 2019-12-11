@@ -1,14 +1,35 @@
 #include "scene.hpp"
 
 
-const std::string ship_A01 = "ship_A01";
-const std::string ship_A03 = "ship_A03";
-
-struct scene_struct
+template<typename Inher_type>
+class singleton
 {
-  scene active_scene;
+  protected :
+  singleton() = default;
 
-  std::unordered_map<std::string,model_ajustment> model_ajust_map;
+  public :
+  singleton(const singleton&) = delete;
+  singleton &operator = (const singleton&)=delete;
+
+  static Inher_type &get_instance()
+  {
+    static Inher_type instance;
+    return instance;
+  }
+};
+
+
+
+
+
+
+class scene_CMDer : public singleton<scene_CMDer>
+{
+
+  public :
+  scene active_scene;
+  //std::unordered_map<std::string,model_ajustment> model_ajust_map;
+
 
  void passthrough_lighting(Scene_Mesh_RDR scene,gl_lightzctl in_light)
  {
@@ -168,8 +189,22 @@ struct scene_struct
   ship_tex_A3_parmz.tex_unit_index = 0;
   ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_BASIC;
 
+  texture_paramz_pak ship_tex_A3_normal_parmz;
+  ship_tex_A3_parmz.wm_s    = WarpMode::REPEAT;
+  ship_tex_A3_parmz.wm_t    = WarpMode::REPEAT;
+  ship_tex_A3_parmz.mag     = Filter::LINEAR;
+  ship_tex_A3_parmz.min     = Filter::LINEAR;
+  ship_tex_A3_parmz.path    = "data_extrn/ship_A3/Ship_A3.05_hight_normal.bmp";
+  ship_tex_A3_parmz.channels= 3;
+  ship_tex_A3_parmz.unform_name = "normal_mapSampler";
+  ship_tex_A3_parmz.tex_unit_index = 1;
+  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_NORMAL;
+
   shipA3.texture_setup(ship_tex_A3_parmz);
+  shipA3.texture_setup(ship_tex_A3_normal_parmz);
   ship_basic.texture_setup(ship_tex_A3_parmz);
+
+
 
   active_scene.insert_mesh(Scene_Mesh_RDR::LIGHT_SHADER_SCENE01,shipA3);
   active_scene.insert_mesh(Scene_Mesh_RDR::LIGHT_SHADER_SCENE01,ship_basic);

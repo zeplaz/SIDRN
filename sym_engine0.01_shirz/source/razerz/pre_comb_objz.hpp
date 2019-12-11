@@ -1,5 +1,19 @@
 //pre_comb_objz
 #pragma once
+
+
+
+namespace lookup_objkz
+{
+  const std::string ship_A01 = "ship_A01";
+  const std::string ship_A03 = "ship_A03";
+}
+
+
+
+
+
+
 namespace pre_comb_objz{
 
 GLuint  index_buf_triagle[]

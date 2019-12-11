@@ -25,10 +25,11 @@ int run_opengl_setup(GLFWwindow* out_window);
 
 struct offset_table
 {
+  static const size_t struc_internal_offset = 16;
   static const size_t bool_offset = sizeof(GLboolean);
   static const size_t float_offset = sizeof(GLfloat);
   static const size_t int_offset = sizeof(GLint);
-  static const size_t vec3_offset = 3*4;
+  static const size_t vec3_offset = 16;
 
   struct light_offsetz
   {
@@ -36,15 +37,15 @@ struct offset_table
     size_t l_pos     = bool_offset;
     size_t l_intz    = l_pos+vec3_offset;
     size_t l_amb     = l_intz+vec3_offset;
-    size_t l_spotcon = l_amb+vec3_offset;
+    size_t l_spotcon = l_amb+struc_internal_offset;
 
-    size_t dr_srengh=l_spotcon+vec3_offset;
-    size_t con_atten=dr_srengh+float_offset;
-    size_t qadr_atten=con_atten+float_offset;
-    size_t lin_atten=qadr_atten+float_offset;
-    size_t spot_cut=lin_atten+float_offset;
-    size_t spot_exp =spot_cut+float_offset;
-    size_t gamma_c =spot_exp+float_offset;
-    size_t l_type = gamma_c+float_offset;
+    size_t dr_srengh=l_spotcon+struc_internal_offset;
+    size_t con_atten=dr_srengh+struc_internal_offset;
+    size_t qadr_atten=con_atten+struc_internal_offset;
+    size_t lin_atten=qadr_atten+struc_internal_offset;
+    size_t spot_cut=lin_atten+struc_internal_offset;
+    size_t spot_exp =spot_cut+struc_internal_offset;
+    size_t gamma_c =spot_exp+struc_internal_offset;
+    size_t l_type = gamma_c+struc_internal_offset;
   }l_offset;
 };

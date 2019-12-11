@@ -190,15 +190,21 @@ GLint frame_buf_width,frame_buf_hight;
  /*
  Mainloopz!
  */
+ struct stoge_buf_test
+ { glm::vec3 ambent_test = glm::vec3(0.0,0.0,0.1);
+
+ } sbt;
  test_lightz.test_size();
  shader_lightA01->use_shader();
  glCreateBuffers(1, &lightA1_buffer_ID);
 
- glNamedBufferStorage(lightA1_buffer_ID, sizeof(lighttest), NULL, GL_DYNAMIC_STORAGE_BIT|GL_MAP_PERSISTENT_BIT| GL_MAP_COHERENT_BIT|GL_MAP_READ_BIT );
+ glNamedBufferStorage(lightA1_buffer_ID, sizeof(sbt), NULL, GL_DYNAMIC_STORAGE_BIT);
  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
 //glBufferSubData()
+
 offset_table off_table;
-glBufferSubData(GL_SHADER_STORAGE_BUFFER,off_table.l_offset.l_amb,sizeof(glm::vec3),&lighttest.phong_light.ambient);
+glNamedBufferSubData(lightA1_buffer_ID,0,sizeof(glm::vec3),&sbt.ambent_test);
+
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
 
@@ -232,7 +238,7 @@ glBufferSubData(GL_SHADER_STORAGE_BUFFER,off_table.l_offset.l_amb,sizeof(glm::ve
     /*
     * MODEL TRANFORMZ
     */
-    
+
     test_ajustship.rotation_ajust.y =0.09f;
     test_ajustship2.posz_ajust.x=-0.001f;
     //test_ajustship2.rotation_ajust.y=-0.01f;

@@ -158,46 +158,6 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   gl_lightzctl test_lightz;
 
 
-//light ambient
-  glm::vec3 amb = glm::vec3(0.0,0.0,1.0);
-
-  test_lightz.set_ambient(amb);
-
-  light_propertyz lighttest;
-  lighttest.phong_light.ambient = glm::vec3(0.0,0.0,1.0);
-  lighttest.is_enabled = true;
-  lighttest.position= glm::vec3(1.0,1.0,1.0);
-  lighttest.intensity = glm::vec3(0.8,0.6,0.0);
-  lighttest.Light_type = 1;
-  GLuint lightA1_buffer_ID;
-
-
-  //glBindBuffer(GL_SHADER_STORAGE_BUFFER,lightA1_buffer_ID);
-//light diffuz
-  glm::vec3 light_pos_d1(1.2f,1.0f,1.0f);
-  glm::vec3 lcol_d1(0.8,0.0f,0.0f);
-
-  float d_strgth = 3.f;
-
-  //test_lightz.set_light_diffuse(light_pos_d1,lcol_d1,d_strgth);
-
-//light point
-  std::array<float,3> attun;
-  attun[0]=4.f;
-  attun[1]=3.f;
-  attun[2]=2.f;
-  glm::vec3 light_pos_ss2(1.2f,1.0f,1.0f);
-  glm::vec3 lcol_ss2(0.0f,0.8f,0.0f);
-  float drecional_strgth;
-  //test_lightz.set_light_point(attun,light_pos_ss2,lcol_ss2,drecional_strgth);
-
-  //light spot
-  glm::vec3 light_pos_ss1(1.2f,1.0f,1.0f);
-  glm::vec3 lcol_ss1(0.f,0.0f,0.8f);
-  glm::vec3 cone_dir(1.f,1.f,1.f);
-  float cos_cutoff =0.98;
-  float exp =12;
-  float catten = 3;
 
   //test_lightz.set_light_spot(attun,light_pos_ss1,lcol_ss1,cone_dir,cos_cutoff,
                           //    exp,catten);
@@ -208,7 +168,6 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
 
   std::cout << "load texturez\n";
 
-    //vglLoadTexture("data_extrn/ship_base_A03.bmp");
   texture_paramz_pak ship_tex_A3_parmz;
   ship_tex_A3_parmz.wm_s    = WarpMode::REPEAT;
   ship_tex_A3_parmz.wm_t    = WarpMode::REPEAT;
@@ -220,7 +179,19 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   ship_tex_A3_parmz.tex_unit_index = 0;
   ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_BASIC;
 
+  texture_paramz_pak ship_tex_A3_normal_parmz;
+  ship_tex_A3_normal_parmz.wm_s    = WarpMode::REPEAT;
+  ship_tex_A3_normal_parmz.wm_t    = WarpMode::REPEAT;
+  ship_tex_A3_normal_parmz.mag     = Filter::LINEAR;
+  ship_tex_A3_normal_parmz.min     = Filter::LINEAR;
+  ship_tex_A3_normal_parmz.path    = "data_extrn/ship_A3/Ship_A3.05_hight_normal.bmp";
+  ship_tex_A3_normal_parmz.channels= 3;
+  ship_tex_A3_normal_parmz.unform_name = "normal_mapSampler";
+  ship_tex_A3_normal_parmz.tex_unit_index = 1;
+  ship_tex_A3_normal_parmz.text_type_flag = M_Tex_Flag::TEXTYR_NORMAL;
+
   shipA3.texture_setup(ship_tex_A3_parmz);
+  shipA3.texture_setup(ship_tex_A3_normal_parmz);
   ship_basic.texture_setup(ship_tex_A3_parmz);
 
   /*
@@ -339,15 +310,75 @@ GLint frame_buf_width,frame_buf_hight;
  /*
  Mainloopz!
  */
+
+ //light ambient
+   glm::vec4 amb = glm::vec4(0.0,0.0,1.0,1.0);
+
+   test_lightz.set_ambient(amb);
+
+   light_propertyz lighttest;
+   lighttest.phong_light.ambient = glm::vec4(0.0,0.0,1.0,1.0);
+   lighttest.is_enabled = true;
+   lighttest.position= glm::vec4(1.0,1.0,1.0,0);
+   lighttest.intensity = glm::vec4(0.0,0.0,1.0,1.0);
+   lighttest.Light_type = 1;
+
+//lighttest.intensity = glm::vec3(0.8,0.6,1.0);
+   //glBindBuffer(GL_SHADER_STORAGE_BUFFER,lightA1_buffer_ID);
+ //light diffuz
+   glm::vec4 light_pos_d1(1.2f,1.0f,1.0f,0.0);
+   glm::vec4 lcol_d1(0.8,0.0f,0.0f,1.0);
+   float d_strgth = 3.f;
+   //test_lightz.set_light_diffuse(light_pos_d1,lcol_d1,d_strgth);
+
+ //light point
+   std::array<float,3> attun;
+   attun[0]=4.f;
+   attun[1]=3.f;
+   attun[2]=2.f;
+   glm::vec4 light_pos_ss2(1.2f,1.0f,1.0f,0.0);
+   glm::vec4 lcol_ss2(0.0f,0.8f,0.0f,1.0);
+   float drecional_strgth;
+   //test_lightz.set_light_point(attun,light_pos_ss2,lcol_ss2,drecional_strgth);
+
+   //light spot
+   glm::vec4 light_pos_ss1(1.2f,1.0f,1.0f,0.0);
+   glm::vec4 lcol_ss1(0.f,0.0f,0.8f,1.0);
+   glm::vec4 cone_dir(1.f,1.f,1.f,1.0);
+   float cos_cutoff =0.98;
+   float exp =12;
+   float catten = 3;
+
  test_lightz.test_size();
  shader_lightA01->use_shader();
+
+ struct stoge_buf_test
+ {
+   int member_num = 3;
+   bool is_enabled = true;
+   glm::vec3 ambent_test = glm::vec3(0.0,0.0,1.0);
+
+ } sbt;
+
+ std::cout << "size of stoge" << sizeof(sbt);
+ offset_table off_table;
+ //exit(0);
+ test_lightz.test_size();
+ shader_lightA01->use_shader();
+ GLuint test_stb;
+ GLuint lightA1_buffer_ID;
+ glCreateBuffers(1, &test_stb);
+
+ glNamedBufferStorage(test_stb, off_table.struc_internal_offset*sbt.member_num, NULL, GL_DYNAMIC_STORAGE_BIT);
+ glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, test_stb);
+ glNamedBufferSubData(test_stb,off_table.struc_internal_offset*2,sizeof(glm::vec3),&sbt.ambent_test);
+
  glCreateBuffers(1, &lightA1_buffer_ID);
 
- glNamedBufferStorage(lightA1_buffer_ID, sizeof(lighttest), NULL, GL_DYNAMIC_STORAGE_BIT|GL_MAP_PERSISTENT_BIT| GL_MAP_COHERENT_BIT|GL_MAP_READ_BIT );
- glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
-//glBufferSubData()
-offset_table off_table;
-glBufferSubData(GL_SHADER_STORAGE_BUFFER,off_table.l_offset.l_amb,sizeof(glm::vec3),&lighttest.phong_light.ambient);
+ glNamedBufferStorage(lightA1_buffer_ID, sizeof(test_lightz), NULL, GL_DYNAMIC_STORAGE_BIT);
+ glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightA1_buffer_ID);
+ glNamedBufferSubData(lightA1_buffer_ID,0,sizeof(glm::vec3),&lighttest.intensity);
+
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
 
