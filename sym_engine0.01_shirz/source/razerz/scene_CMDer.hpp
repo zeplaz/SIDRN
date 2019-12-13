@@ -143,7 +143,7 @@ class scene_CMDer : public singleton<scene_CMDer>
     std::cout <<"setupmeshz \n";
     wavefornt_parser2 wp2;
 
-    std::string shipA2_path = {"data_extrn/boat_Base_2.obj"};
+    std::string shipA2_path = {"data_extrn/ship_A3/boat_Base_2.obj"};
     std::pair<std::shared_ptr<std::vector<mesh_vertex>>,
               std::shared_ptr<std::vector<unsigned int>>>
               shipA2_mesh_vertex_DATA = wp2.read_file(shipA2_path);
@@ -183,7 +183,7 @@ class scene_CMDer : public singleton<scene_CMDer>
   ship_tex_A3_parmz.wm_t    = WarpMode::REPEAT;
   ship_tex_A3_parmz.mag     = Filter::LINEAR;
   ship_tex_A3_parmz.min     = Filter::LINEAR;
-  ship_tex_A3_parmz.path    = "data_extrn/ship_base_A03.5.bmp";
+  ship_tex_A3_parmz.path    = "data_extrn/ship_A3/ship_base_A03.5.bmp";
   ship_tex_A3_parmz.channels= 3;
   ship_tex_A3_parmz.unform_name = "active_texture_sampler";
   ship_tex_A3_parmz.tex_unit_index = 0;

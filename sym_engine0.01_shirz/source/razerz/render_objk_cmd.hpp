@@ -15,6 +15,26 @@ struct lvel_data_struct
   //private :
 
 };
+//typedef std::tuple<std::string,std::>
+const std::string "SHIP_A3";
+
+class Resource_mgmt
+{
+  std::unordered_map<std::string,<std::string>>
+  public :
+  bool read_level_file(char* path);
+
+  int parse_obj_list()
+  {
+    std::ifstream shader_config("shaderglsl/file_list_shader.xml");
+    std::string file_in_string;
+    shader_config.seekg(0, std::ios::end);
+    file_in_string.reserve(shader_config.tellg());
+    shader_config.seekg(0, std::ios::beg);
+  }
+
+};
+
 
 class obj_cmder
 {

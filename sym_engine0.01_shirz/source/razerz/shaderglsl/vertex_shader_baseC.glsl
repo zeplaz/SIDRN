@@ -2,7 +2,8 @@
 layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
 layout (location = 1) in vec3 anormal;
 layout (location = 2) in vec2 aUV;
-
+layout (location = 3) in vec3 atangent;
+layout (location = 4) in vec3 abitanget;
 
 out VERTEX_SHADR_OUT
 {
@@ -23,8 +24,8 @@ uniform mat4 model_view;
 uniform mat4 model_proj_View;
 uniform mat3 normal_matrix;
 
-uniform vec3 a_tangent;
-uniform vec3 a_bitangent;
+//uniform vec3 a_tangent;
+//uniform vec3 a_bitangent;
 
 void main()
 {
@@ -35,8 +36,8 @@ void main()
 
    //normalmapstuff
    mat3 model_vector = transpose(inverse(mat3(model)));
-   vec3 Tange = normalize(model_vector*a_tangent);
-   vec3 Bitan = normalize(model_vector*a_bitangent);
+   vec3 Tange = normalize(model_vector*atangent);
+   vec3 Bitan = normalize(model_vector*abitanget);
    vec3 Norma = normalize(model_vector*anormal);
    mat3 TBN_matrix = transpose(mat3(Tange,Bitan,Norma));
 

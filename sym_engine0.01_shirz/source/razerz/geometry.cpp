@@ -1,4 +1,6 @@
 
+
+#include <stddef.h>
 #include "geometry.hpp"
 
 #define STBI_FAILURE_USERMSG
@@ -105,9 +107,84 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
       glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
   }
 
+///////////////////////////////////////////////////
+void mesh::draw_element(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)
+{
+  shader->use_shader();
+  glBindVertexArray(VAO_mesh);
 
+  glm::mat4 proj_view(1.f);
+  //model drawing
+  if(cal_lightz == true)
+  {
+     glm::mat4 model_view(1.f);
+     glm::mat3 normal_matrix(1.f);
+     m_v_p = glm::mat4(1.f);
 
+     model_view = view*base_model_matrix;
+    //glm::mat3 normal_matrix = glm::transpose(glm::inverse(model_view.xyz));
+    normal_matrix = glm::inverse(glm::mat3(model_view));
 
+    proj_view = proj*view;
+
+    m_v_p = proj_view*base_model_matrix;
+    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model"),1,GL_FALSE,glm::value_ptr(base_model_matrix));
+    glUniformMatrix3fv(shader->return_uniform("normal_matrix"),1,GL_TRUE,glm::value_ptr(normal_matrix));
+    glUniformMatrix4fv(shader->return_uniform("model_view"),1,GL_FALSE,glm::value_ptr(model_view));
+    glUniformMatrix4fv(shader->return_uniform("model_proj_View"),1,GL_FALSE,glm::value_ptr(m_v_p));
+
+    pass_meterial_data(shader);
+  }
+
+  else
+  {
+    m_v_p = glm::mat4(1.f);
+    proj_view = proj*view;
+
+    m_v_p = proj_view*base_model_matrix;
+    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+  }
+
+  // texture drawing
+  if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
+  { //std::cout <<"only basic texutre" << '\n';
+    m_texture_array[0].activate();
+    m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+
+  }
+  else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+          == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+  {
+    m_texture_array[0].activate();
+    m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+    m_texture_array[1].activate();
+    m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+  }
+  else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+          == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+  {
+    m_texture_array[0].activate();
+    m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+    m_texture_array[1].activate();
+    m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+    m_texture_array[2].activate();
+    m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+  }
+
+  else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+          == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+  {
+    m_texture_array[0].activate();
+    m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+    m_texture_array[2].activate();
+    m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+  }
+
+  glDrawElements(GL_TRIANGLES, m_v_indices->size(),GL_UNSIGNED_INT,0);
+  glBindVertexArray(0);
+
+}
+/////////////////////////////////////
   void mesh::draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)
   {
     shader->use_shader();
@@ -181,7 +258,7 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     }
 
     glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
-    //glBindVertexArray(0);
+
   }
 
   void mesh::draw(gl_shader_t* shader)
@@ -299,6 +376,37 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
     base_model_matrix = glm::scale(base_model_matrix,scale_base);
   }
 
+  void mesh::buff_setup_viaAssimp()
+  {
+    glGenVertexArrays(1,&VAO_mesh);
+    glGenBuffers(1,&buff_mesh);
+    glGenBuffers(1,&EBO);
+
+    glBindVertexArray(VAO_mesh);
+    glBindBuffer(GL_ARRAY_BUFFER,buff_mesh);
+
+    glBufferData(GL_ARRAY_BUFFER,m_vertices->size()*sizeof(mesh_vertex),&m_vertices->front(),GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,m_v_indices->size()*sizeof(unsigned int), &m_v_indices->front(),GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_normal));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_textcord));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_tangent));
+
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_bitagent));
+
+    glBindVertexArray(0);
+  }
 
   void mesh::bindmesh_buf()
   {

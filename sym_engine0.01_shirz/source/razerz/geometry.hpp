@@ -33,6 +33,10 @@ struct texture_paramz_pak
         int texture_indexUnit = 0;
         unsigned char* image;
 
+        unsigned int internal_ID;
+        std::string type;
+        std::string path;
+
         int width, height,n;
 
         GLint minFiler = GL_LINEAR;
@@ -158,14 +162,16 @@ class mesh
   void bindmesh_buf();
 
   void draw(gl_shader_t* shader,view_lenz* active_lenz);
-  void  draw(gl_shader_t* shader);
+  void draw(gl_shader_t* shader);
   void draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj);
+  void draw_element(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj);
 
   void model_init();
 
   void update_mesh_model(model_ajustment ajust_in);
 
   void set_mesh_model_origin(model_ajustment intial_model);
+  void buff_setup_viaAssimp();
 
   inline void set_tex_flags(M_Tex_Flag t_flag)
   {
@@ -175,6 +181,28 @@ class mesh
   }
 
   void init(wavefornt_parser2* wp, std::string res_path);
+
+  void set_light_bool(bool is_light)
+  {
+    cal_lightz=is_light;
+  }
+  void set_model_flag(M_Model_Flag mm_flag)
+  {
+    Model_flagz |=mm_flag;
+  }
+
+  void create_mesh_via_assimp(std::vector<mesh_vertex> in_mesh_vertex, std::vector<unsigned int> in_indz)
+  {
+    std::shared_ptr<std::vector<mesh_vertex>> mesh_ptr = std::make_shared<std::vector<mesh_vertex>>(in_mesh_vertex);
+    std::shared_ptr<std::vector<unsigned int>> mesh_indz =  std::make_shared<std::vector<unsigned int>>(in_indz);
+    m_vertices = mesh_ptr;
+    m_v_indices=mesh_indz;
+    posz_base    =glm::vec3(1.5f,1.5,0.2);
+    rotation_base=glm::vec3(-90.0,10.5,0.5);
+    scale_base   =glm::vec3(0.8f);
+    model_init();
+    buff_setup_viaAssimp();
+  }
 
   void init(std::pair<std::shared_ptr<std::vector<mesh_vertex>>,
             std::shared_ptr<std::vector<unsigned int>>> in_vertx_data,

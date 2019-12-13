@@ -137,7 +137,9 @@ enum class M_Model_Flag : unsigned char
 {
   MODEL_NULL      = 0x00,
   MODEL_UNIFORM   = 0x02,
-  MODEL_V_BUFF    = 0x04
+  MODEL_V_BUFF    = 0x04,
+  MODEL_USE_INDIC = 0x20,
+  MODEL_HAS_NORM  = 0x40
 
 };
 template<>

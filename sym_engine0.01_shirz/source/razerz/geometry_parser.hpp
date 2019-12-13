@@ -20,6 +20,8 @@
   glm::vec3 v_position;
   glm::vec3 v_normal;
   glm::vec2 v_textcord;
+  glm::vec3 v_tangent;
+  glm::vec3 v_bitagent;
 
   bool operator<(const mesh_vertex that) const{
 		return memcmp((void*)this, (void*)&that, sizeof(mesh_vertex))>0;}

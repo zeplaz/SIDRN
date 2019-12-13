@@ -3,6 +3,7 @@
 
 #include "geometry.hpp"
 #include "pre_comb_objz.hpp"
+#include "model_parser.hpp"
 
 
 struct Phong_reflection
@@ -126,8 +127,10 @@ class scene{
   std::unordered_map<Scene_Mesh_RDR,view_lenz*> lenz_map;
 
   std::multimap<Scene_Mesh_RDR,mesh*> mesh_multi_map;
+  std::multimap<Scene_Mesh_RDR,model*> model_multi_map;
 
   typedef std::multimap<Scene_Mesh_RDR, mesh*>::iterator MMAPIterator;
+  typedef std::multimap<Scene_Mesh_RDR, model*>::iterator model_iterator;
   typedef std::unordered_map<Scene_Mesh_RDR,gl_shader_t*>::const_iterator SHAD_Iter;
   typedef std::unordered_map<Scene_Mesh_RDR,view_lenz*>::const_iterator LENZ_Iter;
   typedef std::unordered_map<Scene_Mesh_RDR,gl_lightzctl>::iterator LIGHT_Iter;
@@ -186,6 +189,11 @@ class scene{
   void insert_light_ctler(Scene_Mesh_RDR scene,gl_lightzctl in_light)
   {
     light_crt_map.insert(std::make_pair(scene,in_light));
+  }
+
+  void insert_model(Scene_Mesh_RDR scene,model* in_model)
+  {
+    model_multi_map.insert(std::make_pair(scene,in_model));
   }
 
   void insert_lenz(Scene_Mesh_RDR scene,view_lenz* in_lenz)
@@ -268,14 +276,28 @@ if(Scene_Mesh_RDR::BASIC_SHADER_SCENE01 !=to_draw_scene)
   //light_scene_ptr->pass_datato_shader(current_shader);
 }}
 
-std::pair<MMAPIterator, MMAPIterator> result = mesh_multi_map.equal_range(to_draw_scene);
+std::pair<MMAPIterator, MMAPIterator> result_mesh = mesh_multi_map.equal_range(to_draw_scene);
 
-for (MMAPIterator it = result.first; it != result.second; it++)
+for (MMAPIterator it = result_mesh.first; it != result_mesh.second; it++)
 {
  mesh* mesh_ptr = it->second;
  mesh_ptr->draw(current_shader,active_view,active_projection);
 }
 
+
+//model drawz
+std::pair<model_iterator, model_iterator> result_model = model_multi_map.equal_range(to_draw_scene);
+
+for (model_iterator it = result_model.first; it != result_model.second; it++)
+{
+ model* model_ptr = it->second;
+ model_ptr->model_draw(current_shader,active_view,active_projection);
 }
+
+}
+
+
+
+
 
 };

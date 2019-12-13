@@ -3,6 +3,8 @@
 #include "scene.hpp"
 
 
+
+
 #include "lenz.hpp"
 
 float delta_time = 0.0f;	// time between current frame and last frame
@@ -124,7 +126,7 @@ if(is_complie == false)
   std::cout <<"setupmeshz \n";
   wavefornt_parser2 wp2;
 
-  std::string shipA2_path = {"data_extrn/boat_Base_2.obj"};
+  std::string shipA2_path = {"data_extrn/ship_A3/boat_Base_2.obj"};
   std::pair<std::shared_ptr<std::vector<mesh_vertex>>,
             std::shared_ptr<std::vector<unsigned int>>>
             shipA2_mesh_vertex_DATA = wp2.read_file(shipA2_path);
@@ -135,8 +137,8 @@ if(is_complie == false)
   shipA3.bindmesh_buf();
 
   glm::vec3 shipA2_emis            =glm::vec3(0.0f);
-  glm::vec3 shipA2_amb_ref         =glm::vec3(0.5,0.6,0.8);
-  glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.3,0.3);
+  glm::vec3 shipA2_amb_ref         =glm::vec3(0.5,0.5,0.7);
+  glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.5,0.6);
   glm::vec3 shipA2_spektral_reflect=glm::vec3(1.0,1.0,1.0);
   float     shipA2_shinyz          =600;
 
@@ -173,7 +175,7 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   ship_tex_A3_parmz.wm_t    = WarpMode::REPEAT;
   ship_tex_A3_parmz.mag     = Filter::LINEAR;
   ship_tex_A3_parmz.min     = Filter::LINEAR;
-  ship_tex_A3_parmz.path    = "data_extrn/ship_base_A03.5.bmp";
+  ship_tex_A3_parmz.path    = "data_extrn/ship_A3/ship_base_A03.5.bmp";
   ship_tex_A3_parmz.channels= 3;
   ship_tex_A3_parmz.unform_name = "active_texture_sampler";
   ship_tex_A3_parmz.tex_unit_index = 0;
@@ -184,7 +186,7 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   ship_tex_A3_normal_parmz.wm_t    = WarpMode::REPEAT;
   ship_tex_A3_normal_parmz.mag     = Filter::LINEAR;
   ship_tex_A3_normal_parmz.min     = Filter::LINEAR;
-  ship_tex_A3_normal_parmz.path    = "data_extrn/ship_A3/Ship_A3.05_hight_normal.bmp";
+  ship_tex_A3_normal_parmz.path    = "data_extrn/ship_A3/Ship_A3.06_hight_normal.bmp";
   ship_tex_A3_normal_parmz.channels= 3;
   ship_tex_A3_normal_parmz.unform_name = "normal_mapSampler";
   ship_tex_A3_normal_parmz.tex_unit_index = 1;
@@ -262,22 +264,7 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
 //  	GLenum pname,
 //  	GLint *params); GL_BUFFER_SIZE or GL_BUFFER_USAGE
 
-/*
-* SCENE setupz and load
-*/
-scene scene_01;
 
-scene_01.insert_shader(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,shader_lightA01);
-
-scene_01.insert_shader(Scene_Mesh_RDR::BASIC_SHADER_SCENE01,shader_3_basic);
-
-scene_01.insert_light_ctler(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,test_lightz);
-
-scene_01.insert_mesh(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&shipA3);
-scene_01.insert_mesh(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&ship_basic);
-
-scene_01.insert_lenz(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&prim_lenz);
-scene_01.insert_lenz(Scene_Mesh_RDR::BASIC_SHADER_SCENE01,&prim_lenz);
 
 
 
@@ -378,6 +365,32 @@ GLint frame_buf_width,frame_buf_hight;
  glNamedBufferStorage(lightA1_buffer_ID, sizeof(test_lightz), NULL, GL_DYNAMIC_STORAGE_BIT);
  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightA1_buffer_ID);
  glNamedBufferSubData(lightA1_buffer_ID,0,sizeof(glm::vec3),&lighttest.intensity);
+
+
+ //model test for NORMALZ
+ model test_model("data_extrn/ship_A3/boat_Base2.ply");
+ //test_model.load_model();
+
+
+
+ /*
+ * SCENE setupz and load
+ */
+ scene scene_01;
+
+ scene_01.insert_shader(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,shader_lightA01);
+
+ scene_01.insert_shader(Scene_Mesh_RDR::BASIC_SHADER_SCENE01,shader_3_basic);
+
+ scene_01.insert_light_ctler(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,test_lightz);
+
+ scene_01.insert_mesh(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&shipA3);
+ scene_01.insert_mesh(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&ship_basic);
+
+ scene_01.insert_lenz(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&prim_lenz);
+ scene_01.insert_lenz(Scene_Mesh_RDR::BASIC_SHADER_SCENE01,&prim_lenz);
+
+ scene_01.insert_model(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&test_model);
 
   std::cout <<"#####entering main loop setup compleate;\n \n";
 

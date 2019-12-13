@@ -114,33 +114,33 @@ void main()
 
   light_propertyz l_test;
   l_test.is_enabled= true;
-  l_test.position=vec4 (1.1,1.1,1.1,0.0);
-  l_test.intensity=vec4(0.8,0.7,0.1,1.0);
+  l_test.position=vec4 (10.1,1.1,10.1,0.0);
+  l_test.intensity=vec4(0.9,0.9,0.9,1.0);
 
   l_test.Light_type=1;
 
-  l_test.phong_light.ambient=vec4(0.0,0.0,0.5,1.0);
-  l_test.phong_light.spot_cone_drection=vec4(1.0,1.1,0.5,1.0);
+  l_test.phong_light.ambient=vec4(0.2,0.2,0.3,1.0);
+  l_test.phong_light.spot_cone_drection=vec4(1.0,10.1,0.5,1.0);
 
   //directiona light
-  l_test.phong_light. drectional_srength=3;
+  l_test.phong_light. drectional_srength=12;
 
   //Point light
-  l_test.phong_light.const_attenuation=-20;
-  l_test.phong_light.quadr_attenuation=-20;
-  l_test.phong_light.linear_attenuation=-20;
+  l_test.phong_light.const_attenuation=20;
+  l_test.phong_light.quadr_attenuation=20;
+  l_test.phong_light.linear_attenuation=20;
 
   //spot light
 
   l_test.phong_light.spot_cos_cutoff=0.91;
-  l_test.phong_light.spot_exponent=2;
+  l_test.phong_light.spot_exponent=106;
 
 
 vec3 light_drection =   in_frag.frag_TBN_matrix*l_test.position.xyz;
-light_drection = light_drection- in_frag.frag_pos.xyz;
+light_drection = light_drection - in_frag.frag_pos.xyz;
 float light_distance = length(light_drection);
 light_drection = light_drection/light_distance;
-  vec3 ambent_test = light.phong_light.ambient.rgb;
+vec3 ambent_test = light.phong_light.ambient.rgb;
 
 float total_attenuation = 1.0/(l_test.phong_light.const_attenuation+
                                l_test.phong_light.linear_attenuation*light_distance+
@@ -155,7 +155,7 @@ if(diffz !=0.0)
  float skplr = max(0.0,dot(active_normal,half_vec));
  skplr = pow(skplr,meterial.shininess)*l_test.phong_light.drectional_srength;
 
-spektral_reflect += meterial.specular_reflect*skplr*l_test.intensity.xyz*total_attenuation;
+ spektral_reflect += meterial.specular_reflect*skplr*l_test.intensity.xyz*total_attenuation;
  scatterd         += meterial.diffuse_reflect*diffz*l_test.intensity.xyz*total_attenuation;
 }
 
@@ -181,16 +181,16 @@ if(defuziz!=0)
 
 }
   vec3 spek_cal  = calculate_specular(active_normal,in_frag.frag_pos,l_test,meterial);
-  vec4 normal_textire = texture(normal_mapSampler, in_frag.frag_uv);
-  vec4 texture_colour = texture(active_texture_sampler, in_frag.frag_uv);
+  //vec4 normal_textire = texture(normal_mapSampler, in_frag.frag_uv);
+  vec4  texture_colour = texture(active_texture_sampler, in_frag.frag_uv);
   vec3  surface_to_light2 = normalize(l_test.position.xyz-in_frag.frag_pos.xyz);
   float diffuseCoefficient2 =max(0.0,dot(active_normal,surface_to_light2));
 
   scatterd += diffuseCoefficient2*l_test.intensity.rgb*meterial.diffuse_reflect;
 
   scatterd +=meterial.ambient_reflect*l_test.phong_light.ambient.rgb;
-spektral_reflect = spektral_reflect+spek_cal;
+  spektral_reflect = spektral_reflect+spek_cal;
   //vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
-  vec3 result = min((texture_colour.rgb*normal_textire.rgb),vec3(1.0f));
+  vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
   Frag_colour = vec4(result,1);
 }
