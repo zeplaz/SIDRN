@@ -133,6 +133,7 @@ view_lenz prim_lenz;
   GLuint mv_loc_light, mpv_loc_light,norm_mat_loc_light;
   GLuint v_poj_loc, view_loc, m_loc, m_v_p_basic;
 
+
    glm::mat4 model_matrix;
 
   //shader_3.use_shader();
@@ -157,6 +158,8 @@ view_lenz prim_lenz;
 scene_01.passthrough_lighting(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,test_lightz);
 scene_01.passthrough_lenz(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&prim_lenz);
 scene_01.passthrough_lenz(Scene_Mesh_RDR::BASIC_SHADER_SCENE01,&prim_lenz);
+
+
 
 /*
  *BUFFERZ MGMT CMDZ
@@ -187,17 +190,20 @@ GLint frame_buf_width,frame_buf_hight;
  /*
  Mainloopz!
  */
+ struct stoge_buf_test
+ { glm::vec3 ambent_test = glm::vec3(0.0,0.0,0.1);
 
-
+ } sbt;
+ test_lightz.test_size();
  shader_lightA01->use_shader();
  glCreateBuffers(1, &lightA1_buffer_ID);
 
- //glNamedBufferStorage(lightA1_buffer_ID, sizeof(sbt), NULL, GL_DYNAMIC_STORAGE_BIT);
- //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
+ glNamedBufferStorage(lightA1_buffer_ID, sizeof(sbt), NULL, GL_DYNAMIC_STORAGE_BIT);
+ glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
 //glBufferSubData()
 
 offset_table off_table;
-//glNamedBufferSubData(lightA1_buffer_ID,0,sizeof(glm::vec3),&sbt.ambent_test);
+glNamedBufferSubData(lightA1_buffer_ID,0,sizeof(glm::vec3),&sbt.ambent_test);
 
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
@@ -221,8 +227,13 @@ offset_table off_table;
     view_matrix =  prim_lenz.return_lenz_view();
     Projection  = prim_lenz.lenz_projection();
 
+
     view_projection = glm::mat4(1.f);
     view_projection = Projection*view_matrix;
+
+  //  glUniformMatrix4fv(v_poj_loc,1,GL_FALSE,glm::value_ptr(view_projection));
+
+    //glfwGetFramebufferSize(glfw_window,&frame_buf_width,&frame_buf_hight);
 
     /*
     * MODEL TRANFORMZ
@@ -240,10 +251,19 @@ offset_table off_table;
   * DRAW CALLZ
   */
 
+//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, prsiz_lightA1_buffer_ID);
+
+  //glNamedBufferSubData(prsiz_lightA1_buffer_ID, abentoffiset,sizeof(glm::vec3), &ambenshift);
+ //
+//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightA1_buffer_ID);
 
     scene_01.draw_scene(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01);
     scene_01.draw_scene(Scene_Mesh_RDR::BASIC_SHADER_SCENE01);
-
+    //test_mesh.draw(shader_lightA01,&prim_lenz);
+    //test_mesh2.draw(shader_3_basic,&prim_lenz);
+    //ship_basic.draw(shader_3_basic,&prim_lenz);
+    //ship_basic.draw(shader_3_basic,view_matrix,Projection);
+    //ship_basic.draw(shader_3_basic);
     glfwSwapBuffers(glfw_window);
 
       //[postopz]
@@ -264,6 +284,7 @@ offset_table off_table;
 
   return 0;
       }
+
 
       void mouse_callback(GLFWwindow* window, double xpos, double ypos)
       {
@@ -304,6 +325,8 @@ offset_table off_table;
                   }
                   }
 
+
+      //  float lenz_speed = 2.5*delta_time;
 
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {

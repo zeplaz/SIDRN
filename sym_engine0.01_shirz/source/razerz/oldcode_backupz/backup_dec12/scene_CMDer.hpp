@@ -19,6 +19,10 @@ class singleton
 };
 
 
+
+
+
+
 class scene_CMDer : public singleton<scene_CMDer>
 {
 
@@ -26,10 +30,12 @@ class scene_CMDer : public singleton<scene_CMDer>
   scene active_scene;
   //std::unordered_map<std::string,model_ajustment> model_ajust_map;
 
+
  void passthrough_lighting(Scene_Mesh_RDR scene,gl_lightzctl in_light)
  {
    active_scene.insert_light_ctler(scene,in_light);
  }
+
 
  void passthrough_lenz(Scene_Mesh_RDR scene,view_lenz* in_lenz)
  {
@@ -43,7 +49,7 @@ class scene_CMDer : public singleton<scene_CMDer>
     * SHADER SETUPZ
     */
 
-    gl_shader_t* shader_3_basic = new gl_shader_t();
+    gl_shader_t* shader_3_basic= new gl_shader_t();
     gl_shader_t* shader_lightA01= new gl_shader_t();
 
     std::vector<gl_shader_t*> shader_prt_vec;
@@ -98,15 +104,33 @@ class scene_CMDer : public singleton<scene_CMDer>
   return true;
   }
 
-
-
   void setup_scene_modelz()
   {
 
     /*
     working DATA for current test.
     */
-    read_model_setup()
+
+    model_ajustment test_ajustship;
+    model_ajustment test_ajustship2;
+
+    test_ajustship.rotation_ajust = glm::vec3(0.f);
+    test_ajustship.posz_ajust  = glm::vec3(0.f);
+    test_ajustship.scale_ajust = glm::vec3(0.f);
+    test_ajustship2.rotation_ajust = glm::vec3(0.f);
+    test_ajustship2.posz_ajust  = glm::vec3(0.f);
+    test_ajustship2.scale_ajust = glm::vec3(0.f);
+
+    model_ajustment ship_2_orgin;
+
+    ship_2_orgin.posz_ajust.x=0.9f;
+    ship_2_orgin.posz_ajust.y=0.5f;
+    ship_2_orgin.posz_ajust.z= -0.1f;
+
+    ship_2_orgin.scale_ajust = glm::vec3(0.1f);
+    ship_2_orgin.rotation_ajust.y = 120.f;
+    ship_2_orgin.rotation_ajust.x = 0.f;
+    ship_2_orgin.rotation_ajust.z = 0.f;
 
 
     model_ajust_map.insert(ship_A01,test_ajustship);
@@ -146,6 +170,7 @@ class scene_CMDer : public singleton<scene_CMDer>
     ship_basic->set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
                         shipA2_spektral_reflect,shipA2_shinyz);
 
+
   /*
   texture setuptest_move to mesh
   */
@@ -178,6 +203,8 @@ class scene_CMDer : public singleton<scene_CMDer>
   shipA3.texture_setup(ship_tex_A3_parmz);
   shipA3.texture_setup(ship_tex_A3_normal_parmz);
   ship_basic.texture_setup(ship_tex_A3_parmz);
+
+
 
   active_scene.insert_mesh(Scene_Mesh_RDR::LIGHT_SHADER_SCENE01,shipA3);
   active_scene.insert_mesh(Scene_Mesh_RDR::LIGHT_SHADER_SCENE01,ship_basic);

@@ -3,7 +3,7 @@ layout (location = 0) in vec3 aPos; // the position variable has attribute posit
 layout (location = 1) in vec3 anormal;
 layout (location = 2) in vec2 aUV;
 layout (location = 3) in vec3 atangent;
-layout (location = 4) in vec3 abitanget;
+
 
 out VERTEX_SHADR_OUT
 {
@@ -37,8 +37,9 @@ void main()
    //normalmapstuff
    mat3 model_vector = transpose(inverse(mat3(model)));
    vec3 Tange = normalize(model_vector*atangent);
-   vec3 Bitan = normalize(model_vector*abitanget);
+   //ormalize(model_vector*abitanget);
    vec3 Norma = normalize(model_vector*anormal);
+   vec3 Bitan = cross(Tange,Norma);
    mat3 TBN_matrix = transpose(mat3(Tange,Bitan,Norma));
 
     out_vrx.frag_pos_TBN = vec3(model*vec4(aPos,1.0));

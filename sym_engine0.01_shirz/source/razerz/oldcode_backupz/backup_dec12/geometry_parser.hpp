@@ -20,8 +20,8 @@
   glm::vec3 v_position;
   glm::vec3 v_normal;
   glm::vec2 v_textcord;
-  glm::vec4 v_tangent;
-  
+  glm::vec3 v_tangent;
+  glm::vec3 v_bitagent;
 
   bool operator<(const mesh_vertex that) const{
 		return memcmp((void*)this, (void*)&that, sizeof(mesh_vertex))>0;}
@@ -29,6 +29,8 @@
   friend std::ostream & operator << (std::ostream &out, const mesh_vertex &c);
 
 };
+
+
 
 typedef struct parsed_paket_type
 {
@@ -152,7 +154,26 @@ class wavefornt_parser2
     t_mv.v_textcord = uvz;
     mesh_v_prt->push_back(t_mv);
   }
+/*
+  for( unsigned int i=0; i<vertexIndices.size(); i++ )
+  {
+    unsigned int vertexIndex_current = vertexIndices[i];
+    glm::vec3 vertex = temp_vertices[ vertexIndex_current-1 ];
+    vertices.push_back(vertex);
+  }
+  for( unsigned int i=0; i<uvIndices.size(); i++ )
+  {
+    unsigned int IndicesIndex_current = uvIndices[i];
+    glm::vec2 uvz = temp_uvs[IndicesIndex_current-1];
+    uvs.push_back(uvz);
+  }
 
+  for( unsigned int i=0; i<normalIndices.size(); i++ )
+  {
+      unsigned int normalIndex_current = normalIndices[i];
+      glm::vec3 normz = temp_normals[normalIndex_current-1];
+      normals.push_back(normz);
+  }*/
 
 }
   //std::vector<unsigned int>* mesh_v_indices = new  std::vector<unsigned int>(vertexIndices);

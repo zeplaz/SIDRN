@@ -10,6 +10,10 @@ namespace lookup_objkz
 }
 
 
+
+
+
+
 namespace pre_comb_objz{
 
 GLuint  index_buf_triagle[]

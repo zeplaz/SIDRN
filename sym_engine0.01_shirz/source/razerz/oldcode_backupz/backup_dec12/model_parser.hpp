@@ -94,13 +94,13 @@ class model{
     vector.y=in_mesh->mTangents[i].y;
     vector.z=in_mesh->mTangents[i].z;
 
-    vertex.v_tangent=glm::vec4(vector,1.0f);
+    vertex.v_tangent;
 
     vector.x=in_mesh->mBitangents[i].x;
     vector.y=in_mesh->mBitangents[i].y;
     vector.z=in_mesh->mBitangents[i].z;
 
-    //vertex.v_bitagent;
+    vertex.v_bitagent;
     verticez.push_back(vertex);
   }
   for(size_t i=0;i<in_mesh->mNumFaces;i++)
@@ -127,9 +127,9 @@ class model{
   glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.5,0.5);
   glm::vec3 shipA2_spektral_reflect=glm::vec3(1.0,1.0,1.0);
   float     shipA2_shinyz          =600;
-  float alpha = 1.0f;
+
   new_mesh.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
-                        shipA2_spektral_reflect,shipA2_shinyz,alpha);
+                        shipA2_spektral_reflect,shipA2_shinyz);
   return new_mesh;
 
 

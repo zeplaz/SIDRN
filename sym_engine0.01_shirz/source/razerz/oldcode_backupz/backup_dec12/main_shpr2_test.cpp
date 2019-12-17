@@ -1,6 +1,10 @@
 //#include "render_objk_cmd.hpp"
 #include "opengl_utilityz.hpp"
 #include "scene.hpp"
+
+
+
+
 #include "lenz.hpp"
 
 float delta_time = 0.0f;	// time between current frame and last frame
@@ -130,7 +134,6 @@ if(is_complie == false)
   mesh shipA3;
 
   shipA3.init(shipA2_mesh_vertex_DATA,M_Model_Flag::MODEL_UNIFORM,HAS_LIGHTS);
-  shipA3.compute_tangetspace();
   shipA3.bindmesh_buf();
 
   glm::vec3 shipA2_emis            =glm::vec3(0.0f);
@@ -138,10 +141,9 @@ if(is_complie == false)
   glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.5,0.6);
   glm::vec3 shipA2_spektral_reflect=glm::vec3(1.0,1.0,1.0);
   float     shipA2_shinyz          =600;
-  float alpha = 1.0f;
 
   shipA3.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
-                        shipA2_spektral_reflect,shipA2_shinyz,alpha);
+                        shipA2_spektral_reflect,shipA2_shinyz);
 
   mesh ship_basic;
   ship_basic.init(shipA2_mesh_vertex_DATA,M_Model_Flag::MODEL_UNIFORM,HAS_LIGHTS);
@@ -149,7 +151,7 @@ if(is_complie == false)
   ship_basic.set_mesh_model_origin(ship_2_orgin);
 
 ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
-                      shipA2_spektral_reflect,shipA2_shinyz,alpha);
+                      shipA2_spektral_reflect,shipA2_shinyz);
 
  /*
 * gemomenty_lighting

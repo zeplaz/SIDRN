@@ -42,7 +42,6 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
       m_vertices->push_back(temp_mv);
     }
   }
-
   void mesh::pass_meterial_data(gl_shader_t* shader)
   {
     glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.emission")        ,1,glm::value_ptr(meterial.emission));
@@ -51,9 +50,62 @@ GLenum Texture_gl::return_TextureFormat(Format formate)
     glUniform3fv(glGetUniformLocation(shader->program_ID,"meterial.specular_reflect"),1,glm::value_ptr(meterial.specular_reflect));
     glUniform1f (glGetUniformLocation(shader->program_ID,"meterial.shininess")       ,meterial.shininess);
     glUniform1i (glGetUniformLocation(shader->program_ID,"meterial.is_normalmap")    ,meterial.is_normalmap);
-    glUniform1f (glGetUniformLocation(shader->program_ID,"meterial.alpha")       ,meterial.alpha);
   }
 
+  void mesh::draw(gl_shader_t* shader,view_lenz* active_lenz)
+  {
+    shader->use_shader();
+    glBindVertexArray(VAO_mesh);
+
+    glm::mat4 active_projection(1.f);
+    glm::mat4 active_view(1.f);
+    active_projection = active_lenz->lenz_projection();
+    active_view       = active_lenz->return_lenz_view();
+
+    glm::mat4 view_projection(1.f);
+    view_projection = active_projection*active_view;
+    m_v_p = glm::mat4(1.f);
+    m_v_p = view_projection*base_model_matrix;
+    pass_meterial_data(shader);
+    glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    //glUniformMatrix4fv(shader->return_uniform("model_view_projection"),1,GL_FALSE,glm::value_ptr(m_v_p));
+    // texture drawing
+    if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
+    { //std::cout <<"only basic texutre" << '\n';
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+    }
+
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+    }
+      //std::cout<<"number of veriz to draw::" << m_vertices->size() << '\n';
+      glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
+  }
 
 ///////////////////////////////////////////////////
 void mesh::draw_element(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)
@@ -209,6 +261,57 @@ void mesh::draw_element(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj)
 
   }
 
+  void mesh::draw(gl_shader_t* shader)
+  {
+    shader->use_shader();
+    glBindVertexArray(VAO_mesh);
+
+    //model drawing
+    if(Model_flagz==M_Model_Flag::MODEL_UNIFORM)
+    {
+      glUniformMatrix4fv(glGetUniformLocation(shader->program_ID,"model_matrix"),
+                                  1,GL_FALSE,glm::value_ptr(base_model_matrix));
+    }
+
+    // texture drawing
+    if(tex_flagz == M_Tex_Flag::TEXTYR_BASIC)
+    { //std::cout <<"only basic texutre" << '\n';
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+    }
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_NORMAL|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[0].texture_indexUnit);
+      m_texture_array[1].activate();
+      m_texture_array[1].set_texture_sampler_uniform(shader,m_tex_uniform_array[1],m_texture_array[1].texture_indexUnit);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+    }
+
+    else if ((tex_flagz & (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+            == (M_Tex_Flag::TEXTYR_BASIC|M_Tex_Flag::TEXTYR_SPEKTURAL))
+    {
+      m_texture_array[0].activate();
+      m_texture_array[0].set_texture_sampler_uniform(shader,m_tex_uniform_array[0],m_texture_array[1].texture_indexUnit);
+      m_texture_array[2].activate();
+      m_texture_array[2].set_texture_sampler_uniform(shader,m_tex_uniform_array[2],m_texture_array[2].texture_indexUnit);
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, m_vertices->size());
+    //glBindVertexArray(0);
+  }
+
 
 void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
 {
@@ -234,7 +337,7 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
 
   void mesh::update_mesh_model(model_ajustment ajust_in)
   {
-    rotation_base.x +=ajust_in.rotation_ajust.x;
+   rotation_base.x +=ajust_in.rotation_ajust.x;
     rotation_base.y +=ajust_in.rotation_ajust.y;
     rotation_base.z +=ajust_in.rotation_ajust.z;
     posz_base.x     +=ajust_in.posz_ajust.x;
@@ -299,8 +402,8 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_tangent));
 
-    //glEnableVertexAttribArray(4);
-    //glVertexAttribPointer(4,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_bitagent));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4,3,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_bitagent));
 
     glBindVertexArray(0);
   }
@@ -324,11 +427,32 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,sizeof(mesh_vertex),BUFFER_OFFSET(sizeof(glm::vec3)+sizeof(glm::vec3)));
    glEnableVertexAttribArray(2);
 
-   glEnableVertexAttribArray(3);
-   glVertexAttribPointer(3,4,GL_FLOAT,GL_FALSE,sizeof(mesh_vertex),(void*)offsetof(mesh_vertex,v_tangent));
-
    glBindVertexArray(0);
+   //std::vector<mesh_vertex> meshv = *m_vertices;
+   /*
+   std::cout << "size of meshvertz" << m_vertices->size() <<'\n';
+   for(size_t i = 0; i<m_vertices->size(); i++)
+   {
+     std::cout << "vdata::" << m_vertices->at(i) <<'\n';
+   }
+   std::cout << "enddata \n \n";
+   std::vector<glm::vec3> pos_vec;
+   std::vector<glm::vec3> vnormz;
+   std::vector<glm::vec2> tex_vec;
 
+     for(size_t i = 0; i<m_vertices->size(); i++)
+     {   mesh_vertex* mv_ptr = & m_vertices->at(i);
+         pos_vec.push_back(mv_ptr->v_position);
+         vnormz.push_back(mv_ptr->v_normal);
+         tex_vec.push_back(mv_ptr->v_textcord);
+     }*/
+ /*
+ glBufferSubData(GL_ARRAY_BUFFER,0,m_vertices->size() * sizeof(glm::vec3),&pos_vec.front());
+ glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)
+     ,m_vertices->size() * sizeof(glm::vec3),&vnormz.front());
+
+ glBufferSubData(GL_ARRAY_BUFFER,m_vertices->size() * sizeof(glm::vec3)+m_vertices->size() * sizeof(glm::vec3)
+     ,m_vertices->size() * sizeof(glm::vec2),&tex_vec.front());*/
   }
 
     void Texture_gl::init_texture()
@@ -382,83 +506,10 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
         }
       }
 
-      void mesh::compute_tangetspace()
+      void calc_tanget_space(glm::vec3 pos, glm::vec3& tangent,glm::vec3& bytanget)
       {
-
-
-       size_t vtrxcount = m_vertices->size();
-       std::vector<glm::vec3> tanA(vtrxcount,glm::vec3(0.0f));
-       std::vector<glm::vec3> tanB(vtrxcount,glm::vec3(0.0f));
-
-       size_t indic_count = m_v_indices->size();
-       for(size_t i=0; i<vtrxcount/3;i++)
-       {
-         size_t i0 =m_v_indices->at(i);
-         size_t i1 =m_v_indices->at(i+1);
-         size_t i2 =m_v_indices->at(i+2);
-
-         glm::vec3 point0 = m_vertices->at(i0).v_position;
-         glm::vec3 point1 = m_vertices->at(i1).v_position;
-         glm::vec3 point2 = m_vertices->at(i2).v_position;
-
-         glm::vec2 tex0 = m_vertices->at(i0).v_textcord;
-         glm::vec2 tex1 = m_vertices->at(i1).v_textcord;
-         glm::vec2 tex2 = m_vertices->at(i2).v_textcord;
-
-         glm::vec3 edge1 = point1-point0;
-         glm::vec3 edge2 = point2-point0;
-
-         glm::vec2 deltauv1 = tex1-tex0;
-         glm::vec2 deltauv2 = tex2-tex0;
-
-         glm::vec3 normal = glm::cross((point1-point0),(point2-point0));
-         float r = 1.0f/(tex1.x*tex2.y-tex1.y*tex2.x);
-
-         glm::vec3 tan;
-         glm::vec3 bintan;
-
-         if(deltauv1.s!=0)
-         {
-           tan= glm::vec3 (((edge1.x*tex2.y)-(edge2.x*tex1.y))*r,
-               ((edge1.y*tex2.y)-(edge2.y*tex1.y))*r,
-               ((edge1.z*tex2.y)-(edge2.z*tex1.y))*r);
-
-           bintan = glm::vec3 (((edge1.x*tex2.x)-(edge2.x*tex1.x))*r,
-                    ((edge1.y*tex2.x)-(edge2.y*tex1.x))*r,
-                    ((edge1.z*tex2.x)-(edge2.z*tex1.x))*r);
-
-           //tan= edge1/deltauv1.s
-         }
-         else
-         {
-           tan=edge1/1.0f;
-           tan = glm::normalize(tan-glm::dot(normal,tan)*normal);
-         }
-
-        tanA[i0] +=tan;
-        tanA[i1] +=tan;
-        tanA[i2] +=tan;
-
-        tanB[i0] +=bintan;
-        tanB[i1] +=bintan;
-        tanB[i2] +=bintan;
-
-    }
-      for(size_t i =0; i<vtrxcount;i++)
-      {
-        glm::vec3 normz =m_vertices->at(i).v_normal;
-        glm::vec3 t0z = tanA[i];
-        glm::vec3 t1z = tanB[i];
-        glm::vec3 c = glm::cross(normz,t0z);
-        glm::vec3 t= t0z-(normz*glm::dot(normz,t0z));
-        float w = (glm::dot(c, t1z) < 0) ? -1.0f : 1.0f;
-        m_vertices->at(i).v_tangent = glm::vec4(t.x,t.y,t.z,w);
-
-
+        glm::vec3 edge1= pos;
       }
-
-
-    }
 
       void mesh::texture_setup(texture_paramz_pak in_text_pak)
       {
@@ -495,3 +546,28 @@ void mesh::pack_mesh_vertex(parsed_paket_type* par_pak)
           m_tex_uniform_array[2]=  in_text_pak.unform_name;
         }
       }
+
+
+    /*
+    void mesh::init(wavefornt_parser2* wp, std::string res_path)
+    {
+      std::pair<std::vector<vertex_type>*,
+              std::vector<unsigned int>*> pars_vertex_data;
+       pars_vertex_data= wp->read_file(res_path);
+       m_vertices = pars_vertex_data.first;
+       m_v_indices = pars_vertex_data.second;
+      std::vector< glm::vec3 > vertices;
+      std::vector< glm::vec3 > normals;
+      std::vector< glm::vec2 > uvs;
+
+      //wp->return_data(vertices,uvs,normals);
+      //wp->gen_parse_parket(pars_pak_ptr);
+      //pack_mesh_vertex(vertices,normals,uvs);
+
+
+      posz_base    =glm::vec3(0.f);
+      rotation_base=glm::vec3(0.f);
+      scale_base   =glm::vec3(0.2f);
+      //base_model_matrix = glm::mat4(1.0f);
+      model_init();
+    }*/

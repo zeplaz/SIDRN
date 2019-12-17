@@ -11,15 +11,6 @@ typedef struct model_ajustment_type
   glm::vec3 posz_ajust;
   glm::vec3 rotation_ajust;
   glm::vec3 scale_ajust;
-
-  model_ajustment_type& operator +=(const model_ajustment_type& inmodel)
-  {
-
-    posz_ajust     += inmodel.posz_ajust;
-    rotation_ajust += inmodel.rotation_ajust;
-    scale_ajust    += inmodel.scale_ajust;
-    return *this;
-  }
 }model_ajustment;
 
 struct texture_paramz_pak
@@ -89,7 +80,16 @@ struct texture_paramz_pak
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode_S); //GL_REPEAT//GL_CLAMP_TO_EDGE//GL_CLAMP_TO_BORDER//GL_MIRRORED_REPEAT
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode_T);
         }
+/*
+        void texture_buf_obj(size_t total_size,)
+        {
+           glGenBuffers(1, &TBO_Buffer_Handle);
+           glBindBuffer(GL_TEXTURE_BUFFER, TBO_Buffer_Handle);
+           glBufferData( GL_TEXTURE_BUFFER, total_size, NULL, GL_STATIC_DRAW );
 
+           glBindTexture(GL_TEXTURE_BUFFER,)
+        }
+*/
         inline void  set_texture_unit_index(int index)
         {
           texture_indexUnit +=index;
@@ -125,10 +125,11 @@ struct Meterialz
     glm::vec3 specular_reflect;
     float shininess;
     bool is_normalmap=false;
-    float alpha;
     //GLint diffuse_texture;
     //GLint spekular_texture;
 
+    //func
+    //void send_data_toshader(gl_shader_t* in_program);
   };
 
 class mesh
@@ -137,8 +138,6 @@ class mesh
   glm::vec3 posz_base;
   glm::vec3 rotation_base;
   glm::vec3 scale_base;
-  model_ajustment current_ajustmentz;
-
   glm::mat4 base_model_matrix;
   glm::mat4 m_v_p;
 
@@ -157,52 +156,21 @@ class mesh
 
   std::shared_ptr<std::vector<mesh_vertex>> m_vertices;
   std::shared_ptr<std::vector<unsigned int>> m_v_indices;
-  //std::pair<std::array<Texture_gl,3>,std::array<std::string,3>> textture_pair;
   std::array<Texture_gl,3> m_texture_array;
   std::array<std::string,3> m_tex_uniform_array;
 
   void bindmesh_buf();
 
-  constexpr static const GLchar * material_namez[7] =
-  {
-    "Meterialz.emission",
-    "Meterialz.ambient_reflect"
-    "Meterialz.diffuse_reflect"
-    "Meterialz.specular_reflect"
-    "Meterialz.shininess"
-    "Meterialz.is_normalmap"
-    "Meterialz.alpha"
-  };
-  GLuint uniformMeterial_indicatz[7];
-  GLuint meterial_index;
-  void set_meterial_indicates(gl_shader_t* shader)
-  {
-    glGetUniformIndices(shader->program_ID,7,material_namez,uniformMeterial_indicatz);
-    meterial_index= glGetUniformBlockIndex(shader->program_ID,"Meterialz");
-
-  //  glBindBufferBase(GL_UNIFORM_BUFFER,meterial_index)
-  }
-/*  void write_mesh()
-  {
-    ofstream outmesh;
-
-    outmesh.open("scene01.bin");
-
-    if(std::FILE* outfile = std::fopen("scene01.bin","wb"))
-    {
-      std::fwrite(m_texture_array.data(),sizeof m_texture_array[0],m_texture_array.size(), outfile );
-      std::fwrite(m_tex_uniform_array.data(),sizeof m_tex_uniform_array[0],m_tex_uniform_array.size(), outfile );
-    }
-  }*/
-
+  void draw(gl_shader_t* shader,view_lenz* active_lenz);
+  void draw(gl_shader_t* shader);
   void draw(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj);
   void draw_element(gl_shader_t* shader,glm::mat4& view,glm::mat4& proj);
 
   void model_init();
 
   void update_mesh_model(model_ajustment ajust_in);
-  void set_mesh_model_origin(model_ajustment intial_model);
 
+  void set_mesh_model_origin(model_ajustment intial_model);
   void buff_setup_viaAssimp();
 
   inline void set_tex_flags(M_Tex_Flag t_flag)
@@ -222,8 +190,6 @@ class mesh
   {
     Model_flagz |=mm_flag;
   }
-
-  void compute_tangetspace();
 
   void create_mesh_via_assimp(std::vector<mesh_vertex> in_mesh_vertex, std::vector<unsigned int> in_indz)
   {
@@ -261,14 +227,14 @@ class mesh
 
   void pass_meterial_data(gl_shader_t* shader);
   void set_meterial(glm::vec3 emis, glm::vec3 amb_ref, glm::vec3 diff_ref,
-                    glm::vec3 spektral_reflect, float shinyz,float alpha)
+                    glm::vec3 spektral_reflect, float shinyz)
   {
     meterial.emission=emis;
     meterial.ambient_reflect=amb_ref;
     meterial.diffuse_reflect=diff_ref;
     meterial.specular_reflect=spektral_reflect;
     meterial.shininess=shinyz;
-    meterial.alpha = alpha;
+
   //  GLint diffuse_texture;
   //  GLint spekular_texture;
 
@@ -297,4 +263,24 @@ class mesh
         glPolygonMode(face,GL_POINT);
   }
 
+    /*
+      template<typename... Args>
+       void flag_ORer(Args &&... flag_pack)//static
+      {
+           //unsigned char arg_array[]=  {((void) flag_ORer(std::forward<Args>(flag_pack)), ...)};
+          int dummyflag_array[] = { ( (void) set_tex_flags(std::forward<Args>(flag_pack)),0) ... };
+           std::cout <<  "size of dummy araybytz" << sizeof(dummyflag_array) <<'\n';
+           std::cout <<  "data of dummy araybytz" << dummyflag_array[0] <<'\n';
+      }*/
+  /*  void init(std::pair<std::vector<mesh_vertex>*,std::vector<unsigned int>*> in_vertx_data,M_Model_Flag mm_flag)
+    {
+      //m_vertices =in_vertx_data.first;
+    //  m_v_indices = in_vertx_data.second;
+      Model_flagz |=mm_flag;
+      posz_base    =glm::vec3(0.f);
+      rotation_base=glm::vec3(0.f);
+      scale_base   =glm::vec3(0.2f);
+
+      model_init();
+    }*/
 };

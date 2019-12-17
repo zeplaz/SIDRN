@@ -11,12 +11,12 @@
 struct lvel_data_struct
 {
 
+
   //private :
 
 };
 //typedef std::tuple<std::string,std::>
-//const std::string "SHIP_A3";
-
+const std::string "SHIP_A3";
 
 class Resource_mgmt
 {
@@ -46,6 +46,8 @@ class obj_cmder
 
   void gl_run_render(GLFWwindow* glfwwindow, std::vector<gl_shader_t*>& in_shaderz,lvel_data_struct* lvel_active)
   {
+
+
     //std::cout <<"\n ###nummof shaders to process" << in_shaderz.size() << "  num of objket packagez::" << vetex_array_objkz.size() << '\n' << '\n';
   float timeValue = glfwGetTime();
   float sin_green = sin(timeValue);
@@ -61,10 +63,13 @@ class obj_cmder
   //  std::vector<GLuint> vao_vec  =  vetex_array_objkz.at(i);
   //  glUniform4f(vertexColorLocation, sin_tsnz, sin_green, colour_angluretime, 1.f);
 
-  }
-}
+  }}
+
+
+
 
 };
+
 
 void switch_draw_syle(P_Render_STYZ in_style)
 {
@@ -81,5 +86,6 @@ if(nstlz!=polygonMode)
   else
      glPolygonMode( GL_FRONT_AND_BACK, GL_POINTS);
 }
+
 
 }

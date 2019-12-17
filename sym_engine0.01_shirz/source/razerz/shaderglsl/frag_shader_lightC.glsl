@@ -42,6 +42,7 @@ struct Meterialz
   vec3 specular_reflect;
   float shininess;
   bool is_normalmap;
+  float alpha;
   //sampler2D diffuse_texture;
   //sampler2D spekular_texture;
 
@@ -106,7 +107,7 @@ void main()
   }
   else {
   active_normal =  in_frag.frag_normal;
-  }
+}
   //vec3 ambient= vec3(0.13);
   vec3 scatterd = vec3(0.0);
   vec3 spektral_reflect = vec3(0.0);
@@ -133,7 +134,7 @@ void main()
   //spot light
 
   l_test.phong_light.spot_cos_cutoff=0.91;
-  l_test.phong_light.spot_exponent=106;
+  l_test.phong_light.spot_exponent=1;
 
 
 vec3 light_drection =   in_frag.frag_TBN_matrix*l_test.position.xyz;
@@ -168,6 +169,7 @@ if(followspot_cos<l_test.phong_light.spot_cos_cutoff)
   total_attenuation = 0.0;
 }
 total_attenuation =pow(followspot_cos,l_test.phong_light.spot_exponent);
+total_attenuation =1/total_attenuation;
 float defuziz = max(0.0,dot(active_normal,light_drection));
 
 if(defuziz!=0)
@@ -191,6 +193,6 @@ if(defuziz!=0)
   scatterd +=meterial.ambient_reflect*l_test.phong_light.ambient.rgb;
   spektral_reflect = spektral_reflect+spek_cal;
   //vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
-  vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
+  vec3 result = min((texture_colour.rgb*scatterd),vec3(1.0f));
   Frag_colour = vec4(result,1);
 }
