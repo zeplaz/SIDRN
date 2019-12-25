@@ -21,7 +21,6 @@
   glm::vec3 v_normal;
   glm::vec2 v_textcord;
   glm::vec4 v_tangent;
-  
 
   bool operator<(const mesh_vertex that) const{
 		return memcmp((void*)this, (void*)&that, sizeof(mesh_vertex))>0;}
@@ -44,7 +43,6 @@ typedef struct parsed_paket_type
     std::vector<glm::vec3> normals  =in_normals;
     std::vector<glm::vec2> uvs      =in_uvs;
   }
-
 
 }parsed_paket;
 
@@ -78,8 +76,6 @@ class wavefornt_parser2
     std::vector< glm::vec2 > temp_uvs;
     std::vector< glm::vec3 > temp_normals;
     std::shared_ptr<std::vector<mesh_vertex>> mesh_v_prt = std::make_shared<std::vector<mesh_vertex>>();
-
-  //  std::vector<mesh_vertex>* mesh_v_prt = new  std::vector<mesh_vertex>();
 
     FILE* file = fopen(path.c_str(),"r");
     if(file == NULL)
@@ -152,16 +148,11 @@ class wavefornt_parser2
     t_mv.v_textcord = uvz;
     mesh_v_prt->push_back(t_mv);
   }
-
-
 }
-  //std::vector<unsigned int>* mesh_v_indices = new  std::vector<unsigned int>(vertexIndices);
+
   std::shared_ptr<std::vector<unsigned int>> mesh_v_indices = std::make_shared<std::vector<unsigned int>>(vertexIndices);
-  //std::pair<std::vector<mesh_vertex>*,std::vector<unsigned int>*> vertex_pair_data = make_pair(mesh_v_prt,mesh_v_indices);
   std::pair<std::shared_ptr<std::vector<mesh_vertex>>,std::shared_ptr<std::vector<unsigned int>>> vertex_pair_data = make_pair(mesh_v_prt,mesh_v_indices);
+
   return vertex_pair_data;
- //out_p_pack  = gen_parse_parket(vertices,normals,uvs);
-
-
 }
 };

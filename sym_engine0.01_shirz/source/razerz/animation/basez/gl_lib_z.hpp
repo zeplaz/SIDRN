@@ -24,6 +24,11 @@
 * as well as most of the defines, enums, and other fixed consts.
 */
 
+namespace globalz {
+static float delta_time = 0.0f;	// time between current frame and last frame
+static float lastFrame = 0.0f;
+}
+
 static const int MAIN_SCREEN_WIDTH = 1000;
 static const int MAIN_SCREEN_HIGHT = 800;
 
@@ -121,9 +126,9 @@ struct EnableBitMaskOperators<shader_type>
 enum class M_Tex_Flag : unsigned char
 {
   TEXTYR_NULL      = 0x00,
-  TEXTYR_BASIC     = 0x02,
+  TEXTYR_DEFFUSE     = 0x02,
   TEXTYR_NORMAL    = 0x04,
-  TEXTYR_SPEKTURAL = 0x08
+  TEXTYR_PARALLAX = 0x08
 };
 
 
@@ -171,6 +176,11 @@ enum class Scene_LIST
   SCENE_01
 };
 
+enum BindingIndex{
+  VERTEX_BINDING =0,
+  METIERAL_BINDING = 1
+};
+
 
 enum class Format {
     Format_Grayscale = 1, /**< one channel: grayscale */
@@ -191,8 +201,12 @@ enum SHDtype_index : uint8_t
   SHD_BASICA02_VERTEX =6,
   SHD_BASICA01_VERTEX =4,
   SHD_BASIC_FRAG = 5,
+
   SHD_LIGHTA1_VERTEX = 7,
-  SHD_LIGHTA1_FRAG = 8
+  SHD_LIGHTA1_FRAG = 8,
+
+  SHD_ANIM_VERTEX =9,
+  SHD_AMIN_FRAG =10
 };
 
 enum Lighting : bool
@@ -246,6 +260,8 @@ enum class Camera_Movement {
 /*
 *CONSTANTZ
 */
+
+const unsigned int MAX_JOINTZ = 100;
 
 constexpr unsigned char ATTRBUT_DYNAMIC_DRAW{0b0000'0010};
 constexpr unsigned char ATTRBUT_STATIC      {0b0000'0100};

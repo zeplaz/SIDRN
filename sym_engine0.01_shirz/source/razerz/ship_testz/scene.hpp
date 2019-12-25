@@ -6,6 +6,7 @@
 #include "model_parser.hpp"
 
 
+
 struct Phong_reflection
 {
   //ambient light
@@ -209,14 +210,11 @@ class scene{
 
   void lightsetup()
   {
-
     size_t abentoffiset = of_table.l_offset.l_amb;
     size_t light_num;
     size_t light_data_size;
     this->light_data_size(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,light_num,light_data_size);
     gl_lightzctl* light_ctrler =  this->reutrn_prt_scene_lightcrl(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01);
-
-
 
     glCreateBuffers(1, &lightA1_buffer_ID);
     glCreateBuffers(1, &prsiz_lightA1_buffer_ID);
@@ -283,7 +281,6 @@ for (MMAPIterator it = result_mesh.first; it != result_mesh.second; it++)
  mesh* mesh_ptr = it->second;
  mesh_ptr->draw(current_shader,active_view,active_projection);
 }
-
 
 //model drawz
 std::pair<model_iterator, model_iterator> result_model = model_multi_map.equal_range(to_draw_scene);

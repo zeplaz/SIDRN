@@ -1,7 +1,6 @@
 #pragma once
 
-#include "shader_parser.hpp"
-#include "geometry_parser.hpp"
+#include "texture.hpp"
 #include "lenz.hpp"
 
 class wavefornt_parser2;
@@ -22,101 +21,6 @@ typedef struct model_ajustment_type
   }
 }model_ajustment;
 
-struct texture_paramz_pak
-{
-  WarpMode wm_s;
-  WarpMode wm_t;
-  Filter mag;
-  Filter min;
-  std::string path;
-  int channels;
-  std::string unform_name;
-  M_Tex_Flag text_type_flag;
-  int tex_unit_index;
-};
-
-
- struct Texture_gl
-    {
-        GLuint texture_ID;
-        int texture_indexUnit = 0;
-        unsigned char* image;
-
-        unsigned int internal_ID;
-        std::string type;
-        std::string path;
-
-        int width, height,n;
-
-        GLint minFiler = GL_LINEAR;
-        GLint magFiler = GL_LINEAR;
-        GLint wrapMode_S = GL_CLAMP_TO_EDGE;
-        GLint wrapMode_T = GL_CLAMP_TO_EDGE;
-
-        Format formate_internal;
-        Format formate_external;
-        bool used_vglLoader = false;
-
-        GLuint  TBO_Buffer_Handle;
-        void init_texture();
-
-        GLenum return_TextureFormat(Format formate);
-
-        Texture_gl()
-        {
-          formate_external =  Format::Format_RGB;
-          formate_internal =  Format::Format_RGB8;
-          glGenTextures(1,&texture_ID);
-        }
-
-        inline void activate()
-        {
-          glActiveTexture(GL_TEXTURE0+texture_indexUnit);
-        }
-
-        inline void set_texture_sampler_uniform(gl_shader_t* s_in,std::string uniform_name,int unit)
-        {
-          glBindTexture(GL_TEXTURE_2D,texture_ID);
-          glUniform1i(glGetUniformLocation(s_in->program_ID, uniform_name.c_str()), unit);
-        }
-
-        void set_Tex_paramz()
-        {
-          activate();
-          glBindTexture(GL_TEXTURE_2D,texture_ID);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFiler);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFiler);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode_S); //GL_REPEAT//GL_CLAMP_TO_EDGE//GL_CLAMP_TO_BORDER//GL_MIRRORED_REPEAT
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode_T);
-        }
-
-        inline void  set_texture_unit_index(int index)
-        {
-          texture_indexUnit +=index;
-        }
-
-        void load_texture(std::string path,int force_channel,int text_unitindex);
-
-        void set_min_Mag_Filter(Filter filt,char min_mag);
-
-        void load_texture(std::string path)
-        {
-          //vglLoadTexture(path.c_str(),texture_ID,&vglimage);
-          used_vglLoader = true;
-        }
-
-        void set_texture_ST(WarpMode mode, char st)
-        {
-          if(st =='t')
-          {
-            wrapMode_T =mode;
-          }
-          else{
-            wrapMode_S =mode;
-          }
-        }
-};
-
 struct Meterialz
 {
     glm::vec3 emission;
@@ -124,8 +28,10 @@ struct Meterialz
     glm::vec3 diffuse_reflect;
     glm::vec3 specular_reflect;
     float shininess;
-    bool is_normalmap=false;
+    bool is_normalmap= false;
+    bool is_hightmap = false;
     float alpha;
+    float hight_scale;
     //GLint diffuse_texture;
     //GLint spekular_texture;
 
@@ -163,21 +69,26 @@ class mesh
 
   void bindmesh_buf();
 
-  constexpr static const GLchar * material_namez[7] =
+  constexpr static const GLchar * material_namez[9] =
   {
     "Meterialz.emission",
     "Meterialz.ambient_reflect"
     "Meterialz.diffuse_reflect"
     "Meterialz.specular_reflect"
     "Meterialz.shininess"
-    "Meterialz.is_normalmap"
     "Meterialz.alpha"
+
+    "Meterialz.is_normalmap"
+    "Meterialz.is_hightmap"
+
+    "Meterialz.hight_scale"
   };
-  GLuint uniformMeterial_indicatz[7];
+
+  GLuint uniformMeterial_indicatz[9];
   GLuint meterial_index;
   void set_meterial_indicates(gl_shader_t* shader)
   {
-    glGetUniformIndices(shader->program_ID,7,material_namez,uniformMeterial_indicatz);
+    glGetUniformIndices(shader->program_ID,9,material_namez,uniformMeterial_indicatz);
     meterial_index= glGetUniformBlockIndex(shader->program_ID,"Meterialz");
 
   //  glBindBufferBase(GL_UNIFORM_BUFFER,meterial_index)
@@ -261,7 +172,7 @@ class mesh
 
   void pass_meterial_data(gl_shader_t* shader);
   void set_meterial(glm::vec3 emis, glm::vec3 amb_ref, glm::vec3 diff_ref,
-                    glm::vec3 spektral_reflect, float shinyz,float alpha)
+                    glm::vec3 spektral_reflect, float shinyz,float alpha=1.0,float hight_scal =0.1)
   {
     meterial.emission=emis;
     meterial.ambient_reflect=amb_ref;
@@ -269,6 +180,7 @@ class mesh
     meterial.specular_reflect=spektral_reflect;
     meterial.shininess=shinyz;
     meterial.alpha = alpha;
+    meterial.hight_scale = hight_scal;
   //  GLint diffuse_texture;
   //  GLint spekular_texture;
 
@@ -286,7 +198,6 @@ class mesh
 
   inline void set_render_mode(P_Render_STYZ new_mode, Poly_face face)
   {
-
        if(new_mode==P_Render_STYZ::WIREFRAME)
          glPolygonMode(face,GL_LINE);
 
@@ -296,5 +207,4 @@ class mesh
        if(new_mode==P_Render_STYZ::POINT)
         glPolygonMode(face,GL_POINT);
   }
-
 };

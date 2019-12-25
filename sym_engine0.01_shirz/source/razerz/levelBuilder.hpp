@@ -4,6 +4,28 @@
 #include "lenz.hpp"
 
 
+bool read_file_to_buffer(GLuint &buffer, char* path)
+{
+  FILE* file;
+  size_t filesize;
+
+  file = fopen(path,"rb");
+  fseek(file,0,SEEK_END);
+  filesize = ftell(f);
+
+  fseek(f,0,SEEK_SET);
+  glBindBuffer(GL_COPY_WRITE_BUFFER,buffer);
+
+  glBufferData(GL_COPY_WRITE_BUFFER,(GLsizei)filesize,NULL,GL_STATIC_DRAW);
+
+  void * data = glMapBuffer(GL_COPY_WRITE_BUFFER,GL_WRITE_ONLY);
+
+  fread(data,1,filesize,file);
+
+  glUnmapBuffer(GL_COPY_WRITE_BUFFER);
+  fclose(file);
+
+}
 void read_model_setup()
 {
 

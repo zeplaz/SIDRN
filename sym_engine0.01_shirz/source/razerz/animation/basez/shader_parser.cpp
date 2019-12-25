@@ -16,6 +16,7 @@ return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 constexpr unsigned int h_index = str2int("INDEX");
 constexpr unsigned int h_shad_type = str2int("SHADER_TYPE");
 constexpr unsigned int h_file_root = str2int("file_root");
+constexpr unsigned int h_shad_name = str2int("NAME");
 constexpr unsigned int h_shad_title = str2int("shader_glsl");
 
 
@@ -36,7 +37,7 @@ shader_tuple_type* return_new_shader_tuple()
 
     shader_tuple_vec.push_back(shader_tuple_ptr);
 
-    *shader_tuple_ptr = std::make_tuple(0,shader_type::SHADER_NULL,"");
+    *shader_tuple_ptr = std::make_tuple(0,shader_type::SHADER_NULL,"","");
   std::cout << "\n genreating tuple pointer at" << shader_tuple_ptr << " " << "size:" << shader_tuple_vec.size() <<'\n';
   return shader_tuple_ptr;
 }
@@ -150,6 +151,13 @@ int run_parse()
           std::get<2>(*current_tuple_prt) = substingz.at(i+1);
           break;
          }
+
+         case h_shad_name :
+          {
+            std::cout << "shadername::"<< substingz.at(i+1) <<'\n';
+           std::get<3>(*current_tuple_prt) = substingz.at(i+1);
+           break;
+          }
         }
 
 }

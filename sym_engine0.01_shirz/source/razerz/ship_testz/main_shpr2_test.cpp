@@ -134,14 +134,15 @@ if(is_complie == false)
   shipA3.bindmesh_buf();
 
   glm::vec3 shipA2_emis            =glm::vec3(0.0f);
-  glm::vec3 shipA2_amb_ref         =glm::vec3(0.5,0.5,0.7);
-  glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.5,0.6);
-  glm::vec3 shipA2_spektral_reflect=glm::vec3(1.0,1.0,1.0);
-  float     shipA2_shinyz          =600;
-  float alpha = 1.0f;
+  glm::vec3 shipA2_amb_ref         =glm::vec3(0.5,0.5,0.68);
+  glm::vec3 shipA2_diff_ref        =glm::vec3(0.5,0.6,0.65);
+  glm::vec3 shipA2_spektral_reflect=glm::vec3(0.4,0.5,0.5);
+  float     shipA2_shinyz          =3;
+  float alpha = 0.05f;
+  float h_scale = 0.1f;
 
   shipA3.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
-                        shipA2_spektral_reflect,shipA2_shinyz,alpha);
+                        shipA2_spektral_reflect,shipA2_shinyz,alpha,h_scale);
 
   mesh ship_basic;
   ship_basic.init(shipA2_mesh_vertex_DATA,M_Model_Flag::MODEL_UNIFORM,HAS_LIGHTS);
@@ -177,7 +178,7 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   ship_tex_A3_parmz.channels= 3;
   ship_tex_A3_parmz.unform_name = "active_texture_sampler";
   ship_tex_A3_parmz.tex_unit_index = 0;
-  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_BASIC;
+  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_DEFFUSE;
 
   texture_paramz_pak ship_tex_A3_normal_parmz;
   ship_tex_A3_normal_parmz.wm_s    = WarpMode::REPEAT;
@@ -190,10 +191,23 @@ ship_basic.set_meterial(shipA2_emis,shipA2_amb_ref,shipA2_diff_ref,
   ship_tex_A3_normal_parmz.tex_unit_index = 1;
   ship_tex_A3_normal_parmz.text_type_flag = M_Tex_Flag::TEXTYR_NORMAL;
 
+  texture_paramz_pak ship_tex_A3_parlx_parmz;
+  ship_tex_A3_parlx_parmz.wm_s    = WarpMode::REPEAT;
+  ship_tex_A3_parlx_parmz.wm_t    = WarpMode::REPEAT;
+  ship_tex_A3_parlx_parmz.mag     = Filter::LINEAR;
+  ship_tex_A3_parlx_parmz.min     = Filter::LINEAR;
+  ship_tex_A3_parlx_parmz.path    = "data_extrn/ship_A3/Ship_A3_DispMap.bmp";
+  ship_tex_A3_parlx_parmz.channels= 3;
+  ship_tex_A3_parlx_parmz.unform_name = "parallax_mapSample";
+  ship_tex_A3_parlx_parmz.tex_unit_index = 2;
+  ship_tex_A3_parlx_parmz.text_type_flag = M_Tex_Flag::TEXTYR_PARALLAX;
+
   shipA3.texture_setup(ship_tex_A3_parmz);
   shipA3.texture_setup(ship_tex_A3_normal_parmz);
-  ship_basic.texture_setup(ship_tex_A3_parmz);
+  shipA3.texture_setup(ship_tex_A3_parlx_parmz);
 
+  ship_basic.texture_setup(ship_tex_A3_parmz);
+  ship_basic.texture_setup(ship_tex_A3_parlx_parmz);
   /*
   *LENZ SETUP>>>deal with it being gobalz?
   */
@@ -390,6 +404,18 @@ GLint frame_buf_width,frame_buf_hight;
 
  scene_01.insert_model(Scene_Mesh_RDR::LIGHT_PROG01_SCENE01,&test_model);
 
+  GLint context_notifcation ;
+   glGetIntegerv(GL_RESET_NOTIFICATION_STRATEGY,&context_notifcation);
+
+  std::cout << "context stratage::";
+  if(context_notifcation ==GL_NO_RESET_NOTIFICATION)
+  {
+    std::cout <<"no reset strat omg nooo\n";
+  }
+  else
+   {
+    std::cout << "loose context should occure under doom\n";
+  }
   std::cout <<"#####entering main loop setup compleate;\n \n";
 
 
@@ -400,6 +426,31 @@ GLint frame_buf_width,frame_buf_hight;
     delta_time = currentFrame - lastFrame;
     lastFrame = currentFrame;
     process_input_glfw(glfw_window);
+
+/*
+    GLuint contex_error = glGetGraphicsResetStatus();
+    if(contex_error != GL_NO_ERROR)
+    {
+      std::cout << "funfilled contex error\n";
+      switch(contex_error)
+      {
+        case GL_GUILTY_CONTEXT_RESET :
+        std::cout << "\n ###!I'm guilt exitkill moi::" << contex_error;
+        exit(-3);
+        break;
+
+        case GL_INNOCENT_CONTEXT_RESET:
+        std::cout << "\n###!I'm not guilty but goina exit cuz::"<<contex_error;
+        exit(-2);
+        break;
+
+        case GL_UNKNOWN_CONTEXT_RESET:
+        std::cout << "\n###! who knows but context frozenz exitin"<<contex_error;
+        exit(-4);
+        break;
+
+      }
+    }*/
 
     /*
     BEGIN RENDER CYCLE! OHHH

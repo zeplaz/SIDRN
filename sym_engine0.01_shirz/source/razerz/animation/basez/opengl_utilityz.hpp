@@ -1,8 +1,7 @@
-
-
 #pragma once
 
 #include "gl_lib_z.hpp"
+
 static bool screen_beenresized = false;
 void APIENTRY GLAPIENTRY glDebugOutput(GLenum source,
                          GLenum type,
@@ -20,7 +19,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 int opengl_context_settup();
 
 int run_opengl_setup(GLFWwindow* out_window);
-
 
 
 struct offset_table

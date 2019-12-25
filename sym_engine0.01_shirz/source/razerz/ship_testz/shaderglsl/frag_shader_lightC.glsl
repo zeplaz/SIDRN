@@ -41,8 +41,12 @@ struct Meterialz
   vec3 diffuse_reflect;
   vec3 specular_reflect;
   float shininess;
-  bool is_normalmap;
   float alpha;
+
+  bool is_normalmap;
+  bool is_hightmap;
+
+  float hight_scale;
   //sampler2D diffuse_texture;
   //sampler2D spekular_texture;
 
@@ -69,6 +73,7 @@ uniform Meterialz meterial;
 
 uniform sampler2D active_texture_sampler;
 uniform sampler2D normal_mapSampler;
+uniform sampler2D parallax_mapSample;
 
 layout (binding = 0,std430) buffer light_blockz2
 {
@@ -95,13 +100,51 @@ vec3 calculate_specular(vec3 vk_normz,vec4 vk_pos,light_propertyz light ,Meteria
   return spk_final;
 }
 
+//parlaxstuff
+
+
+vec2 parallex_mapping(vec2 texcoords, vec3 view_drec,Meterialz meterz)
+{
+  const float pmin_layer = 8;
+  const float pmax_layer = 32;
+  float num_layers = mix(pmax_layer,pmin_layer,abs(dot(vec3(0.0,0.0,1.0),view_drec)));
+
+  float layer_depth = 1.0/num_layers;
+  float current_layer_depth = 0.0;
+
+  vec2 p = view_drec.xy/view_drec.z*meterz.hight_scale;
+  vec2 delta_texcord = p/num_layers;
+
+  vec2  curr_textcoods = texcoords;
+  float curr_depth_map_val = texture(parallax_mapSample,curr_textcoods).r;
+
+//  while(current_layer_depth<curr_depth_map_val)
+//  {
+    curr_textcoods -=delta_texcord;
+    curr_depth_map_val = texture(parallax_mapSample,curr_textcoods).r;
+    current_layer_depth +=layer_depth;
+//  }
+
+  return curr_textcoods;
+}
+
 
 void main()
-{ vec3 active_normal;
+{
+  vec3 active_normal;
+
+  vec3 viewDir = normalize(in_frag.frag_view_TBN-in_frag.frag_pos_TBN);
+  vec2 active_texcords =  in_frag.frag_uv;
+  if(meterial.is_hightmap)
+  {
+    active_texcords = parallex_mapping(active_texcords,viewDir,meterial);
+    if(active_texcords.x>1.0 ||active_texcords.y>1.0 || active_texcords.x<0.0 || active_texcords.y<0.0)
+    discard;
+  }
 
   if(meterial.is_normalmap)
   {
-    active_normal = texture(normal_mapSampler,in_frag.frag_uv).rgb;
+    active_normal = texture(normal_mapSampler,active_texcords).rgb;
     active_normal= normalize(active_normal*2.0-1.0);
 
   }
@@ -134,7 +177,8 @@ void main()
   //spot light
 
   l_test.phong_light.spot_cos_cutoff=0.91;
-  l_test.phong_light.spot_exponent=1;
+  l_test.phong_light.spot_exponent=0;
+
 
 
 vec3 light_drection =   in_frag.frag_TBN_matrix*l_test.position.xyz;
@@ -183,8 +227,8 @@ if(defuziz!=0)
 
 }
   vec3 spek_cal  = calculate_specular(active_normal,in_frag.frag_pos,l_test,meterial);
-  //vec4 normal_textire = texture(normal_mapSampler, in_frag.frag_uv);
-  vec4  texture_colour = texture(active_texture_sampler, in_frag.frag_uv);
+
+  vec4  texture_colour = texture(active_texture_sampler, active_texcords);
   vec3  surface_to_light2 = normalize(l_test.position.xyz-in_frag.frag_pos.xyz);
   float diffuseCoefficient2 =max(0.0,dot(active_normal,surface_to_light2));
 
@@ -193,6 +237,6 @@ if(defuziz!=0)
   scatterd +=meterial.ambient_reflect*l_test.phong_light.ambient.rgb;
   spektral_reflect = spektral_reflect+spek_cal;
   //vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
-  vec3 result = min((texture_colour.rgb*scatterd),vec3(1.0f));
-  Frag_colour = vec4(result,1);
+  vec3 result = min((texture_colour.rgb*scatterd)+spektral_reflect,vec3(1.0f));
+  Frag_colour = vec4(result,meterial.alpha);
 }

@@ -162,7 +162,7 @@ class scene_CMDer : public singleton<scene_CMDer>
   ship_tex_A3_parmz.channels= 3;
   ship_tex_A3_parmz.unform_name = "active_texture_sampler";
   ship_tex_A3_parmz.tex_unit_index = 0;
-  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_BASIC;
+  ship_tex_A3_parmz.text_type_flag = M_Tex_Flag::TEXTYR_DEFFUSE;
 
   texture_paramz_pak ship_tex_A3_normal_parmz;
   ship_tex_A3_parmz.wm_s    = WarpMode::REPEAT;

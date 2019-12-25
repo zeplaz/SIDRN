@@ -13,7 +13,7 @@
 #include "gl_lib_z.hpp"
 
 typedef std::tuple<unsigned int,
-           shader_type,std::string> shader_tuple_type;
+           shader_type,std::string,std::string> shader_tuple_type;
 
 static std::vector<shader_tuple_type*> shader_tuple_vec;
 
